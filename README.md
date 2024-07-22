@@ -1,0 +1,1 @@
+Lysis is a powerful and intuitive application designed to assist developers in understanding and documenting their codebase. By allowing users to upload an entire folder of code, the tool automatically analyzes all files, generates comprehensive documentation, and answers custom queries about the code.
