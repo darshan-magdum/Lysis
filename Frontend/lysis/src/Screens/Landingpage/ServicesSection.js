@@ -9,10 +9,10 @@ function ServicesSection() {
           <div className="col-md-10 col-lg-8">
             <div className="header-section">
               <h2 className="title">
-                Lysis <span>Services</span>
+               Why<span> Lysis ?</span>
               </h2>
               <p className="description">
-                Enhance your development workflow with Lysis. Our AI-driven tool
+              Our AI-driven tool
                 saves time on manual documentation and code reviews by
                 automatically analyzing your codebase and generating detailed
                 documentation.
