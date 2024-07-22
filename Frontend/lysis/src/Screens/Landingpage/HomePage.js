@@ -4,6 +4,7 @@ import HomeNavbar from "../../Components/HomeNavbar";
 import CodeGirl from "../../../src/Images/CodeGirl.png";
 import ServicesSection from "./ServicesSection";
 import ContactPage from "./ContactPage";
+import AboutPage from "./AboutPage";
 
 const HomePage = () => {
   return (
@@ -32,8 +33,10 @@ const HomePage = () => {
       </div>
      
     </div>
+    <AboutPage/>
     <ServicesSection />
     <ContactPage/>
+  
     </>
   );
 };

@@ -1,0 +1,65 @@
+a, p, h1, h2, h3, h4, ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .section-about {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    font-family: "Poppins", sans-serif;
+    background-color: #211f24;
+    color: #fff;
+  }
+  
+  .section-about .about-info {
+    margin-bottom: 35px;
+    text-align: left; /* Center align text in this section */
+  }
+  
+  .section-about .about-info .title {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 24px;
+    position: relative;
+  }
+  
+  .section-about .about-info .title span {
+    color: #5BE6FF; /* Color for "Lysis" */
+  }
+  
+  .section-about .about-info .title:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 140px;
+    height: 1px;
+    background-color: #f70037;
+  }
+  
+  .section-about .about-info .title:after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 45px;
+    height: 3px;
+    background-color: #f70037;
+  }
+  
+  .section-about .about-info .description {
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.8em;
+    text-align: justify; /* Justify text */
+    text-justify: inter-word; /* Ensure spacing between words is adjusted */
+  }
+  
+  .section-about .about-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+  }
+  
