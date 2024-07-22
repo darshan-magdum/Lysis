@@ -12,7 +12,7 @@ function ServicesSection() {
                Why<span> Lysis ?</span>
               </h2>
               <p className="description">
-              Our AI-driven tool
+                Our AI-driven tool
                 saves time on manual documentation and code reviews by
                 automatically analyzing your codebase and generating detailed
                 documentation.
@@ -27,7 +27,7 @@ function ServicesSection() {
           />
 
           <SingleService
-            title="Comprehensive Documentation"
+            title="Proper Documentation"
             description="Generate detailed and structured documentation for your codebase effortlessly. Lysis handles the documentation so you can focus on development."
           />
 
