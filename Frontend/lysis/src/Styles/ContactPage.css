@@ -13,7 +13,8 @@
 .section-contact-us .header-section {
   margin-bottom: 35px;
 }
-.blur-circle1{
+.contact-blur-circle1{
+  width:200px;
   height: 50px;
   background: linear-gradient(to bottom,white,pink);
   border-radius: 50%;
@@ -23,7 +24,8 @@
   top:20%;
   /* transform: translate(50%); */
 }
-.blur-circle2{
+.contact-blur-circle2{
+  width:200px;
   height: 50px;
   background: linear-gradient(to bottom,white,pink);
   border-radius: 50%;
