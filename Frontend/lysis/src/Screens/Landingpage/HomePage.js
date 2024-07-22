@@ -3,9 +3,11 @@ import "../../Styles/HomePage.css";
 import HomeNavbar from "../../Components/HomeNavbar";
 import CodeGirl from "../../../src/Images/CodeGirl.png";
 import ServicesSection from "./ServicesSection";
+import ContactPage from "./ContactPage";
 
 const HomePage = () => {
   return (
+    <>
     <div className="main-container">
       <div className="blur-circle1"></div>
       <div className="blur-circle2"></div>
@@ -28,8 +30,11 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <ServicesSection />
+     
     </div>
+    <ServicesSection />
+    <ContactPage/>
+    </>
   );
 };
 
