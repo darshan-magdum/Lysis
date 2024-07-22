@@ -23,6 +23,8 @@ function ContactPage() {
   return (
     <section className="section-contact-us">
       <div className="container">
+      <div className="blur-circle1"></div>
+      <div className="blur-circle2"></div>
         <div className="row justify-content-center text-center">
           <div className="col-md-10 col-lg-8">
             <div className="header-section">

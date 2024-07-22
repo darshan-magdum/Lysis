@@ -7,11 +7,32 @@
   background-color: #242325;
   color: #fff;
 }
-
+.container{
+  position: relative;
+}
 .section-contact-us .header-section {
   margin-bottom: 35px;
 }
-
+.blur-circle1{
+  height: 50px;
+  background: linear-gradient(to bottom,white,pink);
+  border-radius: 50%;
+  filter:blur(120px);
+  position: absolute;
+  left: 10%;
+  top:20%;
+  /* transform: translate(50%); */
+}
+.blur-circle2{
+  height: 50px;
+  background: linear-gradient(to bottom,white,pink);
+  border-radius: 50%;
+  filter:blur(100px);
+  position: absolute;
+  right: 10%;
+  top:20%;
+  /* transform: translate(50%); */
+}
 .section-contact-us .header-section .title {
   position: relative;
   margin-bottom: 40px;
