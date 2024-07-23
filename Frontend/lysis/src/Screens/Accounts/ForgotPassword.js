@@ -2,24 +2,25 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/Accounts.css";
 
-const Login = () => {
+const ForgotPassword = () => {
+  // State hooks for form inputs
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
+  // Handler for form submission
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log({ email, password });
+    // Add form submission logic here
+    console.log({ email });
   };
 
   return (
     <div className="Accounts-container">
       <div className="right-section">
         <div className="right-section-wrapper">
-          <h1 className="Accounts-title">
-            Welcome Back! Please log in to your account.
-          </h1>
+          <h1 className="Accounts-title">Forgot Your Password?</h1>
           <h4 className="Accounts-description">
-            We save your time on manual documentation and code reviews.
+            No worries! Enter your email address below and we will send you a
+            reset link.
           </h4>
         </div>
       </div>
@@ -35,28 +36,15 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <input
-                type="password"
-                className="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
               <button type="submit" className="form-btn">
-                <span className="form-btn-text">Log In</span>
+                <span className="form-btn-text">Send Reset Link</span>
               </button>
             </form>
-
             <p className="terms">
-              Don't have an account?
-              <span className="terms-highlight">
-                &nbsp;
-                <Link to="/Signup" style={{ color: "rgb(255, 122, 122)" }}>
-                  sign up
-                </Link>
-              </span>
-              <br></br>
-              <Link to="/ForgotPassword">Forgot Password?</Link>
+              Go Back to -
+              <Link to="/Login" style={{ color: "rgb(255, 122, 122)",fontWeight:"bold" }}>
+                &nbsp;Login
+              </Link>
             </p>
           </div>
         </div>
@@ -65,4 +53,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

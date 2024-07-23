@@ -2,24 +2,29 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/Accounts.css";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
+  // State hooks for form inputs
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Handler for form submission
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log({ email, password });
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    // Add form submission logic here
+    console.log({ password });
   };
 
   return (
     <div className="Accounts-container">
       <div className="right-section">
         <div className="right-section-wrapper">
-          <h1 className="Accounts-title">
-            Welcome Back! Please log in to your account.
-          </h1>
+          <h1 className="Accounts-title">Reset Your Password</h1>
           <h4 className="Accounts-description">
-            We save your time on manual documentation and code reviews.
+            Enter your new password below.
           </h4>
         </div>
       </div>
@@ -29,34 +34,28 @@ const Login = () => {
           <div className="form">
             <form autoComplete="off" onSubmit={handleSubmit}>
               <input
-                type="email"
-                className="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="password"
+                className="password"
+                placeholder="New Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <input
                 type="password"
                 className="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Confirm New Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <button type="submit" className="form-btn">
-                <span className="form-btn-text">Log In</span>
+                <span className="form-btn-text">Reset Password</span>
               </button>
             </form>
-
             <p className="terms">
-              Don't have an account?
-              <span className="terms-highlight">
-                &nbsp;
-                <Link to="/Signup" style={{ color: "rgb(255, 122, 122)" }}>
-                  sign up
-                </Link>
-              </span>
-              <br></br>
-              <Link to="/ForgotPassword">Forgot Password?</Link>
+              Go Back to -
+              <Link to="/Login" style={{ color: "rgb(255, 122, 122)",fontWeight:"bold" }}>
+                &nbsp;Login
+              </Link>
             </p>
           </div>
         </div>
@@ -65,4 +64,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;
