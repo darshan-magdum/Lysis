@@ -16,13 +16,13 @@ const Signup = () => {
   };
 
   return (
-    <div className="container">
+    <div className="Accounts-container">
       <div className="right-section">
         <div className="right-section-wrapper">
-          <h1 className="title">
+          <h1 className="Accounts-title">
           Welcome! Let's get started by creating your account.
           </h1>
-          <h4 className="description">
+          <h4 className="Accounts-description">
           We Save your time on manual documentation and code reviews.
           </h4>
         </div>
