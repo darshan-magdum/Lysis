@@ -6,6 +6,7 @@ import CodeGirl from "../../../src/Images/CodeGirl.png";
 import ServicesSection from "./ServicesSection";
 import ContactPage from "./ContactPage";
 import AboutPage from "./AboutPage";
+import HomeFooter from "../../Components/HomeFooter";
 
 const HomePage = () => {
   const { ref: homeRef, inView: homeInView } = useInView({
@@ -50,6 +51,7 @@ const HomePage = () => {
       <div id="contact-section">
         <ContactPage />
       </div>
+      <HomeFooter/>
     </>
   );
 };
