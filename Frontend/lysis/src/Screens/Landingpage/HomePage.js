@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import "../../Styles/HomePage.css";
 import HomeNavbar from "../../Components/HomeNavbar";
@@ -13,6 +13,14 @@ const HomePage = () => {
     triggerOnce: true,
     threshold: 0.1
   });
+
+  const aboutRef = useRef(null);
+
+  const handleExploreClick = () => {
+    if (aboutRef.current) {
+      aboutRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <>
@@ -33,7 +41,7 @@ const HomePage = () => {
                   documentation. We Save time on manual documentation and code
                   reviews.
                 </p>
-                <button>Explore More</button>
+                <button onClick={handleExploreClick}>Explore More</button>
               </div>
               <div className="image">
                 <img className="main-image" src={CodeGirl} alt="Coding Girl" />
@@ -42,7 +50,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div id="about-section">
+      <div id="about-section" ref={aboutRef}>
         <AboutPage />
       </div>
       <div id="services-section">
