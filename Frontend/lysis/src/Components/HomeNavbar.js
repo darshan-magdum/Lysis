@@ -1,11 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 const HomeNavbar = () => {
   const navigate = useNavigate();
   return (
-    <header>
+    <header className="landing-page">
       <div className="container">
         <a href="#" className="logo">
           <b>Lysis</b>
@@ -14,7 +13,9 @@ const HomeNavbar = () => {
           <li>Home</li>
           <li>About Us</li>
           <li>Contact Us</li>
-          <Link to="/Signup"> <li>Get Started</li></Link>
+          <li>
+            <Link to="/Signup">Get Started</Link>
+          </li>
         </ul>
       </div>
     </header>
