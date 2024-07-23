@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../Styles/Accounts.css'; // Import your CSS file if you have one
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   // State hooks for form inputs
@@ -66,10 +67,18 @@ const Signup = () => {
               <p className="terms">
                 By clicking the button, you are agreeing to our
                 <span className="terms-highlight">
-                  Terms and Services
+                  &nbsp;Terms and Services
                 </span>
+
+
               </p>
             </form>
+
+            <p className="terms">
+              Already have an account?
+            
+              <Link to="/Login">&nbsp;Login</Link>
+            </p>
           </div>
         </div>
       </div>
