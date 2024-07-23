@@ -11,7 +11,7 @@ const UserDashboard = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Close dropdown when clicking outside
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownOpen(false);
@@ -54,7 +54,7 @@ const UserDashboard = () => {
             account_circle
           </span>
 
-          {/* Dropdown menu */}
+       
           {dropdownOpen && (
             <div class="dropdown">
               <ul
@@ -87,7 +87,6 @@ const UserDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="row">
         <UserSidebar />
         <UserMainContent />
