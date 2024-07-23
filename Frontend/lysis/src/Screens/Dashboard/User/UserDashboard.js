@@ -18,7 +18,6 @@ const UserDashboard = () => {
     }
   };
 
-  // Add event listener when component mounts
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -46,10 +45,10 @@ const UserDashboard = () => {
               cursor: "pointer",
               marginRight: "10px",
               fontSize: "37px",
-              color: "white", // Icon color
-              backgroundColor: "rgb(36, 75, 111)", // Background color of the icon area
-              padding: "8px", // Padding around the icon
-              borderRadius: "50%", // Rounded shape
+              color: "white",
+              backgroundColor: "rgb(36, 75, 111)",
+              padding: "8px",
+              borderRadius: "50%",
             }}
           >
             account_circle
@@ -57,23 +56,32 @@ const UserDashboard = () => {
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div
-              className="dropdown-menu dropdown-menu-dark text-small shadow show"
-              style={{
-                backgroundColor: "black",
-                marginTop: "10px",
-                marginLeft: "-100px",
-                position: "absolute", // Ensure dropdown position is absolute
-                zIndex: "1000", // Set a high z-index to ensure it appears on top
-              }}
-            >
-              <a className="dropdown-item text-white" href="#">
-                Profile
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item text-white" href="#">
-                Sign out
-              </a>
+            <div class="dropdown">
+              <ul
+                className="dropdown-menu dropdown-menu-dark text-small shadow show"
+                style={{
+                  marginTop: "-2px",
+                  marginLeft: "-110px",
+                  position: "absolute",
+                  zIndex: "1000",
+                }}
+              >
+                <li>
+                  {" "}
+                  <a className="dropdown-item" href="#">
+                    Profile
+                  </a>
+                </li>
+                <li>
+                  {" "}
+                  <div className="dropdown-divider"></div>
+                </li>
+                <li>
+                  <a className="dropdown-item" href="#">
+                    Sign out
+                  </a>
+                </li>
+              </ul>
             </div>
           )}
         </div>
