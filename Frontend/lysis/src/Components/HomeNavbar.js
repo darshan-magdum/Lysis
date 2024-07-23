@@ -1,6 +1,9 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const HomeNavbar = () => {
+  const navigate = useNavigate();
   return (
     <header>
       <div className="container">
@@ -11,7 +14,7 @@ const HomeNavbar = () => {
           <li>Home</li>
           <li>About Us</li>
           <li>Contact Us</li>
-          <li>Get Started</li>
+          <Link to="/Signup"> <li>Get Started</li></Link>
         </ul>
       </div>
     </header>
