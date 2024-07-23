@@ -1,4 +1,5 @@
 import React from "react";
+import { useInView } from "react-intersection-observer";
 import "../../Styles/HomePage.css";
 import HomeNavbar from "../../Components/HomeNavbar";
 import CodeGirl from "../../../src/Images/CodeGirl.png";
@@ -7,6 +8,11 @@ import ContactPage from "./ContactPage";
 import AboutPage from "./AboutPage";
 
 const HomePage = () => {
+  const { ref: homeRef, inView: homeInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
+
   return (
     <>
       <div className="main-container">
@@ -14,7 +20,10 @@ const HomePage = () => {
         <div className="blur-circle2"></div>
         <div className="landing-page" id="home-section">
           <HomeNavbar />
-          <div className="content">
+          <div
+            className={`content slide-up-section ${homeInView ? "visible" : ""}`}
+            ref={homeRef}
+          >
             <div className="container">
               <div className="info">
                 <h1>Unveil Code Complexity</h1>
