@@ -1,8 +1,8 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Link as ScrollLink } from "react-scroll";
 
 const HomeNavbar = () => {
-  const navigate = useNavigate();
   return (
     <header className="landing-page">
       <div className="container">
@@ -10,9 +10,21 @@ const HomeNavbar = () => {
           <b>Lysis</b>
         </a>
         <ul className="links">
-          <li>Home</li>
-          <li>About Us</li>
-          <li>Contact Us</li>
+          <li>
+            <ScrollLink to="home-section" smooth={true} duration={500}>
+              Home
+            </ScrollLink>
+          </li>
+          <li>
+            <ScrollLink to="about-section" smooth={true} duration={500}>
+              About Us
+            </ScrollLink>
+          </li>
+          <li>
+            <ScrollLink to="contact-section" smooth={true} duration={500}>
+              Contact Us
+            </ScrollLink>
+          </li>
           <li>
             <Link to="/Signup">Get Started</Link>
           </li>
