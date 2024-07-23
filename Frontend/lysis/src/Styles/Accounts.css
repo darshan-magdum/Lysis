@@ -1,0 +1,243 @@
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../../../lysis/src//Images/LYSIS-Background.png");
+  background-repeat: no-repeat; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+
+.container {
+  display: flex;
+  flex-direction: row;
+/*   flex-wrap: nowrap; */
+}
+
+.right-section {
+  flex: 1 1 50%;
+}
+
+.left-section {
+  flex: 1 1 50%;
+}
+
+.right-section-wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 10% 0 20%;
+  color: #fff;
+}
+
+.title {
+  font-size: 35px;
+  font-weight: 700;
+  padding-bottom: 32px;
+}
+
+.description {
+  font-weight: 400;
+  padding-bottom: 30px;
+}
+
+.left-section-wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.form {
+  background: #fff;
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  padding-top: 32px;
+  border-radius: 8px;
+  box-shadow: 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.form input {
+  width: 80%;
+  padding: 16px 25px 16px 25px;
+  margin-bottom: 20px;
+  margin-left: 10%;
+  margin-left: 10%;
+  align-self: center;
+  border: 1px solid rgb(185, 182, 211);
+  border-radius: 6px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.form input:focus {
+  border: 1px solid black;
+}
+
+.form button {
+  width: 80%;
+  padding: 16px 25px 16px 25px;
+  margin-bottom: 20px;
+  margin-left: 10%;
+  margin-left: 10%;
+  align-self: center;
+  border-radius: 6px;
+  color: white;
+  background: rgb(32 96 156);
+  border: none;
+}
+
+.form-btn:focus {
+  cursor: pointer;
+}
+
+.form p {
+  width: 80%;
+  font-size: 10px;
+  padding: 0 25px 16px 25px;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-left: 10%;
+  margin-left: 10%;
+}
+
+.terms {
+  color: rgb(185, 182, 211);
+}
+
+.terms-highlight {
+  color: rgb(255, 122, 122);
+  font-weight: 600;
+}
+
+@media screen and (max-width: 900px) {
+  .disclaimer {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+  }
+
+  .form {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+  }
+
+  .form input {
+    width: 80%;
+    padding: 16px;
+    margin-left: 10%;
+    margin-left: 10%;
+    align-self: center;
+  }
+
+  .form button {
+    width: 80%;
+    padding: 16px;
+    margin-left: 10%;
+    margin-left: 10%;
+    align-self: center;
+  }
+
+  .form p {
+    width: 80%;
+    margin-left: 10%;
+    margin-left: 10%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    background-image: url("../../../lysis/src//Images/LYSIS-Background.png");
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .right-section-wrapper {
+    height: 60vh;
+    padding: 0 10% 0 10%;
+  }
+
+  .title {
+    font-size: 42px;
+    padding-top: 40px;
+    padding-bottom: 32px;
+  }
+
+  .description {
+    padding-bottom: 0px;
+  }
+
+  .left-section-wrapper {
+    height: 65vh;
+  }
+
+  .disclaimer {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+  }
+
+  .form {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 60px;
+    flex-direction: column;
+  }
+
+  .form input {
+    width: 80%;
+    padding: 16px;
+    margin-left: 10%;
+    margin-left: 10%;
+    align-self: center;
+  }
+
+  .form button {
+    width: 80%;
+    padding: 16px;
+    margin-left: 10%;
+    margin-left: 10%;
+    align-self: center;
+  }
+
+  .form p {
+    width: 80%;
+    margin-left: 10%;
+    margin-left: 10%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .right-section-wrapper {
+    height: 75vh;
+  }
+  
+    .title {
+    padding-top: 20px;
+  }
+}
