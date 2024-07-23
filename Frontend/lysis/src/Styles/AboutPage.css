@@ -4,7 +4,7 @@ a, p, h1, h2, h3, h4, ul {
   }
   
   .section-about {
-    padding-top: 60px;
+    padding-top: 25px;
     padding-bottom: 60px;
     font-family: "Poppins", sans-serif;
     background-color: #161418;
@@ -57,9 +57,11 @@ a, p, h1, h2, h3, h4, ul {
     text-justify: inter-word; /* Ensure spacing between words is adjusted */
   }
   
-  .section-about .about-image img {
+  .section-about .about-video video {
     width: 100%;
+    height: 100%;
+    max-height: 500px; /* Adjust this value as needed */
     border-radius: 8px;
-    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
   }
   

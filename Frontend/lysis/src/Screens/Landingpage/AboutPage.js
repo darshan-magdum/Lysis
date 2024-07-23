@@ -1,6 +1,6 @@
 import React from "react";
 import "../../Styles/AboutPage.css";
-import aboutImage from "../../Images/AboutImage.jpg"; // Adjust the path to your image
+import aboutVideo from "../../Images/AboutVideo.mp4"; // Adjust the path to your video
 
 function AboutPage() {
   return (
@@ -15,15 +15,18 @@ function AboutPage() {
               <p className="description">
                 Lysis is an advanced AI-driven tool designed to revolutionize the way developers manage and document their codebases. By leveraging cutting-edge technology, Lysis automates the process of code analysis and documentation, providing a seamless experience that saves time and enhances productivity.
               </p>
-              <br></br>
+              <br />
               <p className="description">
                 With features such as AI-driven code analysis, custom query responses, and team management capabilities, Lysis is tailored to meet the needs of modern development teams and individual developers alike. Our goal is to simplify the documentation process and provide valuable insights into your codebase, so you can focus on what you do best—coding.
               </p>
             </div>
           </div>
           <div className="col-md-6">
-            <div className="about-image">
-              <img src={aboutImage} alt="About Lysis" />
+            <div className="about-video">
+              <video width="100%" height="auto" autoPlay loop muted>
+                <source src={aboutVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
