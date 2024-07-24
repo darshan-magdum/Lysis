@@ -5,7 +5,7 @@ import Signup from "./Screens/Accounts/Signup";
 import Login from "./Screens/Accounts/Login";
 import ForgotPassword from "./Screens/Accounts/ForgotPassword";
 import ResetPassword from "./Screens/Accounts/ResetPassword";
-import UserDashboard from "./Screens/Dashboard/User/UserDashboard";
+import ManagerDashboard from "./Screens/Dashboard/Manager/ManagerDashboard";
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
           
-          <Route path="/UserDashboard" element={<UserDashboard />} />
+          <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
 
         </Routes>
       </div>

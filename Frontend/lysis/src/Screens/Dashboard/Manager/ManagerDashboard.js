@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import UserMainContent from "./UserMainContent";
-import UserSidebar from "./UserSider";
+import ManagerMainContent from "./ManagerMainContent";
+import ManagerSider from "./ManagerSider";
 
-const UserDashboard = () => {
+const ManagerDashboard = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -88,11 +88,11 @@ const UserDashboard = () => {
       </header>
 
       <div className="row">
-        <UserSidebar />
-        <UserMainContent />
+        <ManagerSider />
+        <ManagerMainContent />
       </div>
     </div>
   );
 };
 
-export default UserDashboard;
+export default ManagerDashboard;

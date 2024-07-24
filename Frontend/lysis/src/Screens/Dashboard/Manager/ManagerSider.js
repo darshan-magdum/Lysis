@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserSidebar = () => {
+const ManagerSider = () => {
   return (
     <div
       className="col-lg-3 col-md-4 col-sm-5"
@@ -58,4 +58,4 @@ const UserSidebar = () => {
   );
 };
 
-export default UserSidebar;
+export default ManagerSider;

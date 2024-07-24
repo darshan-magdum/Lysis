@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserMainContent = () => {
+const ManagerMainContent = () => {
   const user = {
     Name: "John Doe",
     email: "john.doe@example.com",
@@ -49,4 +49,4 @@ const UserMainContent = () => {
   );
 };
 
-export default UserMainContent;
+export default ManagerMainContent;
