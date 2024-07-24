@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import ManagerMainContent from "./ManagerMainContent";
 import ManagerSider from "./ManagerSider";
 import ProfileAvatar from "../../../Images/avatar profile.jpg";
+import ManagerHome from "./ManagerHome"; // Import new components
+import ViewDocumentation from "./ViewDocumentation";
+import CustomPrompt from "./CustomPrompt";
 
 const user = {
   name: "John Doe", // Replace with dynamic user name
@@ -9,18 +11,18 @@ const user = {
 };
 
 const ManagerDashboard = () => {
-  const [profileCardOpen, setProfileCardOpen] = useState(false); // Add state for profile card visibility
+  const [profileCardOpen, setProfileCardOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState("home"); // Add state to manage current page
   const dropdownRef = useRef(null);
-  const profileCardRef = useRef(null); // Add ref for profile card
+  const profileCardRef = useRef(null);
 
-  // Function to toggle dropdown open/close
   const toggleDropdown = () => {
-    setProfileCardOpen(!profileCardOpen); // Toggle profile card visibility
+    setProfileCardOpen(!profileCardOpen);
   };
 
   const handleClickOutside = (event) => {
     if (profileCardRef.current && !profileCardRef.current.contains(event.target)) {
-      setProfileCardOpen(false); // Close profile card when clicking outside
+      setProfileCardOpen(false);
     }
   };
 
@@ -31,16 +33,32 @@ const ManagerDashboard = () => {
     };
   }, []);
 
-  // Handle sign out action
   const handleSignOut = () => {
     // Add your sign-out logic here
     console.log("Sign out clicked");
-    setProfileCardOpen(false); // Close profile card on sign-out
+    setProfileCardOpen(false);
+  };
+
+  // Handle navigation
+  const handleNavigation = (page) => {
+    setCurrentPage(page); // Set the current page
+  };
+
+  const renderContent = () => {
+    switch (currentPage) {
+      case "home":
+        return <ManagerHome />;
+      case "documentation":
+        return <ViewDocumentation />;
+      case "customPrompt":
+        return <CustomPrompt />;
+      default:
+        return ""; // Default content if no page matches
+    }
   };
 
   return (
     <div className="container-fluid" style={{ padding: 0 }}>
-      {/* Header */}
       <header
         className="row justify-content-between align-items-center py-2"
         style={{
@@ -52,16 +70,14 @@ const ManagerDashboard = () => {
           top: 0,
           left: 0,
           right: 0,
-          margin: 0, // Ensure no margin
-          padding: 0, // Ensure no padding
+          margin: 0,
+          padding: 0,
         }}
       >
         <div className="col-auto ml-3">
-          {/* Your logo or title could go here */}
           <h2>Lysis</h2>
         </div>
         <div className="col-auto" ref={dropdownRef}>
-          {/* Google icon */}
           <span
             className="material-symbols-outlined"
             onClick={toggleDropdown}
@@ -80,12 +96,11 @@ const ManagerDashboard = () => {
         </div>
       </header>
 
-      {/* Profile Card */}
       {profileCardOpen && (
         <div
           className="card mb-4"
           style={{
-            position: "absolute", // Changed to absolute positioning
+            position: "absolute",
             top: "55px",
             right: "10px",
             width: "250px",
@@ -95,7 +110,7 @@ const ManagerDashboard = () => {
         >
           <div className="card-body text-center">
             <img
-              src={ProfileAvatar} // Avatar image URL
+              src={ProfileAvatar}
               alt="avatar"
               className="rounded-circle img-fluid"
               style={{ width: "150px", borderRadius: "50%", marginTop: "-20px" }}
@@ -103,18 +118,18 @@ const ManagerDashboard = () => {
             <hr
               style={{
                 border: "0",
-                borderTop: "1px solid #ddd", // Light gray color for the line
-                margin: "5px 0", // Space above and below the line
+                borderTop: "1px solid #ddd",
+                margin: "5px 0",
               }}
             />
             <h5 className="my-3" style={{ marginTop: "15px" }}>
-              {user.name} {/* User's name */}
+              {user.name}
             </h5>
             <p
               className="text-muted mb-1"
               style={{ color: "#6c757d", marginBottom: "0" }}
             >
-              {user.email} {/* User's email */}
+              {user.email}
             </p>
 
             <button
@@ -157,10 +172,10 @@ const ManagerDashboard = () => {
             overflowY: "auto",
             height: "100vh",
             padding: "20px",
-            fontSize:"Large", // Add padding for spacing
+            fontSize:"Large",
           }}
         >
-          <ManagerSider />
+          <ManagerSider handleNavigation={handleNavigation} /> {/* Pass navigation handler */}
         </div>
         <div
           className="col-lg-9 offset-lg-3"
@@ -168,10 +183,10 @@ const ManagerDashboard = () => {
             backgroundColor: "#eee",
             padding: "20px",
             overflowY: "auto",
-            overflowX: "hidden", // Ensure no horizontal scroll
+            overflowX: "hidden",
           }}
         >
-          <ManagerMainContent />
+          {renderContent()} {/* Render content based on state */}
         </div>
       </div>
     </div>
