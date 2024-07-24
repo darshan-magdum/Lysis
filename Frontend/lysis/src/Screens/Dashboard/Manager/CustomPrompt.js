@@ -5,24 +5,28 @@ const CustomPrompt = () => {
   const [responses, setResponses] = useState([]);
   const textareaRef = useRef(null);
 
-  // Calculate the max height for 5 lines of text
-  const calculateMaxHeight = () => {
+  // Calculate the height of 5 lines
+  const getLineHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
-      const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight, 10);
-      return lineHeight * 5; // 5 lines height
+      const style = window.getComputedStyle(textarea);
+      return parseInt(style.lineHeight, 10);
     }
-    return 0;
+    return 24; // Default line height if unable to compute
   };
+
+  const maxLines = 5;
+  const maxHeight = getLineHeight() * maxLines; // Height for 5 lines
 
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
-      // Reset height to auto to calculate scrollHeight
-      textarea.style.height = 'auto'; 
-      // Set height based on scrollHeight but not exceeding maxHeight
-      const maxHeight = calculateMaxHeight();
+      // Reset height to auto to recalculate scrollHeight
+      textarea.style.height = 'auto';
+      // Set the height to scrollHeight but not exceed maxHeight
       textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+      // Apply overflow style conditionally
+      textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
     }
   }, [prompt]);
 
@@ -52,7 +56,7 @@ const CustomPrompt = () => {
           rows="1" // Start with one line
           style={{
             width: '100%',
-            maxHeight: `${calculateMaxHeight()}px`, // Set max height for 5 lines
+            maxHeight: `${maxHeight}px`, // Set max height for 5 lines
             minHeight: '40px', // Minimum height for the text area
             padding: '10px',
             paddingRight: '50px', // Space for the icon
@@ -60,8 +64,8 @@ const CustomPrompt = () => {
             border: '1px solid #ddd',
             fontSize: '16px',
             resize: 'none',
-            overflowY: 'auto', // Always show vertical scrollbar if content overflows
-            overflowX: 'hidden' // Hide horizontal scrollbar
+            overflowY: 'hidden', // Hide scrollbar initially
+            transition: 'height 0.2s ease, overflowY 0.2s ease', // Smooth transition
           }}
         />
         <span
@@ -69,11 +73,15 @@ const CustomPrompt = () => {
           onClick={handleSubmit}
           style={{
             position: 'absolute',
-            bottom: '10px',
-            right: '10px',
+            bottom: '14px',
+            right: '20px',
+            height:'29px',
             cursor: 'pointer',
-            fontSize: '24px',
-            color: '#20609c'
+            fontSize: '21px', // Adjust font size for the arrow
+            color: 'rgb(255 255 255)',
+            backgroundColor: 'rgb(32 96 156)',
+            borderRadius: '50%', // Make the background circular
+            padding: '4px', // Adjust padding to control the background size
           }}
         >
           send
