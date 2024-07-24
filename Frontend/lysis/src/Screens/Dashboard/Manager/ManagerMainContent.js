@@ -1,37 +1,36 @@
 import React from "react";
-import avatarImage from "../../../Images/avatar profile.jpg"
+import avatarImage from "../../../Images/avatar profile.jpg";
 
 const ManagerMainContent = () => {
   const user = {
-    Name: "John Doe",
-    email: "john.doe@example.com",
-    contact: "+1234567890",
+    name: "John Doe",
+    email: "john.doe@example.com",,
   };
-
-
 
   return (
     <div className="col-lg-9 col-md-8 col-sm-7">
-      <section style={{ backgroundColor: "#eee", minHeight: "100vh" }}>
+      <section style={{ backgroundColor: "#eee", minHeight: "100vh", padding: "20px 0" }}>
         <div className="container py-3">
           <div className="row">
             <div className="col-lg-4">
+              <h5 style={{ textAlign: "left", fontWeight: "bold", marginBottom: "10px", marginTop: "-10px" }}>
+                Your Profile
+              </h5>
               <div className="card mb-4">
                 <div className="card-body text-center">
                   <img
                     src={avatarImage}
                     alt="avatar"
                     className="rounded-circle img-fluid"
-                    style={{ width: "180px" }}
+                    style={{ width: "180px", borderRadius: "50%" }}
                   />
-
-                  <h5 className="my-3">{user.Name}</h5>
-                  <p className="text-muted mb-1">{user.email}</p>
-
-
-                
+                  <h5 className="my-3" style={{ marginTop: "15px" }}>{user.name}</h5>
+                  <p className="text-muted mb-1" style={{ color: "#6c757d", marginBottom: "0" }}>{user.email}</p>
                 </div>
               </div>
+            </div>
+            <div className="col-lg-8">
+              {/* Add any additional content you want here */}
             </div>
           </div>
         </div>
