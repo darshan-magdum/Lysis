@@ -90,9 +90,18 @@ const ManagerDashboard = () => {
       </header>
 
       <div className="row">
+      <div
+      className="col-lg-3"
+      style={{ backgroundColor: "rgb(32, 96, 156)", minHeight: "100vh" }}
+    >
         <ManagerSider />
+        </div>
+        <div className="col-lg-9">
         <ManagerMainContent />
+        </div>
       </div>
+    
+      
     </div>
   );
 };

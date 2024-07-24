@@ -7,11 +7,12 @@ const ManagerMainContent = () => {
 
 
   return (
-    <div className="col-lg-9">
+ <>
       <ManagerHome/>
  <ManagerProfile/>
  <ViewDocumentation/>
-    </div>
+ </>
+   
   );
 };
 

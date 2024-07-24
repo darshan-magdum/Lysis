@@ -2,10 +2,7 @@ import React from "react";
 
 const ManagerSider = () => {
   return (
-    <div
-      className="col-lg-3 col-md-4 col-sm-5"
-      style={{ backgroundColor: "rgb(32, 96, 156)", minHeight: "100vh" }}
-    >
+   
       <div
         className="d-flex flex-column flex-shrink-0 p-3 text-light"
         style={{ height: "100%" }}
@@ -54,7 +51,7 @@ const ManagerSider = () => {
         </ul>
         <hr className="text-light" />
       </div>
-    </div>
+  
   );
 };
 

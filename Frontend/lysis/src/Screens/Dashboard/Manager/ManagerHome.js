@@ -3,7 +3,7 @@ import avatarImage from "../../../Images/avatar profile.jpg";
 
 const ManagerHome = () => {
   return (
-    <section
+    <div
       style={{ backgroundColor: "#eee", minHeight: "100vh", padding: "20px 0" }}
     >
       <div className="container py-3">
@@ -23,7 +23,7 @@ const ManagerHome = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
