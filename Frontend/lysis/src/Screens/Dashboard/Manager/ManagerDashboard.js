@@ -11,7 +11,6 @@ const ManagerDashboard = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownOpen(false);
@@ -54,9 +53,8 @@ const ManagerDashboard = () => {
             account_circle
           </span>
 
-       
           {dropdownOpen && (
-            <div class="dropdown">
+            <div className="dropdown">
               <ul
                 className="dropdown-menu dropdown-menu-dark text-small shadow show"
                 style={{
@@ -67,17 +65,21 @@ const ManagerDashboard = () => {
                 }}
               >
                 <li>
-                  {" "}
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item d-flex align-items-center" href="#">
+                    <span className="material-symbols-outlined" style={{ marginRight: '4px' }}>
+                      contact_page
+                    </span>
                     Profile
                   </a>
                 </li>
                 <li>
-                  {" "}
                   <div className="dropdown-divider"></div>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item d-flex align-items-center" href="#">
+                    <span className="material-symbols-outlined" style={{ marginRight: '4px' }}>
+                      logout
+                    </span>
                     Sign out
                   </a>
                 </li>
