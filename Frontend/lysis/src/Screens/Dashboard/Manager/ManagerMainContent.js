@@ -2,6 +2,7 @@ import React from "react";
 import ManagerProfile from "./ManagerProfile";
 import ManagerHome from "./ManagerHome";
 import ViewDocumentation from "./ViewDocumentation";
+import CustomPrompt from "./CustomPrompt";
 
 const ManagerMainContent = () => {
 
@@ -11,6 +12,7 @@ const ManagerMainContent = () => {
       <ManagerHome/>
  <ManagerProfile/>
  <ViewDocumentation/>
+ <CustomPrompt/>
  </>
    
   );
