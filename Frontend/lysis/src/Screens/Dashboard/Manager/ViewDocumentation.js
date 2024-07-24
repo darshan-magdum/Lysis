@@ -2,8 +2,7 @@ import React from "react";
 
 const ViewDocumentation = () => {
   return (
-    <section
-      style={{ backgroundColor: "#f9f9f9", minHeight: "100vh", padding: "20px 0" }}
+    <div
     >
       <div className="container py-3">
         <div className="row">
@@ -64,7 +63,7 @@ const ViewDocumentation = () => {
           {/* Repeat the above card structure for more documents */}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

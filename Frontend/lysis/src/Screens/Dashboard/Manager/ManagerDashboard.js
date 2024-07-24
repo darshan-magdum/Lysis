@@ -96,7 +96,7 @@ const ManagerDashboard = () => {
     >
         <ManagerSider />
         </div>
-        <div className="col-lg-9">
+        <div className="col-lg-9"  style={{ backgroundColor: "#eee", minHeight: "100vh", padding: "20px 0" }}>
         <ManagerMainContent />
         </div>
       </div>

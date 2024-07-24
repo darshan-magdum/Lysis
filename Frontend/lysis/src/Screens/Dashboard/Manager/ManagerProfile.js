@@ -8,8 +8,8 @@ const ManagerProfile = () => {
   };
 
   return (
-    <section
-      style={{ backgroundColor: "#eee", minHeight: "100vh", padding: "20px 0" }}
+    <div
+
     >
       <div className="container py-3">
         <div className="row">
@@ -50,7 +50,7 @@ const ManagerProfile = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

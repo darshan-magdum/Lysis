@@ -4,7 +4,7 @@ import avatarImage from "../../../Images/avatar profile.jpg";
 const ManagerHome = () => {
   return (
     <div
-      style={{ backgroundColor: "#eee", minHeight: "100vh", padding: "20px 0" }}
+      
     >
       <div className="container py-3">
         <div className="row">
