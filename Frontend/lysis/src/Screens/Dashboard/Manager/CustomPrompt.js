@@ -43,9 +43,10 @@ const CustomPrompt = () => {
     }
   };
 
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '30px' }}>
-      <h3 style={{ textAlign: 'center', marginBottom: '30px' }}>Custom Prompt</h3>
+      <h5 style={{ textAlign: 'left', marginBottom: '30px',color: "#20609c",fontWeight:"600" }}>Custom Prompt</h5>
       
       <div style={{ position: 'relative', marginBottom: '30px' }}>
         <textarea
