@@ -9,21 +9,20 @@ const user = {
 };
 
 const ManagerDashboard = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const [profileCardOpen, setProfileCardOpen] = useState(false); // Add state for profile card visibility
   const dropdownRef = useRef(null);
   const profileCardRef = useRef(null); // Add ref for profile card
 
   // Function to toggle dropdown open/close
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  
     setProfileCardOpen(!profileCardOpen); // Toggle profile card visibility
   };
 
   const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+    if (
         profileCardRef.current && !profileCardRef.current.contains(event.target)) {
-      setDropdownOpen(false);
       setProfileCardOpen(false); // Close profile card when clicking outside
     }
   };
@@ -71,39 +70,6 @@ const ManagerDashboard = () => {
             account_circle
           </span>
 
-          {/* {dropdownOpen && (
-            <div className="dropdown">
-              <ul
-                className="dropdown-menu dropdown-menu-dark text-small shadow show"
-                style={{
-                  marginTop: "-2px",
-                  marginLeft: "-110px",
-                  position: "absolute",
-                  zIndex: "1000",
-                }}
-              >
-                <li>
-                  <a className="dropdown-item d-flex align-items-center" href="#">
-                    <span className="material-symbols-outlined" style={{ marginRight: '4px' }}>
-                      contact_page
-                    </span>
-                    Profile
-                  </a>
-                </li>
-                <li>
-                  <div className="dropdown-divider"></div>
-                </li>
-                <li>
-                  <a className="dropdown-item d-flex align-items-center" href="#">
-                    <span className="material-symbols-outlined" style={{ marginRight: '4px' }}>
-                      logout
-                    </span>
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
-          )} */}
         </div>
       </header>
 
