@@ -1,18 +1,41 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
 import "../../Styles/Accounts.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event) => {
+
+  const location = useLocation();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({ email, password });
+
+    try {
+      const response = await axios.post("http://localhost:8080/Manager/login", {
+        email,
+        password,
+      });
+      console.log("Login Successful:", response.data);
+      toast.success("Login successful!", { autoClose: 3000 });
+      setTimeout(() => {
+        window.location = `/ManagerDashboard`;
+      }, 3000);
+    } catch (error) {
+      console.error("Login Error:", error.response.data);
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
+    
     <div className="Accounts-container">
+            <ToastContainer position="top-right" autoClose={2000} />
       <div className="right-section">
         <div className="right-section-wrapper">
           <h1 className="Accounts-title">
@@ -34,6 +57,7 @@ const Login = () => {
                 placeholder="Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <input
                 type="password"
@@ -41,12 +65,13 @@ const Login = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <button type="submit" className="form-btn">
                 <span className="form-btn-text">Log In</span>
               </button>
             </form>
-
+            {error && <p className="text-danger">{error}</p>}
             <p className="terms">
               Don't have an account?
               <span className="terms-highlight">
@@ -55,7 +80,7 @@ const Login = () => {
                   sign up
                 </Link>
               </span>
-              <br></br>
+              <br />
               <Link to="/ForgotPassword">Forgot Password?</Link>
             </p>
           </div>

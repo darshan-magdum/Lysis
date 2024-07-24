@@ -4,25 +4,19 @@ const app = express();
 const cors = require("cors");
 const connection = require("./db");
 
-
-
-// database connection
+// Database connection
 connection();
 
-// middlewares
+// Middlewares
 app.use(express.json({ limit: '400mb' }));
 app.use(express.urlencoded({ limit: '400mb', extended: true }));
-
-
 app.use(cors());
 
+// Routes
+const ManagerAuth = require('./Routes/Managerauth');
 
-// routes
+app.use('/Manager', ManagerAuth);
 
-
-
-
-
-
+// Start server
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));
