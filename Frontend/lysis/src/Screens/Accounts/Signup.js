@@ -1,23 +1,55 @@
 import React, { useState } from 'react';
-import '../../Styles/Accounts.css'; // Import your CSS file if you have one
-import { Link } from 'react-router-dom';
- 
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import '../../Styles/Accounts.css'; 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Signup = () => {
-  // State hooks for form inputs
+ 
   const [name, setName] = useState('');
-  const [emailID, setEmailID] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
- 
-  // Handler for form submission
-  const handleSubmit = (event) => {
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
+
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add form submission logic here
-    console.log({ name, emailID, password, confirmPassword });
+
+   
+    if (password !== confirmPassword) {
+      setError("Passwords don't match. Please try again.");
+      return;
+    }
+
+    try {
+     
+      const response = await axios.post('http://localhost:8080/Manager/signup', {
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      setSuccess(true);
+      toast.success("Created Account successfully!", { autoClose: 3000 });
+      setTimeout(() => {
+        navigate(`/login?success=${success}`);
+      }, 2000);
+    } catch (error) {
+      
+      console.error('Signup Error:', error.response.data);
+      setError('Registration failed. Please try again.');
+    }
   };
- 
+
   return (
     <div className="Accounts-container">
+       <ToastContainer position="top-right" autoClose={2000} />
       <div className="right-section">
         <div className="right-section-wrapper">
           <h1 className="Accounts-title">
@@ -28,7 +60,7 @@ const Signup = () => {
           </h4>
         </div>
       </div>
- 
+
       <div className="left-section">
         <div className="left-section-wrapper">
           <div className="form">
@@ -39,13 +71,15 @@ const Signup = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required // HTML5 required attribute
               />
               <input
                 type="email"
-                className="emailID"
-                placeholder="Email ID"
-                value={emailID}
-                onChange={(e) => setEmailID(e.target.value)}
+                className="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required // HTML5 required attribute
               />
               <input
                 type="password"
@@ -53,6 +87,7 @@ const Signup = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required // HTML5 required attribute
               />
               <input
                 type="password"
@@ -60,21 +95,20 @@ const Signup = () => {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                required // HTML5 required attribute
               />
               <button type="submit" className="form-btn">
                 <span className="form-btn-text">Create Account</span>
               </button>
+              {error && <p className="text-danger">{error}</p>}
               <p className="terms">
-                By clicking the button, you are agreeing to our
-                <span className="terms-highlight">
-                  &nbsp;Terms and Services
-                </span>
+                By clicking the button, you are agreeing to our{' '}
+                <span className="terms-highlight">&nbsp;Terms and Services</span>
               </p>
             </form>
- 
+
             <p className="terms">
-              Already have an account?
-              <Link to="/Login">&nbsp;Login</Link>
+              Already have an account? <Link to="/Login">&nbsp;Login</Link>
             </p>
           </div>
         </div>
@@ -82,7 +116,5 @@ const Signup = () => {
     </div>
   );
 };
- 
+
 export default Signup;
- 
- 
