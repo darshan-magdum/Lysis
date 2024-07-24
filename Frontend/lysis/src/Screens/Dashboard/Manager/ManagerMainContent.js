@@ -1,12 +1,16 @@
 import React from "react";
 import ManagerProfile from "./ManagerProfile";
+import ManagerHome from "./ManagerHome";
+import ViewDocumentation from "./ViewDocumentation";
 
 const ManagerMainContent = () => {
 
 
   return (
-    <div className="col-lg-9 col-md-8 col-sm-7">
+    <div className="col-lg-9">
+      <ManagerHome/>
  <ManagerProfile/>
+ <ViewDocumentation/>
     </div>
   );
 };
