@@ -118,7 +118,7 @@ const ManagerDashboard = () => {
             position: "absolute",
             top: "55px",
             right: "10px",
-            width: "250px",
+            width: "220px",
             zIndex: "1000",
           }}
           ref={profileCardRef}
@@ -128,7 +128,7 @@ const ManagerDashboard = () => {
               src={ProfileAvatar}
               alt="avatar"
               className="rounded-circle img-fluid"
-              style={{ width: "150px", borderRadius: "50%", marginTop: "-20px" }}
+              style={{ width: "110px", borderRadius: "50%", marginTop: "-20px" }}
             />
             <hr
               style={{
@@ -137,9 +137,9 @@ const ManagerDashboard = () => {
                 margin: "5px 0",
               }}
             />
-            <h5 className="my-3" style={{ marginTop: "15px" }}>
+            <h6 className="my-3" style={{ marginTop: "15px" }}>
             {managerData ? managerData.name : ""}
-            </h5>
+            </h6>
             <p
               className="text-muted mb-1"
               style={{ color: "#6c757d", marginBottom: "0" }}
@@ -158,7 +158,7 @@ const ManagerDashboard = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "10px",
+                padding: "5px",
               }}
             >
               <span
