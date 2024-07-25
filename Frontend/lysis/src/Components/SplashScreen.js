@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Assuming useNavigate is available via another package or setup
+import { useNavigate } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const SplashScreen = () => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const managerId = searchParams.get('managerId');
+
   useEffect(() => {
     const fetchDataAndNavigate = async () => {
       try {
-        // Simulate fetching user details
-        // Replace with your actual data fetching logic
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Simulate delay
   
-        // Navigate to ManagerDashboard after delay
+        await new Promise(resolve => setTimeout(resolve, 5000));
+ 
         navigate('/ManagerDashboard');
       } catch (error) {
         console.error('Error:', error);
