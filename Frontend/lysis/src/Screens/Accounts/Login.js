@@ -24,9 +24,9 @@ const Login = () => {
       });
       console.log("Login Successful:", response.data);
       toast.success("Login successful!", { autoClose: 3000 });
-      setTimeout(() => {
-        window.location = `/ManagerDashboard`;
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location = `/ManagerDashboard`;
+      // }, 3000);
     } catch (error) {
       console.error("Login Error:", error.response.data);
       setError("Invalid email or password. Please try again.");

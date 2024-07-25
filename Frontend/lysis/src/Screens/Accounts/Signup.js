@@ -32,7 +32,6 @@ const Signup = () => {
         name,
         email,
         password,
-        confirmPassword,
       });
 
       setSuccess(true);
@@ -71,7 +70,7 @@ const Signup = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required // HTML5 required attribute
+                required 
               />
               <input
                 type="email"
@@ -79,7 +78,7 @@ const Signup = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required // HTML5 required attribute
+                required 
               />
               <input
                 type="password"
@@ -87,7 +86,7 @@ const Signup = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required // HTML5 required attribute
+                required 
               />
               <input
                 type="password"
@@ -95,7 +94,7 @@ const Signup = () => {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                required // HTML5 required attribute
+                required 
               />
               <button type="submit" className="form-btn">
                 <span className="form-btn-text">Create Account</span>

@@ -1,98 +1,98 @@
-// routes/signup.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const Joi = require('joi');
+const { jwtkey } = require('../keys'); 
+const ManagerAccount = require('../models/Managerschema'); 
 
-const Manager = require('../Models/Managerschema');
+// Validation schema for signup using Joi
+const signupSchema = Joi.object({
+  name: Joi.string().required().label('Name'),
+  email: Joi.string().email().required().label('Email'),
+  password: Joi.string().required().min(6).label('Password'),
+});
 
-// Signup route
-// Signup route
+// Route: POST /signup
 router.post('/signup', async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
-
   try {
-    // Check if any field is missing
-    const errors = [];
-    if (!name) {
-      errors.push({ msg: 'Name field is required' });
-    }
-    if (!email) {
-      errors.push({ msg: 'Email field is required' });
-    }
-    if (!password) {
-      errors.push({ msg: 'Password field is required' });
-    }
-    if (!confirmPassword) {
-      errors.push({ msg: 'Confirm Password field is required' });
+    // Validate request body using Joi
+    const { error } = signupSchema.validate(req.body);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
     }
 
-    if (errors.length > 0) {
-      return res.status(400).json(errors);
+    const { name, email, password } = req.body;
+
+    // Check if manager already exists
+    let manager = await ManagerAccount.findOne({ email });
+    if (manager) {
+      return res.status(400).send({ message: 'Manager already exists' });
     }
 
-    // Check if user already exists
-    let user = await Manager.findOne({ email });
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    if (user) {
-      return res.status(400).json({ msg: 'Manager already exists' });
-    }
-
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      return res.status(400).json({ msg: 'Passwords do not match' });
-    }
-
-    // Create new user
-    user = new Manager({
+    // Create a new manager instance
+    manager = new ManagerAccount({
       name,
       email,
-      password
+      password: hashedPassword,
     });
 
-    // Encrypt password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
+    // Save the manager to the database
+    await manager.save();
 
-    // Save user to database
-    await user.save();
+    // Generate JWT token
+    const token = jwt.sign({ managerId: manager._id }, jwtkey);
 
-    res.status(201).json({ msg: 'Manager registered successfully' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    // Return token and manager ID
+    res.status(201).send({ token, managerId: manager._id, message: 'Manager registered successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
   }
 });
 
 
-// Login route
+// Validation schema for login using Joi
+const loginSchema = Joi.object({
+  email: Joi.string().email().required().label('Email'),
+  password: Joi.string().required().label('Password'),
+});
+
+// Route: POST /login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    // Check if any field is missing
-    if (!email || !password) {
-      return res.status(400).json({ msg: 'Email and password are required' });
+    // Validate request body using Joi
+    const { error } = loginSchema.validate(req.body);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
     }
 
-    // Check if user exists
-    const user = await Manager.findOne({ email });
+    const { email, password } = req.body;
 
-    if (!user) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+    // Check if manager exists
+    let manager = await ManagerAccount.findOne({ email });
+    if (!manager) {
+      return res.status(401).send({ message: 'Invalid email or password' });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, manager.password);
     if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(401).send({ message: 'Invalid email or password' });
     }
 
-    // Passwords match, send response
-    res.json({ msg: 'Login successful' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    // Manager authenticated, generate JWT token
+    const token = jwt.sign({ managerId: manager._id }, jwtkey);
+
+    // Return the token and any additional data you may need
+    res.status(200).send({ token, managerId: manager._id, message: 'Login successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
   }
 });
 
