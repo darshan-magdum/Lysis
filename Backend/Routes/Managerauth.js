@@ -6,13 +6,28 @@ const bcrypt = require('bcryptjs');
 const Manager = require('../Models/Managerschema');
 
 // Signup route
+// Signup route
 router.post('/signup', async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
   try {
     // Check if any field is missing
-    if (!name || !email || !password || !confirmPassword) {
-      return res.status(400).json({ msg: 'All fields are required' });
+    const errors = [];
+    if (!name) {
+      errors.push({ msg: 'Name field is required' });
+    }
+    if (!email) {
+      errors.push({ msg: 'Email field is required' });
+    }
+    if (!password) {
+      errors.push({ msg: 'Password field is required' });
+    }
+    if (!confirmPassword) {
+      errors.push({ msg: 'Confirm Password field is required' });
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json(errors);
     }
 
     // Check if user already exists
@@ -47,6 +62,7 @@ router.post('/signup', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
 
 // Login route
 router.post('/login', async (req, res) => {

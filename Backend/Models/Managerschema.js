@@ -1,4 +1,4 @@
-// models/User.js
+
 const mongoose = require('mongoose');
 
 const Managerschema = new mongoose.Schema({
