@@ -22,10 +22,11 @@ const Login = () => {
         email,
         password,
       });
-      console.log("Login Successful:", response.data);
+      const { managerId } = response.data;
       toast.success("Login successful!", { autoClose: 3000 });
       setTimeout(() => {
-        window.location = `/ManagerDashboard`;
+        window.location = `/ManagerDashboard?managerId=${managerId}`;
+     
       }, 3000);
     } catch (error) {
       console.error("Login Error:", error.response.data);

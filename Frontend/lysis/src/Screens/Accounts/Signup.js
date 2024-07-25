@@ -29,7 +29,7 @@ const Signup = () => {
         password,
       });
   
-      // Destructure response to get managerId
+  
       const { managerId } = response.data;
   
       toast.success("Created Account successfully!", { autoClose: 1000 });
