@@ -3,8 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
-const { jwtkey } = require('../keys'); 
-const ManagerAccount = require('../Models/Managerschema'); 
+const { jwtkey } = require('../keys');
+const ManagerAccount = require('../Models/Managerschema');
 
 // Validation schema for signup using Joi
 const signupSchema = Joi.object({
@@ -55,7 +55,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
 // Validation schema for login using Joi
 const loginSchema = Joi.object({
   email: Joi.string().email().required().label('Email'),
@@ -95,5 +94,41 @@ router.post('/login', async (req, res) => {
     res.status(500).send({ message: 'Internal Server Error' });
   }
 });
+
+// Route: GET /managers
+router.get('/managers', async (req, res) => {
+  try {
+    // Fetch all managers from the database
+    const managers = await ManagerAccount.find();
+
+    // Return the array of managers
+    res.status(200).send(managers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+
+// Route: GET /manager/:managerId
+router.get('/manager/:managerId', async (req, res) => {
+  const managerId = req.params.managerId;
+
+  try {
+    // Find manager by ID in the database
+    const manager = await ManagerAccount.findById(managerId);
+
+    if (!manager) {
+      return res.status(404).send({ message: 'Manager not found' });
+    }
+
+    // Return manager details
+    res.status(200).send(manager);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;
