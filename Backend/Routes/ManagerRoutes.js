@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const { jwtkey } = require('../keys'); 
-const ManagerAccount = require('../models/Managerschema'); 
+const ManagerAccount = require('../Models/Managerschema'); 
 
 // Validation schema for signup using Joi
 const signupSchema = Joi.object({

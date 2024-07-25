@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: '400mb', extended: true }));
 app.use(cors());
 
 // Routes
-const ManagerAuth = require('./Routes/Managerauth');
+const ManagerAuth = require('./Routes/ManagerRoutes');
 
 app.use('/Manager', ManagerAuth);
 
