@@ -28,7 +28,7 @@ const ManagerSider = ({ handleNavigation }) => {
           </a>
         </li>
 
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <a
             href="#"
             className="nav-link text-light"
@@ -67,7 +67,7 @@ const ManagerSider = ({ handleNavigation }) => {
               <span>Custom Prompt</span>
             </div>
           </a>
-        </li>
+        </li> */}
       </ul>
       <hr className="text-light" />
     </div>
