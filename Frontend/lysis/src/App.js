@@ -6,6 +6,7 @@ import Login from "./Screens/Accounts/Login";
 import ForgotPassword from "./Screens/Accounts/ForgotPassword";
 import ResetPassword from "./Screens/Accounts/ResetPassword";
 import ManagerDashboard from "./Screens/Dashboard/Manager/ManagerDashboard";
+import SplashScreen from "./Components/SplashScreen";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/SplashScreen" element={<SplashScreen />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
           

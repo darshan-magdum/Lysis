@@ -9,7 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  
 
 
   const location = useLocation();
@@ -33,14 +33,7 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const isSuccess = params.get("success");
 
-    if (isSuccess) {
-      setSuccess(true);
-    }
-  }, [location]);
 
   return (
     
@@ -60,9 +53,6 @@ const Login = () => {
       <div className="left-section">
         <div className="left-section-wrapper">
           <div className="form">
-          {success && (
-                <p className="text-success h6">User signed up successfully!</p>
-              )}
             <form autoComplete="off" onSubmit={handleSubmit}>
               <input
                 type="email"

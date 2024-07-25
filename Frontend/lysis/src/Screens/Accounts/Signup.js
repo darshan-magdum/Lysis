@@ -14,9 +14,6 @@ const Signup = () => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const [success, setSuccess] = useState(false);
-
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -33,11 +30,9 @@ const Signup = () => {
         email,
         password,
       });
-
-      setSuccess(true);
       toast.success("Created Account successfully!", { autoClose: 3000 });
       setTimeout(() => {
-        navigate(`/login?success=${success}`);
+        navigate(`/SplashScreen`);
       }, 2000);
     } catch (error) {
       
