@@ -96,10 +96,11 @@ router.post('/login', async (req, res) => {
 });
 
 // Route: GET /managers
+
 router.get('/managers', async (req, res) => {
   try {
-    // Fetch all managers from the database
-    const managers = await ManagerAccount.find();
+    // Fetch all managers from the database excluding the password field
+    const managers = await ManagerAccount.find().select('-password');
 
     // Return the array of managers
     res.status(200).send(managers);
@@ -115,8 +116,8 @@ router.get('/manager/:managerId', async (req, res) => {
   const managerId = req.params.managerId;
 
   try {
-    // Find manager by ID in the database
-    const manager = await ManagerAccount.findById(managerId);
+    // Find manager by ID in the database, excluding the password field
+    const manager = await ManagerAccount.findById(managerId).select('-password');
 
     if (!manager) {
       return res.status(404).send({ message: 'Manager not found' });
@@ -129,6 +130,5 @@ router.get('/manager/:managerId', async (req, res) => {
     res.status(500).send({ message: 'Internal Server Error' });
   }
 });
-
 
 module.exports = router;
