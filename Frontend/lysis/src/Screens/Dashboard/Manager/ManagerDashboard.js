@@ -5,12 +5,7 @@ import ManagerHome from "./ManagerHome"; // Import new components
 import ViewDocumentation from "./ViewDocumentation";
 import CustomPrompt from "./CustomPrompt";
 import { useLocation } from 'react-router-dom';
-
-const user = {
-  name: "John Doe", // Replace with dynamic user name
-  email: "john.doe@example.com" // Replace with dynamic user email
-};
-
+import axios from "axios"
 
 
 const ManagerDashboard = () => {
@@ -21,6 +16,21 @@ const ManagerDashboard = () => {
   const [currentPage, setCurrentPage] = useState("home"); // Add state to manage current page
   const dropdownRef = useRef(null);
   const profileCardRef = useRef(null);
+  const [managerData, setManagerData] = useState(null);
+
+  useEffect(() => {
+    const fetchManagerData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/Manager/manager/${managerId}`);
+        setManagerData(response.data); 
+      } catch (error) {
+        console.error("Error fetching manager data:", error);
+      }
+    };
+
+    fetchManagerData(); 
+  }, [managerId]);
+
 
   const toggleDropdown = () => {
     setProfileCardOpen(!profileCardOpen);
@@ -40,14 +50,12 @@ const ManagerDashboard = () => {
   }, []);
 
   const handleSignOut = () => {
-    // Add your sign-out logic here
-    console.log("Sign out clicked");
-    setProfileCardOpen(false);
+    window.location = "/";
   };
 
   // Handle navigation
   const handleNavigation = (page) => {
-    setCurrentPage(page); // Set the current page
+    setCurrentPage(page);
   };
 
   const renderContent = () => {
@@ -102,6 +110,7 @@ const ManagerDashboard = () => {
         </div>
       </header>
 
+
       {profileCardOpen && (
         <div
           className="card mb-4"
@@ -129,13 +138,13 @@ const ManagerDashboard = () => {
               }}
             />
             <h5 className="my-3" style={{ marginTop: "15px" }}>
-              {user.name}
+            {managerData ? managerData.name : ""}
             </h5>
             <p
               className="text-muted mb-1"
               style={{ color: "#6c757d", marginBottom: "0" }}
             >
-              {user.email}
+              {managerData ? managerData.email : ""}
             </p>
 
             <button
@@ -181,7 +190,7 @@ const ManagerDashboard = () => {
             fontSize:"Large",
           }}
         >
-          <ManagerSider handleNavigation={handleNavigation} /> {/* Pass navigation handler */}
+          <ManagerSider handleNavigation={handleNavigation} />
         </div>
         <div
           className="col-lg-9 offset-lg-3"
@@ -192,7 +201,7 @@ const ManagerDashboard = () => {
             overflowX: "hidden",
           }}
         >
-          {renderContent()} {/* Render content based on state */}
+          {renderContent()} 
         </div>
       </div>
     </div>
