@@ -13,34 +13,37 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  console.log("   toast.success",   toast.success)
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-   
+  
     if (password !== confirmPassword) {
       setError("Passwords don't match. Please try again.");
       return;
     }
-
+  
     try {
-     
       const response = await axios.post('http://localhost:8080/Manager/signup', {
         name,
         email,
         password,
       });
+  
+      // Destructure response to get managerId
+      const { managerId } = response.data;
+  
       toast.success("Created Account successfully!", { autoClose: 1000 });
+      
+      // Redirect to splash screen with managerId as URL parameter
       setTimeout(() => {
-        navigate(`/SplashScreen`);
+        navigate(`/SplashScreen?managerId=${managerId}`);
       }, 2000);
     } catch (error) {
-      
       console.error('Signup Error:', error.response.data);
       setError('Registration failed. Please try again.');
     }
   };
+  
 
   return (
     <div className="Accounts-container">
