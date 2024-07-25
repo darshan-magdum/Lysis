@@ -4,13 +4,19 @@ import ProfileAvatar from "../../../Images/avatar profile.jpg";
 import ManagerHome from "./ManagerHome"; // Import new components
 import ViewDocumentation from "./ViewDocumentation";
 import CustomPrompt from "./CustomPrompt";
+import { useLocation } from 'react-router-dom';
 
 const user = {
   name: "John Doe", // Replace with dynamic user name
   email: "john.doe@example.com" // Replace with dynamic user email
 };
 
+
+
 const ManagerDashboard = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const managerId = searchParams.get('managerId');
   const [profileCardOpen, setProfileCardOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState("home"); // Add state to manage current page
   const dropdownRef = useRef(null);

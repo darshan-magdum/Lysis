@@ -27,7 +27,7 @@ const SplashScreen = () => {
 
         // Delay for 5 seconds before navigating to ManagerDashboard
         await new Promise(resolve => setTimeout(resolve, 5000));
-        navigate('/ManagerDashboard');
+        navigate(`/ManagerDashboard?managerId=${managerId}`);
       } catch (error) {
         console.error('Error:', error.message);
         // Handle error scenarios, e.g., redirect to an error page
