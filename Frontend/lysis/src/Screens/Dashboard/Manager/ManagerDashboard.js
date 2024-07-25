@@ -118,7 +118,7 @@ const ManagerDashboard = () => {
             position: "absolute",
             top: "55px",
             right: "10px",
-            width: "220px",
+            width: "240px",
             zIndex: "1000",
           }}
           ref={profileCardRef}
