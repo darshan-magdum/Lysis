@@ -25,4 +25,4 @@ const Managerschema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('ManagerAccount', Managerschema);
+module.exports = mongoose.model('Manager_Account', Managerschema);
