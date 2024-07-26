@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const Managerschema = new mongoose.Schema({
@@ -18,6 +17,11 @@ const Managerschema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6
+  },
+  role: {
+    type: String,
+    required: true,
+    default: 'Manager'
   }
 });
 

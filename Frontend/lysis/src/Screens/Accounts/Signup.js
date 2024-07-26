@@ -16,6 +16,8 @@ const Signup = () => {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setError(""); 
   
     if (password !== confirmPassword) {
       setError("Passwords don't match. Please try again.");
@@ -39,8 +41,8 @@ const Signup = () => {
         navigate(`/SplashScreen?managerId=${managerId}`);
       }, 2000);
     } catch (error) {
-      console.error('Signup Error:', error.response.data);
-      setError('Registration failed. Please try again.');
+      console.error('Signup Error:', error.response.data.message);
+      setError(error.response.data.message);
     }
   };
   
