@@ -1,55 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import '../../Styles/Accounts.css'; 
+import axios from "axios";
+import "../../Styles/Accounts.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import termsPdf from "../../Terms and Condition/Terms.pdf";
 
 const Signup = () => {
- 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setError(""); 
-  
+    setError("");
+
     if (password !== confirmPassword) {
       setError("Passwords don't match. Please try again.");
       return;
     }
-  
+
     try {
-      const response = await axios.post('http://localhost:8080/Manager/signup', {
-        name,
-        email,
-        password,
-      });
-  
-  
+      const response = await axios.post(
+        "http://localhost:8080/Manager/signup",
+        {
+          name,
+          email,
+          password,
+        }
+      );
+
       const { managerId } = response.data;
-  
+
       toast.success("Created Account successfully!", { autoClose: 1000 });
-      
+
       // Redirect to splash screen with managerId as URL parameter
       setTimeout(() => {
         navigate(`/SplashScreen?managerId=${managerId}`);
       }, 2000);
     } catch (error) {
-      console.error('Signup Error:', error.response.data.message);
+      console.error("Signup Error:", error.response.data.message);
       setError(error.response.data.message);
     }
   };
-  
 
   return (
     <div className="Accounts-container">
-       <ToastContainer position="top-right" autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={2000} />
       <div className="right-section">
         <div className="right-section-wrapper">
           <h1 className="Accounts-title">
@@ -71,7 +72,7 @@ const Signup = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required 
+                required
               />
               <input
                 type="email"
@@ -79,7 +80,7 @@ const Signup = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required 
+                required
               />
               <input
                 type="password"
@@ -87,7 +88,7 @@ const Signup = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required 
+                required
               />
               <input
                 type="password"
@@ -95,15 +96,22 @@ const Signup = () => {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                required 
+                required
               />
               <button type="submit" className="form-btn">
                 <span className="form-btn-text">Create Account</span>
               </button>
               {error && <p className="text-danger">{error}</p>}
               <p className="terms">
-                By clicking the button, you are agreeing to our{' '}
-                <span className="terms-highlight">&nbsp;Terms and Services</span>
+                By clicking the button, you are agreeing to our{" "}
+                <a
+                  href={termsPdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="terms-highlight"
+                >
+                  Terms and Services
+                </a>
               </p>
             </form>
 
