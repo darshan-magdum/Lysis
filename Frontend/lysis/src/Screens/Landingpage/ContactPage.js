@@ -11,6 +11,8 @@ function ContactPage() {
     contactNo: "",
     description: ""
   });
+  
+  const [errorMessage, setErrorMessage] = useState(""); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,12 +21,14 @@ function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); 
     try {
       const response = await axios.post("http://localhost:8080/Contact/AddContact", formData);
       console.log(response.data);
-      toast.success("Form submitted successfully!");
+      toast.success("Contact Sent successfully!");
     } catch (error) {
       console.error("There was an error submitting the form!", error.response.data);
+      setErrorMessage(error.response.data); 
       toast.error("There was an error submitting the form.");
     }
   };
@@ -94,7 +98,10 @@ function ContactPage() {
                   required 
                 ></textarea>
               </div>
+              {errorMessage && <p className="text-danger">{errorMessage}</p>} 
+              <hr></hr>
               <button type="submit" className="btn-submit">Submit</button>
+
             </form>
           </div>
         </div>
