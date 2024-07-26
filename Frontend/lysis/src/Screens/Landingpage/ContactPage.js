@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/ContactPage.css";
 
 function ContactPage() {
@@ -14,17 +17,23 @@ function ContactPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    try {
+      const response = await axios.post("http://localhost:8080/Contact/AddContact", formData);
+      console.log(response.data);
+      toast.success("Form submitted successfully!");
+    } catch (error) {
+      console.error("There was an error submitting the form!", error.response.data);
+      toast.error("There was an error submitting the form.");
+    }
   };
 
   return (
     <section className="section-contact-us">
       <div className="container">
-      <div className="contact-blur-circle1"></div>
-      <div className="contact-blur-circle2"></div>
+        <div className="contact-blur-circle1"></div>
+        <div className="contact-blur-circle2"></div>
         <div className="row justify-content-center text-center">
           <div className="col-md-10 col-lg-8">
             <div className="header-section">
@@ -90,6 +99,7 @@ function ContactPage() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </section>
   );
 }
