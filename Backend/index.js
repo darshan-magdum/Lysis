@@ -13,10 +13,12 @@ app.use(express.urlencoded({ limit: '400mb', extended: true }));
 app.use(cors());
 
 // Routes
+const AdminAuth = require('./Routes/AdminRoutes');
 const ManagerAuth = require('./Routes/ManagerRoutes');
 const ContactRoutes = require('./Routes/ContactRoutes');
 
 app.use('/Manager', ManagerAuth);
+app.use('/Admin', AdminAuth);
 app.use('/Contact', ContactRoutes);
 
 // Start server
