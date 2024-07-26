@@ -60,6 +60,7 @@ const ManagerHome = () => {
 
     const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
     const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
+    localStorage.setItem('projectSummary', queryResult);
     displayResults(analyses, queryResult, summary);
 
     setIsLoading(false);
@@ -414,15 +415,7 @@ Analyzed code (Part {partNumber}):\n\n`;
                   >
                     Upload Folder
                   </h5>
-                </div>{output ? <div className="col-4">
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleDownloadAllPDF}
-                  >
-                    Download All as PDF
-                  </button>
-                </div> : ""}
-
+                </div>
               </div>
             </div>
 
@@ -438,16 +431,6 @@ Analyzed code (Part {partNumber}):\n\n`;
                 />
                 <button onClick={handleAnalyze} className="primary-button">Analyze</button>
               </div>
-              {output ? <div className='card' style={{}}>
-                <input
-                  id='searchQuery'
-                  type="text"
-                  value={userQuery}
-                  onChange={(e) => setUserQuery(e.target.value)}
-                  placeholder="Enter your query"
-                />
-                <button onClick={handleUserQuery} className="primary-button">Submit Query</button>
-              </div> : ""}
 
               <div id="loader" className="loading" style={{ display: "none" }}>
                 <div className="icons">
@@ -456,9 +439,6 @@ Analyzed code (Part {partNumber}):\n\n`;
                 </div>
                 <div id="loaderStatusMessage" className="loader-status-message">Analyzing...</div>
               </div>
-              {/* <div>
-                <button className="primary-button align-right" onClick={handleDownloadAllPDF} style={{  }}>Download All as PDF</button>
-              </div> */}
               {isLoading && <><p style={{ color: "Black", textAlign: "center", marginTop: "5px" }}>{loaderStatus}</p>
                 <div className='LoaderBody'>
                   <div className="loader">
@@ -478,41 +458,6 @@ Analyzed code (Part {partNumber}):\n\n`;
                 </div>
               </>
               }
-              <div id="result">
-                {isUserQuery && userQueryData.map((result, index) => (
-                  index !== 0 && (
-                    <div key={index} className="card">
-                      <div className="card-header">{result.title}</div>
-                      <div className="card-body">
-                        <pre>{result.content}</pre>
-                      </div>
-                    </div>
-                  )
-                ))}
-
-                {analysisResults.map((result, index) => (
-                  // Check if the result is the project summary or a file analysis array                  
-                  index === 0 ? (
-                    <div key={index} className="card">
-                      <div className="card-header">{result.title}</div>
-                      <div className="card-body">
-                        <pre>{result.content}</pre>
-                      </div>
-                    </div>
-                  ) : (
-                    result.map((file, fileIndex) => (
-                      <div key={`${index}-${fileIndex}`} className="card">
-                        <div className="card-header">{file.fileName}</div>
-                        <div className="card-body">
-                          <pre>{file.analysis}</pre>
-                        </div>
-                      </div>
-                    ))
-                  )
-                ))}
-
-
-              </div>
             </div>
           </div>
         </div>
