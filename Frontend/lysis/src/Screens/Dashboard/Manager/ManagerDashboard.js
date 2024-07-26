@@ -142,7 +142,7 @@ const ManagerDashboard = () => {
             </h6>
             <p
               className="text-muted mb-1"
-              style={{ color: "#6c757d", marginBottom: "0" }}
+              style={{ color: "#6c757d", marginBottom: "0" ,fontSize:"15px"}}
             >
               {managerData ? managerData.email : ""}
             </p>

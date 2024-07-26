@@ -30,7 +30,7 @@ const ManagerHome = () => {
     setAnalysisResults([]);
     setProjectSummary("");
     setIsLoading(true);
-    setLoaderStatus("Starting analysis...");
+    setLoaderStatus("Starting Analysis...");
 
     const fileEntries = getFileEntries(selectedFiles);
     const totalFiles = fileEntries.length;
