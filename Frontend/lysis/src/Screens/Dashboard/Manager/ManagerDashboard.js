@@ -115,7 +115,7 @@ const ManagerDashboard = () => {
         <div
           className="card mb-4"
           style={{
-            position: "absolute",
+            position: "fixed",
             top: "55px",
             right: "10px",
             width: "240px",

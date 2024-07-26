@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
@@ -15,7 +14,7 @@ const ManagerHome = () => {
   const [loaderStatus, setLoaderStatus] = useState("");
   const [userQuery, setUserQuery] = useState("");
 
-  const azureApiKey = '';
+  const azureApiKey = 'daf99a54e98144328812c4e1a1a4fea6';
 
   const handleFileChange = (event) => {
     setSelectedFiles(Array.from(event.target.files));
@@ -64,7 +63,7 @@ const ManagerHome = () => {
     displayResults(analyses, queryResult, summary);
 
     setIsLoading(false);
-      setoutput(true);
+    setoutput(true);
   };
 
   const handleUserQuery = async () => {
@@ -96,17 +95,27 @@ const ManagerHome = () => {
     const doc = new jsPDF();
 
     doc.setFontSize(12);
-    doc.text(projectSummary, 10, 10);
 
     analysisResults.forEach((result, index) => {
-      if (index > 0) doc.addPage();
-      doc.text(result.title, 10, 10);
-      const lines = doc.splitTextToSize(result.content, 180);
-      doc.text(lines, 10, 20);
+      if (index === 0) {
+        // Add the project summary
+        doc.text(result.title, 10, 10);
+        const lines = doc.splitTextToSize(result.content, 180);
+        doc.text(lines, 10, 20);
+      } else {
+        // Add a new page for each file analysis
+        result.forEach((file, fileIndex) => {
+          doc.addPage();
+          doc.text(file.fileName, 10, 10);
+          const lines = doc.splitTextToSize(file.analysis, 180);
+          doc.text(lines, 10, 20);
+        });
+      }
     });
 
     doc.save('analysis_results.pdf');
   };
+
 
   const getFileEntries = (files) => {
     return files.map(file => {
@@ -124,7 +133,7 @@ const ManagerHome = () => {
   - Database connections.
   - API details including keys and endpoints.
   - Significant aspects.
-  
+ 
   Code to analyze (Part 1):\n\n`;
 
     const followUpPrompt = `Continuing from the previous part, provide detailed explanations for the following aspects, focusing on new information and avoiding repetition, don't give overall summary or any description or context at last or first:
@@ -195,13 +204,13 @@ const ManagerHome = () => {
   async function analyzeUserQueryWithAzureAI(query, combinedAnalysis) {
     const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
     const initialPrompt = `Please provide detailed information about the following query based on the analyzed code. Start by addressing the query directly and then go into detailed explanations, avoiding repetition and introductory statements:
-
+ 
 Query: ${query}
 Don't give me Query in response again.
 Analyzed code (Part 1):\n\n`;
 
     const followUpPrompt = `Continuing from the previous part, provide detailed information about the query based on the analyzed code, focusing on new information and avoiding repetition and introductory statements:
-
+ 
 Query: ${query}
 Don't give me Query in response again.
 Analyzed code (Part {partNumber}):\n\n`;
@@ -258,8 +267,8 @@ Analyzed code (Part {partNumber}):\n\n`;
   }
 
   async function AzureAIAPIForTitleQuery(combinedAnalysis) {
-     const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
-     const promptTemplate = `Provide the following information for the analyzed code of a single project:
+    const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
+    const promptTemplate = `Provide the following information for the analyzed code of a single project:
                              - Project Name
                              - Project Use Case
                              - Technology Used
@@ -267,54 +276,54 @@ Analyzed code (Part {partNumber}):\n\n`;
                              - Total Number of Classes (If I provide you multiple analyzed code then also that all code is for single project but also give names of classes in bracket. Remember I want only classes count not anything)
                              Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
                              Analyzed code:\n\n`;
-  
-     const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - promptTemplate.length);
-     let fullResponse = '';
-  
-     for (const chunk of analysisChunks) {
-         const prompt = promptTemplate + chunk;
-         let attempt = 0;
-         let success = false;
-  
-         while (attempt < 3 && !success) { // Retry up to 3 times
-             try {
-                 const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'api-key': `${azureApiKey}`
-                     },
-                     body: JSON.stringify({
-                         messages: [
-                             { role: 'system', content: 'You are a helpful assistant.' },
-                             { role: 'user', content: prompt }
-                         ]
-                     })
-                 });
-  
-                 if (!response.ok) {
-                     throw new Error('Failed to fetch from Azure AI API');
-                 }
-  
-                 const data = await response.json();
-                 fullResponse += data.choices[0].message.content + '\n\n';
-                 success = true; // Mark as success on valid response
-             } catch (error) {
-                 console.error('Error during API request:', error);
-                 attempt++; // Retry on error
-             }
-         }
-  
-         if (!success) {
-             throw new Error('Max retries exceeded'); // Handle max retries exceeded
-         }
-     }
-  
-     return fullResponse;
- }
- async function FinalAzureAIAPIForTitleQuery(combinedAnalysis) {
-   const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
-   const promptTemplate = `Combine all project information which is inside the Project Information as this information is of a single project:
+
+    const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - promptTemplate.length);
+    let fullResponse = '';
+
+    for (const chunk of analysisChunks) {
+      const prompt = promptTemplate + chunk;
+      let attempt = 0;
+      let success = false;
+
+      while (attempt < 3 && !success) { // Retry up to 3 times
+        try {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'api-key': `${azureApiKey}`
+            },
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'user', content: prompt }
+              ]
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch from Azure AI API');
+          }
+
+          const data = await response.json();
+          fullResponse += data.choices[0].message.content + '\n\n';
+          success = true; // Mark as success on valid response
+        } catch (error) {
+          console.error('Error during API request:', error);
+          attempt++; // Retry on error
+        }
+      }
+
+      if (!success) {
+        throw new Error('Max retries exceeded'); // Handle max retries exceeded
+      }
+    }
+
+    return fullResponse;
+  }
+  async function FinalAzureAIAPIForTitleQuery(combinedAnalysis) {
+    const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
+    const promptTemplate = `Combine all project information which is inside the Project Information as this information is of a single project:
                            - Project Name  (Give apprope)
                            - Project Use Case  (Combine all use cases as provided you in project information and give me two to three line use case description for all)
                            - Technology Used   (Don't Give same technology again give duplicate once)
@@ -322,52 +331,52 @@ Analyzed code (Part {partNumber}):\n\n`;
                            - Total Number of Classes (Calculate the total number of Classes and give me only count means give me only number. Do not list class names, only provide the count(Remember: Don't give the discription of what types of classes are just give me only Number.Don't give anything other than number))
                            Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
                            Project Information:\n\n`;
-  
-   const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - promptTemplate.length);
-   let fullResponse = '';
-  
-   for (const chunk of analysisChunks) {
-       const prompt = promptTemplate + chunk;
-       let attempt = 0;
-       let success = false;
-  
-       while (attempt < 3 && !success) { // Retry up to 3 times
-           try {
-               const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
-                   method: 'POST',
-                   headers: {
-                       'Content-Type': 'application/json',
-                       'api-key': `${azureApiKey}`
-                   },
-                   body: JSON.stringify({
-                       messages: [
-                           { role: 'system', content: 'You are a helpful assistant.' },
-                           { role: 'user', content: prompt }
-                       ]
-                   })
-               });
-  
-               if (!response.ok) {
-                   throw new Error('Failed to fetch from Azure AI API');
-               }
-  
-               const data = await response.json();
-               fullResponse += data.choices[0].message.content + '\n\n';
-               success = true; // Mark as success on valid response
-           } catch (error) {
-               console.error('Error during API request:', error);
-               attempt++; // Retry on error
-           }
-       }
-  
-       if (!success) {
-           throw new Error('Max retries exceeded'); // Handle max retries exceeded
-       }
-   }
-  
-   return fullResponse;
- }
-  
+
+    const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - promptTemplate.length);
+    let fullResponse = '';
+
+    for (const chunk of analysisChunks) {
+      const prompt = promptTemplate + chunk;
+      let attempt = 0;
+      let success = false;
+
+      while (attempt < 3 && !success) { // Retry up to 3 times
+        try {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'api-key': `${azureApiKey}`
+            },
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'user', content: prompt }
+              ]
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch from Azure AI API');
+          }
+
+          const data = await response.json();
+          fullResponse += data.choices[0].message.content + '\n\n';
+          success = true; // Mark as success on valid response
+        } catch (error) {
+          console.error('Error during API request:', error);
+          attempt++; // Retry on error
+        }
+      }
+
+      if (!success) {
+        throw new Error('Max retries exceeded'); // Handle max retries exceeded
+      }
+    }
+
+    return fullResponse;
+  }
+
 
   const extractProjectSummary = (analysis) => {
     const summaryLines = analysis.split('\n').slice(0, 5); // Extract first 5 lines as summary
@@ -392,19 +401,32 @@ Analyzed code (Part {partNumber}):\n\n`;
       <div className="container py-3">
         <div className="row">
           <div className="col-lg-12">
-            <h5
-              style={{
-                textAlign: "left",
-                fontWeight: "bold",
-                marginBottom: "10px",
-                marginTop: "-10px",
-                color: "#20609c",
-              }}
-            >
-              Upload Folder
-            </h5>
-            <div className='uploadContainer'>
+            <div className='DownloadAll'>
+              <div className="row align-items-center">
+                <div className="col-8">
+                  <h5
+                    style={{
+                      fontWeight: "bold",
+                      marginBottom: "10px",
+                      marginTop: "-10px",
+                      color: "#20609c",
+                    }}
+                  >
+                    Upload Folder
+                  </h5>
+                </div>{output ? <div className="col-4">
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleDownloadAllPDF}
+                  >
+                    Download All as PDF
+                  </button>
+                </div> : ""}
 
+              </div>
+            </div>
+
+            <div className='uploadContainer'>
 
               <div className="card">
                 <input
@@ -416,7 +438,7 @@ Analyzed code (Part {partNumber}):\n\n`;
                 />
                 <button onClick={handleAnalyze} className="primary-button">Analyze</button>
               </div>
-{output ?  <div className='card' style={{ }}>
+              {output ? <div className='card' style={{}}>
                 <input
                   id='searchQuery'
                   type="text"
@@ -425,8 +447,8 @@ Analyzed code (Part {partNumber}):\n\n`;
                   placeholder="Enter your query"
                 />
                 <button onClick={handleUserQuery} className="primary-button">Submit Query</button>
-              </div> : "" }
-             
+              </div> : ""}
+
               <div id="loader" className="loading" style={{ display: "none" }}>
                 <div className="icons">
                   <i className="ri-arrow-left-s-line"></i>
@@ -434,29 +456,40 @@ Analyzed code (Part {partNumber}):\n\n`;
                 </div>
                 <div id="loaderStatusMessage" className="loader-status-message">Analyzing...</div>
               </div>
-              <div>
-                <button className="primary-button align-right" onClick={handleDownloadAllPDF} style={{ display: "none" }}>Download All as PDF</button>
-              </div>
-              {isLoading && <><p style={{ color: "Black", textAlign:"center" , marginTop:"5px"}}>{loaderStatus}</p>
-              <div className='LoaderBody'>
-              <div className="loader">
-      <div>
-        <ul>
-          {[...Array(6)].map((_, index) => (
-            <li key={index}>
-              <svg fill="currentColor" viewBox="0 0 90 120">
-                <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-              </svg>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <span>Loading</span>
-    </div>
-    </div>
+              {/* <div>
+                <button className="primary-button align-right" onClick={handleDownloadAllPDF} style={{  }}>Download All as PDF</button>
+              </div> */}
+              {isLoading && <><p style={{ color: "Black", textAlign: "center", marginTop: "5px" }}>{loaderStatus}</p>
+                <div className='LoaderBody'>
+                  <div className="loader">
+                    <div>
+                      <ul>
+                        {[...Array(6)].map((_, index) => (
+                          <li key={index}>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span>Loading</span>
+                  </div>
+                </div>
               </>
               }
               <div id="result">
+                {isUserQuery && userQueryData.map((result, index) => (
+                  index !== 0 && (
+                    <div key={index} className="card">
+                      <div className="card-header">{result.title}</div>
+                      <div className="card-body">
+                        <pre>{result.content}</pre>
+                      </div>
+                    </div>
+                  )
+                ))}
+
                 {analysisResults.map((result, index) => (
                   // Check if the result is the project summary or a file analysis array                  
                   index === 0 ? (
@@ -477,17 +510,7 @@ Analyzed code (Part {partNumber}):\n\n`;
                     ))
                   )
                 ))}
-                {isUserQuery && userQueryData.map((result, index) => (
-                  // Check if the result is the project summary or a file analysis array                  
-                  (
-                      <div className="card">
-                        <div className="card-header">{result.title}</div>
-                        <div className="card-body">
-                          <pre>{result.content}</pre>
-                        </div>
-                      </div>
-                  )
-                ))}
+
 
               </div>
             </div>
@@ -499,4 +522,5 @@ Analyzed code (Part {partNumber}):\n\n`;
 };
 
 export default ManagerHome;
+
 
