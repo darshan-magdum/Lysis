@@ -14,8 +14,10 @@ app.use(cors());
 
 // Routes
 const ManagerAuth = require('./Routes/ManagerRoutes');
+const ContactRoutes = require('./Routes/ContactRoutes');
 
 app.use('/Manager', ManagerAuth);
+app.use('/Contact', ContactRoutes);
 
 // Start server
 const port = process.env.PORT || 8080;

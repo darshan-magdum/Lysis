@@ -1,6 +1,6 @@
 import React from "react";
 import "../../Styles/AboutPage.css";
-import aboutVideo from "../../Images/AboutVideo.mp4"; // Adjust the path to your video
+import aboutVideo from "../../Images/AboutVideo.mp4"; 
 
 function AboutPage() {
   return (
@@ -13,7 +13,7 @@ function AboutPage() {
                 About <span>Us</span>
               </h2>
               <p className="description">
-                Lysis is an advanced AI-driven tool designed to revolutionize the way developers manage and document their codebases. By leveraging cutting-edge technology, Lysis automates the process of code analysis and documentation, providing a seamless experience that saves time and enhances productivity.
+                Lysis is an advanced AI-driven tool designed to revolutionize the way developers manage and document their codebases. Lysis automates the process of code analysis and documentation, providing a seamless experience that saves time and enhances productivity.
               </p>
               <br />
               <p className="description">

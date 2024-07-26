@@ -15,7 +15,7 @@ const ManagerHome = () => {
   const [loaderStatus, setLoaderStatus] = useState("");
   const [userQuery, setUserQuery] = useState("");
 
-  const azureApiKey = 'daf99a54e98144328812c4e1a1a4fea6'; // Replace with your actual OpenAI API key
+  const azureApiKey = ''; 
 
   const handleFileChange = (event) => {
     setSelectedFiles(Array.from(event.target.files));
