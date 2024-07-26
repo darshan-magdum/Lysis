@@ -15,7 +15,7 @@ const ManagerHome = () => {
   const [loaderStatus, setLoaderStatus] = useState("");
   const [userQuery, setUserQuery] = useState("");
 
-  const azureApiKey = ''; 
+  const azureApiKey = '';
 
   const handleFileChange = (event) => {
     setSelectedFiles(Array.from(event.target.files));
