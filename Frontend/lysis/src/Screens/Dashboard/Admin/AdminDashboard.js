@@ -69,7 +69,7 @@ const AdminDashboard = () => {
     switch (currentPage) {
       case "home":
         return <AdminHome />;
-      case "documentation":
+      case "ViewManagers":
         return <AdminDocumentation />;
       case "customPrompt":
         return <CustomPrompt />;

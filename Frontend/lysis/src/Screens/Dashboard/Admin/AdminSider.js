@@ -34,17 +34,17 @@ const AdminSider = ({ handleNavigation }) => {
             className="nav-link text-light"
             onClick={(e) => {
               e.preventDefault(); 
-              handleNavigation("documentation"); // Navigate to View Documentation
+              handleNavigation("ViewManagers"); // Navigate to View Managers
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <span className="material-symbols-outlined text-light">
-                visibility
+              person_4
               </span>
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#table"></use>
               </svg>
-              <span>View Documentation</span>
+              <span>View Managers</span>
             </div>
           </a>
         </li>
@@ -58,13 +58,13 @@ const AdminSider = ({ handleNavigation }) => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <span className="material-symbols-outlined text-light">
-                info
+            <span className="material-symbols-outlined text-light">
+            speaker_notes
               </span>
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#table"></use>
               </svg>
-              <span>Custom Prompt</span>
+              <span>View Messages</span>
             </div>
           </a>
         </li>
