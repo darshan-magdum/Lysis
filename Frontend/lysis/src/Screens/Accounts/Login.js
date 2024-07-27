@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "../../Styles/Accounts.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,37 +9,58 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
-
-
-  const location = useLocation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
-      const response = await axios.post("http://localhost:8080/Manager/login", {
-        email,
-        password,
-      });
-      const { managerId } = response.data;
-      toast.success("Login successful!", { autoClose: 3000 });
-      setTimeout(() => {
-        window.location = `/ManagerDashboard?managerId=${managerId}`;
-     
-      }, 3000);
-    } catch (error) {
-      console.error("Login Error:", error.response.data);
-      setError("Invalid email or password. Please try again.");
+      // Admin login
+      const adminResponse = await axios.post("http://localhost:8080/Admin/login", { email, password });
+      const { token, adminId, message } = adminResponse.data;
+  
+      // Store the token in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", adminId);
+  
+      toast.success(message, { autoClose: 3000 });
+  
+      // Clear the form fields
+      setEmail("");
+      setPassword("");
+  
+      // Redirect to admin dashboard
+      window.location = `/adminDashboard?adminId=${adminId}`;
+      
+    } catch (adminError) {
+      try {
+        // Attempt manager login if admin login fails
+        const managerResponse = await axios.post("http://localhost:8080/Manager/login", { email, password });
+        const { token, managerId, message } = managerResponse.data;
+  
+        // Store the token in local storage
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", managerId);
+  
+        toast.success(message, { autoClose: 3000 });
+  
+        // Clear the form fields
+        setEmail("");
+        setPassword("");
+  
+        // Redirect to manager dashboard
+        setTimeout(() => {
+          window.location = `/managerDashboard?managerId=${managerId}`;
+        }, 2000);
+        
+      } catch (managerError) {
+        setError("Invalid email or password. Please try again.");
+      }
     }
   };
-
-
-
+  
   return (
-    
     <div className="Accounts-container">
-            <ToastContainer position="top-right" autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={2000} />
       <div className="right-section">
         <div className="right-section-wrapper">
           <h1 className="Accounts-title">
