@@ -48,7 +48,6 @@ const ViewMessages = () => {
     setCurrentPage(pageNumber);
   };
 
-
   const lightGray = "#d3d3d3";
 
   // Text color for messages
@@ -148,12 +147,13 @@ const ViewMessages = () => {
                   <th style={cellStyle}>Email</th>
                   <th style={cellStyle}>Contact No</th>
                   <th style={cellStyle}>Description</th>
+                  <th style={cellStyle}>Date</th> 
                 </tr>
               </thead>
               <tbody>
                 {currentMessages.length === 0 ? (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
                       <p style={messageStyle}>No records found</p>
                     </td>
                   </tr>
@@ -165,6 +165,7 @@ const ViewMessages = () => {
                       <td style={cellStyle}>{message.email}</td>
                       <td style={cellStyle}>{message.contactNo}</td>
                       <td style={cellStyle}>{message.description}</td>
+                      <td style={cellStyle}>{new Date(message.createdAt).toLocaleDateString()}</td> 
                     </tr>
                   ))
                 )}
