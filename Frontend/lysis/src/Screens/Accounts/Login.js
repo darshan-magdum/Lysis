@@ -10,6 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   
+
+
   const location = useLocation();
 
   const handleSubmit = async (event) => {
@@ -20,25 +22,24 @@ const Login = () => {
         email,
         password,
       });
-      const { managerId, role } = response.data;
-      
-      if (role === "Manager") {
-        toast.success("Login successful!", { autoClose: 3000 });
-        setTimeout(() => {
-          window.location = `/ManagerDashboard?managerId=${managerId}`;
-        }, 3000);
-      } else {
-        setError("Unauthorized role. Access denied.");
-      }
+      const { managerId } = response.data;
+      toast.success("Login successful!", { autoClose: 3000 });
+      setTimeout(() => {
+        window.location = `/ManagerDashboard?managerId=${managerId}`;
+     
+      }, 3000);
     } catch (error) {
       console.error("Login Error:", error.response.data);
       setError("Invalid email or password. Please try again.");
     }
   };
 
+
+
   return (
+    
     <div className="Accounts-container">
-      <ToastContainer position="top-right" autoClose={2000} />
+            <ToastContainer position="top-right" autoClose={2000} />
       <div className="right-section">
         <div className="right-section-wrapper">
           <h1 className="Accounts-title">
