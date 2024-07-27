@@ -1,6 +1,6 @@
 import React from "react";
 
-const ManagerSider = ({ handleNavigation }) => {
+const AdminSider = ({ handleNavigation }) => {
   return (
     <div
       className="d-flex flex-column flex-shrink-0 p-3 text-light"
@@ -12,7 +12,7 @@ const ManagerSider = ({ handleNavigation }) => {
             href="#"
             className="nav-link text-light"
             onClick={(e) => {
-              e.preventDefault(); // Prevent default anchor behavior
+              e.preventDefault(); 
               handleNavigation("home"); // Navigate to Home
             }}
           >
@@ -33,7 +33,7 @@ const ManagerSider = ({ handleNavigation }) => {
             href="#"
             className="nav-link text-light"
             onClick={(e) => {
-              e.preventDefault(); // Prevent default anchor behavior
+              e.preventDefault(); 
               handleNavigation("documentation"); // Navigate to View Documentation
             }}
           >
@@ -53,7 +53,7 @@ const ManagerSider = ({ handleNavigation }) => {
             href="#"
             className="nav-link text-light"
             onClick={(e) => {
-              e.preventDefault(); // Prevent default anchor behavior
+              e.preventDefault(); 
               handleNavigation("customPrompt"); // Navigate to Custom Prompt
             }}
           >
@@ -74,4 +74,4 @@ const ManagerSider = ({ handleNavigation }) => {
   );
 };
 
-export default ManagerSider;
+export default AdminSider;

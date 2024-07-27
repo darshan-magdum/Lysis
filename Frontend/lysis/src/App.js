@@ -6,6 +6,7 @@ import Login from "./Screens/Accounts/Login";
 import ForgotPassword from "./Screens/Accounts/ForgotPassword";
 import ResetPassword from "./Screens/Accounts/ResetPassword";
 import ManagerDashboard from "./Screens/Dashboard/Manager/ManagerDashboard";
+import AdminDashboard from "./Screens/Dashboard/Admin/AdminDashboard";
 import SplashScreen from "./Components/SplashScreen";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/ResetPassword" element={<ResetPassword />} />
           
           <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
 
         </Routes>
       </div>

@@ -29,7 +29,7 @@ const Login = () => {
       setPassword("");
   
       // Redirect to admin dashboard
-      window.location = `/adminDashboard?adminId=${adminId}`;
+      window.location = `/AdminDashboard?adminId=${adminId}`;
       
     } catch (adminError) {
       try {
@@ -49,7 +49,7 @@ const Login = () => {
   
         // Redirect to manager dashboard
         setTimeout(() => {
-          window.location = `/managerDashboard?managerId=${managerId}`;
+          window.location = `/ManagerDashboard?managerId=${managerId}`;
         }, 2000);
         
       } catch (managerError) {

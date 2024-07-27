@@ -50,6 +50,8 @@ const ManagerDashboard = () => {
   }, []);
 
   const handleSignOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     window.location = "/";
   };
 

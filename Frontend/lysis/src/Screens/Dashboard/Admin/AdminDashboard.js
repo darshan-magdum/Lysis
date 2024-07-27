@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import ManagerSider from "./ManagerSider";
+import AdminSider from "./AdminSider";
 import ProfileAvatar from "../../../Images/avatar profile.jpg";
-import ManagerHome from "./ManagerHome"; // Import new components
-import ViewDocumentation from "./ViewDocumentation";
 import CustomPrompt from "./CustomPrompt";
+import AdminHome from "./AdminHome";
 import { useLocation } from 'react-router-dom';
 import axios from "axios"
+import AdminDocumentation from "./AdminDocumentation";
 
 
-const ManagerDashboard = () => {
+const AdminDashboard = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const managerId = searchParams.get('managerId');
@@ -50,6 +50,8 @@ const ManagerDashboard = () => {
   }, []);
 
   const handleSignOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     window.location = "/";
   };
 
@@ -61,9 +63,9 @@ const ManagerDashboard = () => {
   const renderContent = () => {
     switch (currentPage) {
       case "home":
-        return <ManagerHome />;
+        return <AdminHome />;
       case "documentation":
-        return <ViewDocumentation />;
+        return <AdminDocumentation />;
       case "customPrompt":
         return <CustomPrompt />;
       default:
@@ -190,7 +192,7 @@ const ManagerDashboard = () => {
             fontSize:"Large",
           }}
         >
-          <ManagerSider handleNavigation={handleNavigation} />
+          <AdminSider handleNavigation={handleNavigation} />
         </div>
         <div
           className="col-lg-9 offset-lg-3"
@@ -208,4 +210,4 @@ const ManagerDashboard = () => {
   );
 };
 
-export default ManagerDashboard;
+export default AdminDashboard;
