@@ -4,8 +4,8 @@ import "../../../Styles/UploadDocument.css";
 
 const AdminHome = () => {
   const [managerCount, setManagerCount] = useState(0);
-  const [contactCount, setContactCount] = useState(20); // Static value
-  const [serviceConsumption, setServiceConsumption] = useState(150); // Static value
+  const [contactCount, setContactCount] = useState(0); 
+  const [serviceConsumption, setServiceConsumption] = useState(5); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,6 +23,23 @@ const AdminHome = () => {
     };
 
     fetchManagerCount();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchContactCount = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/Contact/GetAll");
+        setContactCount(response.data.length);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch manager count", error);
+        setError("Failed to fetch manager count");
+        setLoading(false);
+      }
+    };
+
+    fetchContactCount();
   }, []);
 
   if (loading) return <div>Loading...</div>;
@@ -81,7 +98,7 @@ const AdminHome = () => {
                 Messages
                 </h5>
                 <p className="card-text" style={{ fontSize: "24px", fontWeight: "bold", color: "#20609c", margin: 0, textAlign: "center" }}>
-                  {managerCount}
+                  {contactCount}
                 </p>
               </div>
             </div>

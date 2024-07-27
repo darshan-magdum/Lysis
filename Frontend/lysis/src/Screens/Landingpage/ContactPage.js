@@ -24,10 +24,14 @@ function ContactPage() {
     setErrorMessage(""); 
     try {
       const response = await axios.post("http://localhost:8080/Contact/AddContact", formData);
-      console.log(response.data);
       toast.success("Contact Sent successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        contactNo: "",
+        description: ""
+      });
     } catch (error) {
-      console.error("There was an error submitting the form!", error.response.data);
       setErrorMessage(error.response.data); 
       toast.error("There was an error submitting the form.");
     }
