@@ -34,16 +34,11 @@ const ViewManagers = () => {
     }
   }, [searchQuery, managers]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error fetching data: {error.message}</p>;
-  }
-
   // Light gray color
   const lightGray = "#d3d3d3";
+
+  // Text color for messages
+  const textColor = "#205C9C";
 
   const tableStyle = {
     border: `1px solid ${lightGray}`,  // Light gray border for the table
@@ -53,6 +48,36 @@ const ViewManagers = () => {
   const cellStyle = {
     border: `1px solid ${lightGray}`  // Light gray border for each cell
   };
+
+  const centeredStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh', // Full viewport height
+    textAlign: 'center'
+  };
+
+  const messageStyle = {
+    color: textColor, // Apply the specified color
+    fontSize: '1.25rem', // Slightly larger text size
+    fontWeight: 'bold'
+  };
+
+  if (loading) {
+    return (
+      <div style={centeredStyle}>
+        <p style={messageStyle}>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={centeredStyle}>
+        <p style={messageStyle}>Error fetching data: {error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-3">
