@@ -11,7 +11,7 @@ const ViewManagers = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(3);
 
   useEffect(() => {
     axios.get("http://localhost:8080/Manager/managers")
@@ -36,6 +36,7 @@ const ViewManagers = () => {
     } else {
       setFilteredManagers(managers);
     }
+    setCurrentPage(1); // Reset to the first page when search query changes
   }, [searchQuery, managers]);
 
   // Calculate paginated data
@@ -43,19 +44,19 @@ const ViewManagers = () => {
   const indexOfFirstManager = indexOfLastManager - itemsPerPage;
   const currentManagers = filteredManagers.slice(indexOfFirstManager, indexOfLastManager);
 
-  // Change page handler
+ 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Light gray color
+
   const lightGray = "#d3d3d3";
 
   // Text color for messages
   const textColor = "#205C9C";
 
   const tableStyle = {
-    border: `1px solid ${lightGray}`,  // Light gray border for the table
+    border: `1px solid ${lightGray}`, 
     borderCollapse: "collapse"
   };
 
@@ -67,13 +68,13 @@ const ViewManagers = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh', // Full viewport height
+    height: '100vh',
     textAlign: 'center'
   };
 
   const messageStyle = {
-    color: textColor, // Apply the specified color
-    fontSize: '1.25rem', // Slightly larger text size
+    color: textColor, 
+    fontSize: '1rem', 
     fontWeight: 'bold'
   };
 
@@ -143,42 +144,52 @@ const ViewManagers = () => {
             <table className="table table-striped table-bordered" style={tableStyle}>
               <thead>
                 <tr>
-                  <th style={cellStyle}>SR.NO</th> {/* New column header for Serial Number */}
+                  <th style={cellStyle}>SR.NO</th> 
                   <th style={cellStyle}>Name</th>
                   <th style={cellStyle}>Email</th>
                 </tr>
               </thead>
               <tbody>
-                {currentManagers.map((manager, index) => (
-                  <tr key={manager._id}>
-                    <td style={cellStyle}>{indexOfFirstManager + index + 1}</td> {/* Serial Number */}
-                    <td style={cellStyle}>{manager.name}</td>
-                    <td style={cellStyle}>{manager.email}</td>
+                {currentManagers.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>
+                      <p style={messageStyle}>No records found</p>
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  currentManagers.map((manager, index) => (
+                    <tr key={manager._id}>
+                      <td style={cellStyle}>{indexOfFirstManager + index + 1}</td> 
+                      <td style={cellStyle}>{manager.name}</td>
+                      <td style={cellStyle}>{manager.email}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-          <div className="pagination" style={{ marginTop: "20px", display: 'flex', justifyContent: 'flex-end' }}>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                style={{
-                  margin: '0 5px',
-                  padding: '5px 10px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  backgroundColor: currentPage === index + 1 ? '#20609c' : '#f1f1f1',
-                  color: currentPage === index + 1 ? '#fff' : '#000',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
+          {filteredManagers.length > 0 && (
+            <div className="pagination" style={{ marginTop: "20px", display: 'flex', justifyContent: 'flex-end' }}>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => handlePageChange(index + 1)}
+                  style={{
+                    margin: '0 5px',
+                    padding: '5px 10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    backgroundColor: currentPage === index + 1 ? '#20609c' : '#f1f1f1',
+                    color: currentPage === index + 1 ? '#fff' : '#000',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
