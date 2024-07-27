@@ -37,6 +37,11 @@ const Signup = () => {
       const { managerId } = response.data;
 
       toast.success("Created Account successfully!", { autoClose: 1000 });
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setError("");
 
       // Redirect to splash screen with managerId as URL parameter
       setTimeout(() => {
