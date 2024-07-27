@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 
 
-const ManagerHome = () => {
+const AdminHome = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [output, setoutput] = useState(false);
@@ -466,6 +466,6 @@ Analyzed code (Part {partNumber}):\n\n`;
   );
 };
 
-export default ManagerHome;
+export default AdminHome;
 
 
