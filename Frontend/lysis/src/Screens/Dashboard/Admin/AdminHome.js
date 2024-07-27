@@ -119,7 +119,7 @@ const AdminHome = () => {
               </div>
               <div style={{ flex: "1", padding: "20px", borderLeft: "2px solid #ddd", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
                 <h5 className="card-title" style={{ marginBottom: "5px", marginTop: "0", textAlign: "center", fontSize: "17px" }}>
-                Consumption
+                API Consumption
                 </h5>
                 <p className="card-text" style={{ fontSize: "24px", fontWeight: "bold", color: "#20609c", margin: 0, textAlign: "center" }}>
                   {managerCount}
