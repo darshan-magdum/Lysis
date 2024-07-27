@@ -9,6 +9,10 @@ const ViewManagers = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+
   useEffect(() => {
     axios.get("http://localhost:8080/Manager/managers")
       .then(response => {
@@ -33,6 +37,16 @@ const ViewManagers = () => {
       setFilteredManagers(managers);
     }
   }, [searchQuery, managers]);
+
+  // Calculate paginated data
+  const indexOfLastManager = currentPage * itemsPerPage;
+  const indexOfFirstManager = indexOfLastManager - itemsPerPage;
+  const currentManagers = filteredManagers.slice(indexOfFirstManager, indexOfLastManager);
+
+  // Change page handler
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   // Light gray color
   const lightGray = "#d3d3d3";
@@ -78,6 +92,9 @@ const ViewManagers = () => {
       </div>
     );
   }
+
+  // Total pages
+  const totalPages = Math.ceil(filteredManagers.length / itemsPerPage);
 
   return (
     <div className="container py-3">
@@ -132,15 +149,35 @@ const ViewManagers = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredManagers.map((manager, index) => (
+                {currentManagers.map((manager, index) => (
                   <tr key={manager._id}>
-                    <td style={cellStyle}>{index + 1}</td> {/* Serial Number */}
+                    <td style={cellStyle}>{indexOfFirstManager + index + 1}</td> {/* Serial Number */}
                     <td style={cellStyle}>{manager.name}</td>
                     <td style={cellStyle}>{manager.email}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="pagination" style={{ marginTop: "20px", display: 'flex', justifyContent: 'flex-end' }}>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                style={{
+                  margin: '0 5px',
+                  padding: '5px 10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  backgroundColor: currentPage === index + 1 ? '#20609c' : '#f1f1f1',
+                  color: currentPage === index + 1 ? '#fff' : '#000',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
           </div>
         </div>
       </div>
