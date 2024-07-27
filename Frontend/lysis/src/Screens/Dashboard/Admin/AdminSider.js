@@ -54,7 +54,7 @@ const AdminSider = ({ handleNavigation }) => {
             className="nav-link text-light"
             onClick={(e) => {
               e.preventDefault(); 
-              handleNavigation("customPrompt"); // Navigate to Custom Prompt
+              handleNavigation("ViewMessages"); // Navigate to Custom Prompt
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>

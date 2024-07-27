@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../../Styles/UploadDocument.css";
 
-const ViewManagers = () => {
+const ViewMessages = () => {
   return (
     <div>
       <div className="container py-3">
@@ -16,7 +16,7 @@ const ViewManagers = () => {
                 color: "#20609c",
               }}
             >
-              View Manager Details
+              View Messages
             </h5>
           </div>
         </div>
@@ -25,4 +25,4 @@ const ViewManagers = () => {
   );
 };
 
-export default ViewManagers;
+export default ViewMessages;

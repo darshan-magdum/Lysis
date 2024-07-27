@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import AdminSider from "./AdminSider";
 import ProfileAvatar from "../../../Images/avatar profile.jpg";
-import CustomPrompt from "./CustomPrompt";
+import ViewMessages from "./ViewMessages";
 import AdminHome from "./AdminHome";
 import { useLocation } from 'react-router-dom';
 import axios from "axios"
@@ -71,8 +71,8 @@ const AdminDashboard = () => {
         return <AdminHome />;
       case "ViewManagers":
         return <ViewManagers />;
-      case "customPrompt":
-        return <CustomPrompt />;
+      case "ViewMessages":
+        return <ViewMessages />;
       default:
         return ""; // Default content if no page matches
     }
