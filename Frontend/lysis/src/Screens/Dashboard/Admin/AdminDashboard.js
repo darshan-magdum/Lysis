@@ -11,25 +11,30 @@ import AdminDocumentation from "./AdminDocumentation";
 const AdminDashboard = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const managerId = searchParams.get('managerId');
+  const adminId = searchParams.get('adminId');
   const [profileCardOpen, setProfileCardOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState("home"); // Add state to manage current page
   const dropdownRef = useRef(null);
   const profileCardRef = useRef(null);
-  const [managerData, setManagerData] = useState(null);
+  const [adminData, setAdminData] = useState(null);
 
   useEffect(() => {
-    const fetchManagerData = async () => {
+    const fetchAdminData = async () => {
+      console.log("Fetching Admin Data");
       try {
-        const response = await axios.get(`http://localhost:8080/Manager/manager/${managerId}`);
-        setManagerData(response.data); 
+        const response = await axios.get(`http://localhost:8080/Admin/${adminId}`);
+        setAdminData(response.data);
+        console.log("Admin Data Fetched");
       } catch (error) {
-        console.error("Error fetching manager data:", error);
+        console.error("Error fetching Admin data:", error);
       }
     };
-
-    fetchManagerData(); 
-  }, [managerId]);
+  
+    if (adminId) {
+      fetchAdminData();
+    }
+  }, [adminId]);
+  
 
 
   const toggleDropdown = () => {
@@ -140,13 +145,13 @@ const AdminDashboard = () => {
               }}
             />
             <h6 className="my-3" style={{ marginTop: "15px" }}>
-            {managerData ? managerData.name : ""}
+            {adminData ? adminData.role : ""}
             </h6>
             <p
               className="text-muted mb-1"
               style={{ color: "#6c757d", marginBottom: "0" ,fontSize:"15px"}}
             >
-              {managerData ? managerData.email : ""}
+              {adminData ? adminData.email : ""}
             </p>
 
             <button

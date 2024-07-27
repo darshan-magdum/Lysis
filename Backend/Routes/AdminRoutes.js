@@ -46,4 +46,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+// Route: GET /Admin/:adminId
+router.get('/:adminId', async (req, res) => {
+  const adminId = req.params.adminId;
+
+  try {
+    // Find admin by ID and exclude password field
+    const admin = await Admin.findById(adminId).select('-password');
+
+    // Check if admin exists
+    if (!admin) {
+      return res.status(404).send({ message: 'Admin not found' });
+    }
+
+    // Return admin details
+    res.status(200).send(admin);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 module.exports = router;
