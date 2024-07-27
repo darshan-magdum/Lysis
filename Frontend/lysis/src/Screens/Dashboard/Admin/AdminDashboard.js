@@ -5,7 +5,7 @@ import CustomPrompt from "./CustomPrompt";
 import AdminHome from "./AdminHome";
 import { useLocation } from 'react-router-dom';
 import axios from "axios"
-import AdminDocumentation from "./AdminDocumentation";
+import ViewManagers from "./ViewManagers";
 
 
 const AdminDashboard = () => {
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
       case "home":
         return <AdminHome />;
       case "ViewManagers":
-        return <AdminDocumentation />;
+        return <ViewManagers />;
       case "customPrompt":
         return <CustomPrompt />;
       default:
