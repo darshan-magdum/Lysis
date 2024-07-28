@@ -39,12 +39,12 @@ const ManagerSider = ({ handleNavigation }) => {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <span className="material-symbols-outlined text-light">
-                visibility
+              article
               </span>
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#table"></use>
               </svg>
-              <span>View Documentation</span>
+              <span>Documentation</span>
             </div>
           </a>
         </li>
@@ -59,7 +59,7 @@ const ManagerSider = ({ handleNavigation }) => {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <span className="material-symbols-outlined text-light">
-                info
+              keyboard
               </span>
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#table"></use>

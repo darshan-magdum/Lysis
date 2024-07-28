@@ -401,7 +401,7 @@ Analyzed code (Part {partNumber}):\n\n`;
     >
       <div className="container py-3">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-9">
             <div className='DownloadAll'>
               <div className="row align-items-center">
                 <div className="col-8">
