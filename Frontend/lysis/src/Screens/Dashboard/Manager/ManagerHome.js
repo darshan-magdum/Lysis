@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
+import axios from 'axios';
 
 
 const ManagerHome = () => {
@@ -13,6 +14,34 @@ const ManagerHome = () => {
   const [userQueryData, setUserQueryData] = useState([]);
   const [loaderStatus, setLoaderStatus] = useState("");
   const [userQuery, setUserQuery] = useState("");
+
+
+  const [managerData, setManagerData] = useState(null);
+  const [managerId, setManagerId] = useState(null);
+
+  useEffect(() => {
+    // Retrieve managerId from localStorage when component mounts
+    const id = localStorage.getItem("managerId");
+    setManagerId(id);
+  }, []);
+
+  useEffect(() => {
+    if (managerId) {
+      const fetchManagerData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/Manager/manager/${managerId}`);
+          setManagerData(response.data); 
+        } catch (error) {
+          console.error("Error fetching manager data:", error);
+        }
+      };
+
+      fetchManagerData(); 
+    }
+  }, [managerId]);
+
+
+
 
   const azureApiKey = 'daf99a54e98144328812c4e1a1a4fea6';
 

@@ -5,7 +5,7 @@ import "../../../Styles/UploadDocument.css";
 const AdminHome = () => {
   const [managerCount, setManagerCount] = useState(0);
   const [contactCount, setContactCount] = useState(0); 
-  const [serviceConsumption, setServiceConsumption] = useState(5); 
+  const [serviceConsumption, setServiceConsumption] = useState("Under Development"); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -121,8 +121,8 @@ const AdminHome = () => {
                 <h5 className="card-title" style={{ marginBottom: "5px", marginTop: "0", textAlign: "center", fontSize: "17px" }}>
                 API Consumption
                 </h5>
-                <p className="card-text" style={{ fontSize: "24px", fontWeight: "bold", color: "#20609c", margin: 0, textAlign: "center" }}>
-                  {managerCount}
+                <p className="card-text" style={{ fontSize: "15px", fontWeight: "bold", color: "#20609c", margin: 0, textAlign: "center" }}>
+                  {serviceConsumption}
                 </p>
               </div>
             </div>
