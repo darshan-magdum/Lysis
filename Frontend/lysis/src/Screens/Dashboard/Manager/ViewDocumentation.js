@@ -77,12 +77,12 @@ const ViewDocumentation = () => {
       <div className="container py-3">
         <div className='DownloadAll'>
           <div className="row align-items-center">
-            <div className="col-8">
+            <div className="col-6">
               <h5
                 style={{
                   fontWeight: "bold",
                   marginBottom: "10px",
-                  marginTop: "-10px",
+                  marginTop: "10px",
                   color: "#20609c",
                 }}
               >
@@ -90,7 +90,7 @@ const ViewDocumentation = () => {
               </h5>
             </div>
             {output && (
-              <div className="col-4">
+              <div className="col-6">
                 <button
                   className="btn btn-primary"
                   onClick={handleDownloadAllPDF}
@@ -103,8 +103,8 @@ const ViewDocumentation = () => {
         </div>
  
         {!projectSummary && analysisResults.length === 0 && (
-          <div className="row d-flex justify-content-center" style={{ width: "1000px" }}>
-            <div className="col-lg-11">
+          <div className="row d-flex" style={{ width: "1000px" }}>
+            <div className="col-lg-10">
               <div className="card">
                 <div className="card-body text-center">
                   <p style={{ color: "black" }}>No Documents</p>
@@ -115,8 +115,8 @@ const ViewDocumentation = () => {
         )}
  
         {projectSummary && (
-          <div className="row d-flex justify-content-center" style={{ width: "1000px" }}>
-            <div className="col-lg-11">
+          <div className="row d-flex" style={{ width: "1000px" }}>
+            <div className="col-lg-10">
               <div className="card">
                 <div className="card-header">Project Summary</div>
                 <div className="card-body">
@@ -128,9 +128,9 @@ const ViewDocumentation = () => {
         )}
  
         {analysisResults.length > 0 && (
-          <div className="row d-flex justify-content-center" id="result" style={{ width: "1000px" }}>
+          <div className="row d-flex" id="result" style={{ width: "1000px" }}>
             {analysisResults.map((result, index) => (
-              <div key={index} className="col-lg-11">
+              <div key={index} className="col-lg-10">
                 <div className="card">
                   <div className="card-header">{result.fileName}</div>
                   <div className="card-body">
