@@ -77,7 +77,7 @@ const AdminSider = ({ handleNavigation }) => {
             className="nav-link text-light"
             onClick={(e) => {
               e.preventDefault(); 
-              handleNavigation("AddManager"); // Navigate to Add Manager
+              handleNavigation("AddManagers"); // Navigate to Add Manager
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>

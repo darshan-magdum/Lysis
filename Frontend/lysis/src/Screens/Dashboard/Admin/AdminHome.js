@@ -48,13 +48,12 @@ const AdminHome = () => {
   return (
     <div className="container py-3">
       <div className="row">
-        <div className="col-lg-12">
+        <div className="col-lg-9">
           <h5
             style={{
               textAlign: "left",
               fontWeight: "bold",
-              marginBottom: "10px",
-              marginTop: "-10px",
+              marginBottom: "20px",
               color: "#20609c",
             }}
           >

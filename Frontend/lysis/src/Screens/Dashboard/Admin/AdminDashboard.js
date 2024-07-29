@@ -3,15 +3,17 @@ import AdminSider from "./AdminSider";
 import ProfileAvatar from "../../../Images/avatar profile.jpg";
 import ViewMessages from "./ViewMessages";
 import AdminHome from "./AdminHome";
-import { useLocation } from 'react-router-dom';
-import axios from "axios"
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 import ViewManagers from "./ViewManagers";
-
+import AddManagers from "./AddManagers";
+import ViewProjects from "./ViewProjects";
+import AddProjects from "./AddProjects";
 
 const AdminDashboard = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const adminId = searchParams.get('adminId');
+  const adminId = searchParams.get("adminId");
   const [profileCardOpen, setProfileCardOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState("home"); // Add state to manage current page
   const dropdownRef = useRef(null);
@@ -22,27 +24,30 @@ const AdminDashboard = () => {
     const fetchAdminData = async () => {
       console.log("Fetching Admin Data");
       try {
-        const response = await axios.get(`http://localhost:8080/Admin/${adminId}`);
+        const response = await axios.get(
+          `http://localhost:8080/Admin/${adminId}`
+        );
         setAdminData(response.data);
         console.log("Admin Data Fetched");
       } catch (error) {
         console.error("Error fetching Admin data:", error);
       }
     };
-  
+
     if (adminId) {
       fetchAdminData();
     }
   }, [adminId]);
-  
-
 
   const toggleDropdown = () => {
     setProfileCardOpen(!profileCardOpen);
   };
 
   const handleClickOutside = (event) => {
-    if (profileCardRef.current && !profileCardRef.current.contains(event.target)) {
+    if (
+      profileCardRef.current &&
+      !profileCardRef.current.contains(event.target)
+    ) {
       setProfileCardOpen(false);
     }
   };
@@ -69,6 +74,12 @@ const AdminDashboard = () => {
     switch (currentPage) {
       case "home":
         return <AdminHome />;
+      case "AddProjects":
+        return <AddProjects />;
+      case "ViewProjects":
+        return <ViewProjects />;
+      case "AddManagers":
+        return <AddManagers />;
       case "ViewManagers":
         return <ViewManagers />;
       case "ViewMessages":
@@ -117,7 +128,6 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-
       {profileCardOpen && (
         <div
           className="card mb-4"
@@ -135,7 +145,11 @@ const AdminDashboard = () => {
               src={ProfileAvatar}
               alt="avatar"
               className="rounded-circle img-fluid"
-              style={{ width: "110px", borderRadius: "50%", marginTop: "-20px" }}
+              style={{
+                width: "110px",
+                borderRadius: "50%",
+                marginTop: "-20px",
+              }}
             />
             <hr
               style={{
@@ -145,11 +159,11 @@ const AdminDashboard = () => {
               }}
             />
             <h6 className="my-3" style={{ marginTop: "15px" }}>
-            {adminData ? adminData.role : ""}
+              {adminData ? adminData.role : ""}
             </h6>
             <p
               className="text-muted mb-1"
-              style={{ color: "#6c757d", marginBottom: "0" ,fontSize:"15px"}}
+              style={{ color: "#6c757d", marginBottom: "0", fontSize: "15px" }}
             >
               {adminData ? adminData.email : ""}
             </p>
@@ -194,7 +208,7 @@ const AdminDashboard = () => {
             overflowY: "auto",
             height: "100vh",
             padding: "20px",
-            fontSize:"Large",
+            fontSize: "Large",
           }}
         >
           <AdminSider handleNavigation={handleNavigation} />
@@ -208,7 +222,7 @@ const AdminDashboard = () => {
             overflowX: "hidden",
           }}
         >
-          {renderContent()} 
+          {renderContent()}
         </div>
       </div>
     </div>
