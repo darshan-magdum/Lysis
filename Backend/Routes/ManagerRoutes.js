@@ -129,4 +129,59 @@ router.get('/manager/:managerId', async (req, res) => {
   }
 });
 
+
+// Route: PUT /manager/:managerId
+router.put('/editmanager/:managerId', async (req, res) => {
+  const managerId = req.params.managerId;
+  const { name, email, password } = req.body;
+
+  // Validation schema for updating manager using Joi
+  const updateSchema = Joi.object({
+    name: Joi.string().optional().label('Name'),
+    email: Joi.string().email().optional().label('Email'),
+    password: Joi.string().optional().min(6).label('Password'),
+  });
+
+  try {
+    // Validate request body using Joi
+    const { error } = updateSchema.validate(req.body);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    // Check if the manager exists
+    let manager = await ManagerAccount.findById(managerId);
+    if (!manager) {
+      return res.status(404).send({ message: 'Manager not found' });
+    }
+
+    // Check if manager is updating email, make sure the new email is unique
+    if (email && email !== manager.email) {
+      const existingManager = await ManagerAccount.findOne({ email });
+      if (existingManager) {
+        return res.status(400).send({ message: 'Email already in use' });
+      }
+      manager.email = email;
+    }
+
+    // Update fields
+    if (name) manager.name = name;
+    if (password) {
+      // Hash the new password
+      const salt = await bcrypt.genSalt(10);
+      manager.password = await bcrypt.hash(password, salt);
+    }
+
+    // Save updated manager to the database
+    await manager.save();
+
+    // Return success response
+    res.status(200).send({ message: 'Manager updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+
 module.exports = router;

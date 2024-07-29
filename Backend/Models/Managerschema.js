@@ -30,7 +30,7 @@ const Managerschema = new mongoose.Schema({
       validator: function(v) {
         return v.length > 0;
       },
-      message: 'At least one game must be specified'
+      message: 'At least one Project must be Assigned'
     }
   }
 });

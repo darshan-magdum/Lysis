@@ -13,8 +13,14 @@ const ViewManagers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
 
+  // Editing state
+  const [editManager, setEditManager] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ name: '', email: '' });
+  const [validationErrors, setValidationErrors] = useState({ name: '', email: '' });
+
   useEffect(() => {
-    axios.get("http://localhost:8080/Manager/managers")
+    axios.get("http://localhost:8080/Manager/Getallmanagers")
       .then(response => {
         setManagers(response.data);
         setFilteredManagers(response.data);
@@ -44,24 +50,74 @@ const ViewManagers = () => {
   const indexOfFirstManager = indexOfLastManager - itemsPerPage;
   const currentManagers = filteredManagers.slice(indexOfFirstManager, indexOfLastManager);
 
- 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  const handleEditClick = (manager) => {
+    setEditManager(manager);
+    setEditData({
+      name: manager.name,
+      email: manager.email
+    });
+    setValidationErrors({ name: '', email: '' });
+    setIsEditing(true);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSubmit = () => {
+    const errors = {
+      name: '',
+      email: ''
+    };
+    let hasErrors = false;
+
+    if (!editData.name) {
+      errors.name = 'Name is required.';
+      hasErrors = true;
+    }
+    if (!editData.email) {
+      errors.email = 'Email is required.';
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    axios.put(`http://localhost:8080/Manager/editmanager/${editManager._id}`, editData)
+      .then(response => {
+        const updatedManager = response.data;
+        setManagers((prev) =>
+          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
+        );
+        setFilteredManagers((prev) =>
+          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
+        );
+        setIsEditing(false);
+        alert('Manager updated successfully!');
+      })
+      .catch(err => {
+        setError(err);
+        alert('Error updating manager!');
+      });
+  };
 
   const lightGray = "#d3d3d3";
-
-  // Text color for messages
   const textColor = "#205C9C";
 
   const tableStyle = {
-    border: `1px solid ${lightGray}`, 
+    border: `1px solid ${lightGray}`,
     borderCollapse: "collapse"
   };
 
   const cellStyle = {
-    border: `1px solid ${lightGray}`  // Light gray border for each cell
+    border: `1px solid ${lightGray}`
   };
 
   const centeredStyle = {
@@ -73,9 +129,38 @@ const ViewManagers = () => {
   };
 
   const messageStyle = {
-    color: textColor, 
-    fontSize: '1rem', 
+    color: textColor,
+    fontSize: '1rem',
     fontWeight: 'bold'
+  };
+
+  const modalBackdropStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backdropFilter: 'blur(5px)',
+    zIndex: 999
+  };
+
+  const modalStyle = {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#fff',
+    padding: '40px',
+    borderRadius: '8px',
+    boxShadow: '0 0 15px rgba(0,0,0,0.3)',
+    zIndex: 1000,
+    width: '80%',
+    maxWidth: '600px'
+  };
+
+  const buttonStyle = {
+    marginRight: '10px'
   };
 
   if (loading) {
@@ -132,10 +217,10 @@ const ViewManagers = () => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="form-control"
-                style={{ 
+                style={{
                   borderLeft: 'none',
                   borderRadius: '0 4px 4px 0',
-                  width: '100%' 
+                  width: '100%'
                 }}
               />
             </div>
@@ -144,24 +229,40 @@ const ViewManagers = () => {
             <table className="table table-striped table-bordered" style={tableStyle}>
               <thead>
                 <tr>
-                  <th style={cellStyle}>SR.NO</th> 
+                  <th style={cellStyle}>SR.NO</th>
                   <th style={cellStyle}>Name</th>
                   <th style={cellStyle}>Email</th>
+                  <th style={cellStyle}>Actions</th> {/* New column for actions */}
                 </tr>
               </thead>
               <tbody>
                 {currentManagers.length === 0 ? (
                   <tr>
-                    <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>
+                    <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
                       <p style={messageStyle}>No records found</p>
                     </td>
                   </tr>
                 ) : (
                   currentManagers.map((manager, index) => (
                     <tr key={manager._id}>
-                      <td style={cellStyle}>{indexOfFirstManager + index + 1}</td> 
+                      <td style={cellStyle}>{indexOfFirstManager + index + 1}</td>
                       <td style={cellStyle}>{manager.name}</td>
                       <td style={cellStyle}>{manager.email}</td>
+                      <td style={cellStyle}>
+                        <button
+                          onClick={() => handleEditClick(manager)}
+                          style={{
+                            backgroundColor: '#20609c',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -188,6 +289,60 @@ const ViewManagers = () => {
                   {index + 1}
                 </button>
               ))}
+            </div>
+          )}
+          {isEditing && (
+            <div style={modalBackdropStyle}>
+              <div style={modalStyle}>
+                <h5>Edit Manager</h5>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={editData.name}
+                    onChange={handleEditChange}
+                    className="form-control"
+                  />
+                  {validationErrors.name && (
+                    <div style={{ color: 'red', marginTop: '5px' }}>
+                      {validationErrors.name}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={editData.email}
+                    onChange={handleEditChange}
+                    className="form-control"
+                  />
+                  {validationErrors.email && (
+                    <div style={{ color: 'red', marginTop: '5px' }}>
+                      {validationErrors.email}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <button
+                    onClick={handleEditSubmit}
+                    className="btn btn-primary"
+                    style={buttonStyle}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
