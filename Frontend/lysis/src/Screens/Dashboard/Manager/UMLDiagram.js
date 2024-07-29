@@ -13,14 +13,7 @@ const UMLDiagram = () => {
             return;
         }
 
-        // Check if the format starts with a valid Mermaid keyword (e.g., sequenceDiagram)
-        if (!umlCode.trim().startsWith('sequenceDiagram') &&
-            !umlCode.trim().startsWith('classDiagram') &&
-            !umlCode.trim().startsWith('stateDiagram')) {
-            setError('Unsupported UML format. Please start with sequenceDiagram, classDiagram, or stateDiagram.');
-            return;
-        }
-
+    
         // Clear error message if validation passes
         setError('');
 
