@@ -78,8 +78,28 @@ const UMLDiagram = () => {
                              {error && <p className="UML-error-message">{error}</p>}
                              <br />
                             <button onClick={generateDiagram}>Generate Diagram</button>
-                            {diagramGenerated && <button onClick={downloadDiagram}>Download Diagram</button>}
-                            <div id="diagramContainer"></div>
+                   
+                           <br></br>
+                      
+                            {diagramGenerated && (
+                                
+                                <>
+                                         <hr></hr>
+                               
+  <button 
+    className="btn btn-primary" 
+    onClick={downloadDiagram}
+    style={{marginTop:"0px",float:"right"}}
+  >
+    Download Diagram
+  </button>
+  </>
+)}
+                            <div id="diagramContainer">
+                           
+
+
+                            </div>
                         </div>
                     </div>
                 </div>
