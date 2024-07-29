@@ -68,7 +68,6 @@ const UMLDiagram = () => {
                             UML Diagram
                         </h5>
                         <div className="UML-Body">
-                            <h1>UML Diagram Generator</h1>
                             <textarea
                                 id="umlCode"
                                 value={umlCode}
