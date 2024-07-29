@@ -34,7 +34,7 @@ const AddProjects = () => {
     if (hasErrors) return;
 
     try {
-      const response = await axios.post('http://localhost:8080/NewProjects', {
+      const response = await axios.post('http://localhost:8080/NewProjects/AddNewProjects', {
         projectName,
         description
       });
@@ -45,7 +45,6 @@ const AddProjects = () => {
         setDescription("");
       }
     } catch (error) {
-      console.log("error",error)
       if (error.response && error.response.data.errors) {
         error.response.data.errors.forEach(error => toast.error(error));
       } else {
