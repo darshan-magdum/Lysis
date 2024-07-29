@@ -11,6 +11,7 @@ const signupSchema = Joi.object({
   name: Joi.string().required().label('Name'),
   email: Joi.string().email().required().label('Email'),
   password: Joi.string().required().min(6).label('Password'),
+  AssignedProjects: Joi.array().items(Joi.string()).required().label('AssignedProjects')
 });
 
 // Route: POST /signup
@@ -22,7 +23,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, AssignedProjects } = req.body;
 
     // Check if manager already exists
     let manager = await ManagerAccount.findOne({ email });
@@ -34,11 +35,12 @@ router.post('/signup', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-   
+    // Create a new manager with the provided AssignedProjects
     manager = new ManagerAccount({
       name,
       email,
       password: hashedPassword,
+      AssignedProjects
     });
 
     // Save the manager to the database
@@ -95,12 +97,9 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 // Route: GET /managers
-
 router.get('/managers', async (req, res) => {
   try {
-    
     const managers = await ManagerAccount.find().select('-password');
 
     // Return the array of managers
@@ -111,20 +110,18 @@ router.get('/managers', async (req, res) => {
   }
 });
 
-
 // Route: GET /manager/:managerId
 router.get('/manager/:managerId', async (req, res) => {
   const managerId = req.params.managerId;
 
   try {
-
     const manager = await ManagerAccount.findById(managerId).select('-password');
 
     if (!manager) {
       return res.status(404).send({ message: 'Manager not found' });
     }
 
-    // Return manager details
+    // Return manager details including AssignedProjects
     res.status(200).send(manager);
   } catch (error) {
     console.error(error);

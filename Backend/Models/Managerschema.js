@@ -22,6 +22,16 @@ const Managerschema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'Manager'
+  },
+  AssignedProjects: {
+    type: [String], 
+    required: true, 
+    validate: {
+      validator: function(v) {
+        return v.length > 0;
+      },
+      message: 'At least one game must be specified'
+    }
   }
 });
 
