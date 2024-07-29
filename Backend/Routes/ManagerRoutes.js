@@ -133,9 +133,9 @@ router.get('/manager/:managerId', async (req, res) => {
 const updateSchema = Joi.object({
   name: Joi.string().optional().label('Name'),
   email: Joi.string().email().optional().label('Email'),
-  password: Joi.string().optional().min(6).label('Password'),
   AssignedProjects: Joi.array().items(Joi.string()).optional().label('AssignedProjects')
 });
+
 
 // Route: PUT /manager/:managerId
 router.put('/editmanager/:managerId', async (req, res) => {
@@ -148,7 +148,7 @@ router.put('/editmanager/:managerId', async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const { name, email, password, AssignedProjects } = req.body;
+    const { name, email, AssignedProjects } = req.body;
 
     // Find the manager by ID
     let manager = await ManagerAccount.findById(managerId);
@@ -160,12 +160,6 @@ router.put('/editmanager/:managerId', async (req, res) => {
     if (name) manager.name = name;
     if (email) manager.email = email;
     if (AssignedProjects) manager.AssignedProjects = AssignedProjects;
-    
-    // Update password if provided
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      manager.password = await bcrypt.hash(password, salt);
-    }
 
     // Save the updated manager details
     await manager.save();
@@ -177,6 +171,7 @@ router.put('/editmanager/:managerId', async (req, res) => {
     res.status(500).send({ message: 'Internal Server Error' });
   }
 });
+
 
 
 
