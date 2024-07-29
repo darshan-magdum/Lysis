@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../../../Styles/UploadDocument.css";
 
 const ViewManagers = () => {
@@ -100,11 +102,11 @@ const ViewManagers = () => {
           prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
         );
         setIsEditing(false);
-        alert('Manager updated successfully!');
+        toast.success('Manager updated successfully!');
       })
       .catch(err => {
-        setError(err);
-        alert('Error updating manager!');
+        setError(err.response.message);
+        toast.error('Error updating manager!');
       });
   };
 
@@ -172,6 +174,7 @@ const ViewManagers = () => {
   }
 
   if (error) {
+    
     return (
       <div style={centeredStyle}>
         <p style={messageStyle}>Error fetching data: {error.message}</p>
@@ -232,13 +235,14 @@ const ViewManagers = () => {
                   <th style={cellStyle}>SR.NO</th>
                   <th style={cellStyle}>Name</th>
                   <th style={cellStyle}>Email</th>
+                  <th style={cellStyle}>Projects</th> {/* New column for projects */}
                   <th style={cellStyle}>Actions</th> {/* New column for actions */}
                 </tr>
               </thead>
               <tbody>
                 {currentManagers.length === 0 ? (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                       <p style={messageStyle}>No records found</p>
                     </td>
                   </tr>
@@ -248,6 +252,7 @@ const ViewManagers = () => {
                       <td style={cellStyle}>{indexOfFirstManager + index + 1}</td>
                       <td style={cellStyle}>{manager.name}</td>
                       <td style={cellStyle}>{manager.email}</td>
+                      <td style={cellStyle}>{manager.AssignedProjects.join(', ')}</td> {/* Display projects */}
                       <td style={cellStyle}>
                         <button
                           onClick={() => handleEditClick(manager)}
@@ -347,6 +352,7 @@ const ViewManagers = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
