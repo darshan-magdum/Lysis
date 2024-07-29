@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toastify
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import "../../../Styles/UploadDocument.css"; // Import your custom styles if any
+import 'react-toastify/dist/ReactToastify.css'; 
+import "../../../Styles/UploadDocument.css"; 
 
 const AddProjects = () => {
   // State to manage form inputs and validation
@@ -56,7 +55,7 @@ const AddProjects = () => {
   return (
     <div className="container py-3">
       <div className="row">
-        <div className="col-lg-9">
+        <div className="col-lg-7">
           <h5
             style={{
               textAlign: "left",
