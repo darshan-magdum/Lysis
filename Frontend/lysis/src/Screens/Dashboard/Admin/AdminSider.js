@@ -28,6 +28,71 @@ const AdminSider = ({ handleNavigation }) => {
           </a>
         </li>
 
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); 
+              handleNavigation("AddProjects"); // Navigate to Add Projects
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              shop_two
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#home"></use>
+              </svg>
+              <span>Add Projects</span>
+            </div>
+          </a>
+        </li>
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); 
+              handleNavigation("ViewProjects"); // Navigate to View Projects
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              visibility
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#home"></use>
+              </svg>
+              <span>View Projects</span>
+            </div>
+          </a>
+        </li>
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); 
+              handleNavigation("AddManager"); // Navigate to Add Manager
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              group_add
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#home"></use>
+              </svg>
+              <span>Add Managers</span>
+            </div>
+          </a>
+        </li>
+
+
         <li className="nav-item">
           <a
             href="#"
@@ -54,7 +119,7 @@ const AdminSider = ({ handleNavigation }) => {
             className="nav-link text-light"
             onClick={(e) => {
               e.preventDefault(); 
-              handleNavigation("ViewMessages"); // Navigate to Custom Prompt
+              handleNavigation("ViewMessages"); // Navigate to View Messages
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>

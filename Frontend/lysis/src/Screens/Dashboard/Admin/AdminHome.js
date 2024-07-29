@@ -63,11 +63,34 @@ const AdminHome = () => {
         </div>
       </div>
       <div className="row">
+  {/* Total Projects Card */}
+      <div className="col-lg-3">
+          <div className="card" style={{ width: "100%", padding: "0", border: "none" }}>
+            <div style={{ display: "flex", height: "150px", borderRadius: "5px", overflow: "hidden" }}>
+              <div style={{backgroundColor: "#4caf50", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "55px", color: "white" }}>
+                team_dashboard
+                </span>
+
+                
+              </div>
+              <div style={{ flex: "1", padding: "20px", borderLeft: "2px solid #ddd", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+                <h5 className="card-title" style={{ marginBottom: "5px", marginTop: "0", textAlign: "center", fontSize: "17px" }}>
+            Projects
+                </h5>
+                <p className="card-text" style={{ fontSize: "15px", fontWeight: "bold", color: "#20609c", margin: 0, textAlign: "center" }}>
+                  {serviceConsumption}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Total Managers Card */}
         <div className="col-lg-3">
           <div className="card" style={{ width: "100%", padding: "0", border: "none" }}>
             <div style={{ display: "flex", height: "150px", borderRadius: "5px", overflow: "hidden" }}>
-              <div style={{ backgroundColor: "#ff4524", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ backgroundColor: "#ff9800", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span className="material-symbols-outlined" style={{ fontSize: "55px", color: "white" }}>
                   groups
                 </span>
@@ -88,7 +111,7 @@ const AdminHome = () => {
 <div className="col-lg-3">
           <div className="card" style={{ width: "100%", padding: "0", border: "none" }}>
             <div style={{ display: "flex", height: "150px", borderRadius: "5px", overflow: "hidden" }}>
-              <div style={{ backgroundColor: "#4caf50", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ backgroundColor: "#dc0062", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span className="material-symbols-outlined" style={{ fontSize: "55px", color: "white" }}>
                 mail
                 </span>
@@ -109,10 +132,18 @@ const AdminHome = () => {
         {/* Service Consumption Card */}
         
         
-<div className="col-lg-3">
+
+
+
+      </div>
+
+
+      <div className="row">
+
+      <div className="col-lg-9">
           <div className="card" style={{ width: "100%", padding: "0", border: "none" }}>
             <div style={{ display: "flex", height: "150px", borderRadius: "5px", overflow: "hidden" }}>
-              <div style={{backgroundColor: "#ff9800", color: "white", width: "45%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{backgroundColor: "#ff4524", color: "white", width: "25%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span className="material-symbols-outlined" style={{ fontSize: "55px", color: "white" }}>
                 api
                 </span>
@@ -128,9 +159,7 @@ const AdminHome = () => {
             </div>
           </div>
         </div>
-
-
-      </div>
+        </div>
     </div>
   );
 };
