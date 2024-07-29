@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../Styles/Accounts.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,6 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,8 +50,9 @@ const Login = () => {
   
         // Redirect to manager dashboard
         setTimeout(() => {
-          window.location = `/ManagerDashboard?managerId=${managerId}`;
+          navigate(`/SplashScreen?managerId=${managerId}`);
         }, 2000);
+    
         
       } catch (managerError) {
         setError("Invalid email or password. Please try again.");
