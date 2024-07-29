@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -10,11 +10,31 @@ const AddManagers = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [assignedProjects, setAssignedProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
   
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [assignedProjectsError, setAssignedProjectsError] = useState("");
+
+  
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        if (response.data.message === "Projects retrieved successfully") {
+          setAllProjects(response.data.projects);
+        } else {
+          toast.error('Failed to load projects.');
+        }
+      } catch (error) {
+        toast.error('An error occurred while fetching projects.');
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   // Function to handle form submission
   const handleSubmit = async (event) => {
@@ -47,7 +67,7 @@ const AddManagers = () => {
       hasErrors = true;
     }
     if (!assignedProjects.length) {
-      setAssignedProjectsError('At least one assigned project is required.');
+      setAssignedProjectsError('At least one project must be assigned.');
       hasErrors = true;
     }
 
@@ -67,6 +87,7 @@ const AddManagers = () => {
         setEmail("");
         setPassword("");
         setAssignedProjects([]);
+        setSelectedProject("");
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -77,16 +98,18 @@ const AddManagers = () => {
     }
   };
 
-  // Handle adding/removing assigned projects
+  // Handle adding selected project s
   const handleAddProject = () => {
-    const newProject = prompt("Enter project name:");
-    if (newProject && !assignedProjects.includes(newProject)) {
-      setAssignedProjects([...assignedProjects, newProject]);
+    const project = allProjects.find(p => p._id === selectedProject);
+    if (project && !assignedProjects.includes(project._id)) {
+      setAssignedProjects([...assignedProjects, project._id]);
     }
+    setSelectedProject(""); 
   };
 
-  const handleRemoveProject = (project) => {
-    setAssignedProjects(assignedProjects.filter(p => p !== project));
+  // Handle removing a project
+  const handleRemoveProject = (projectId) => {
+    setAssignedProjects(assignedProjects.filter(p => p !== projectId));
   };
 
   return (
@@ -149,19 +172,47 @@ const AddManagers = () => {
                   )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="assignedProjects" className="form-label">Assigned Projects</label>
-                  <button type="button" className="btn btn-secondary" onClick={handleAddProject}>
-                    Add Project
-                  </button>
-                  <ul className="list-group mt-2">
-                    {assignedProjects.map((project, index) => (
-                      <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                        {project}
-                        <button type="button" className="btn btn-danger btn-sm" onClick={() => handleRemoveProject(project)}>
-                          Remove
-                        </button>
-                      </li>
-                    ))}
+                  <label htmlFor="assignedProjects" className="form-label">Assign Projects</label>
+                  <div className="input-group">
+                    <select
+                      className="form-select"
+                      id="projectDropdown"
+                      value={selectedProject}
+                      onChange={(e) => setSelectedProject(e.target.value)}
+                    >
+                      <option value="">Select a project</option>
+                      {allProjects.map(project => (
+                        <option key={project._id} value={project._id}>
+                          {project.projectName}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedProject && (
+                      <button
+                        type="button"
+                        className="btn btn-secondary ms-2"
+                        onClick={handleAddProject}
+                      >
+                        Add Project
+                      </button>
+                    )}
+                  </div>
+                  <ul className="list-group mt-3">
+                    {assignedProjects.map((projectId, index) => {
+                      const project = allProjects.find(p => p._id === projectId);
+                      return (
+                        <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                          {project ? project.projectName : 'Unknown Project'}
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleRemoveProject(projectId)}
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                   {assignedProjectsError && (
                     <div className="invalid-feedback d-block">{assignedProjectsError}</div>
@@ -172,7 +223,7 @@ const AddManagers = () => {
             </div>
           </div>
 
-          {/* Toast Container */}
+          
           <ToastContainer />
         </div>
       </div>
