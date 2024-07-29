@@ -5,6 +5,7 @@ import "../../../Styles/UploadDocument.css";
 const UMLDiagram = () => {
     const [umlCode, setUmlCode] = useState('');
     const [error, setError] = useState('');
+    const [diagramGenerated, setDiagramGenerated] = useState(false);
 
     const generateDiagram = () => {
         // Validate UML code
@@ -13,7 +14,6 @@ const UMLDiagram = () => {
             return;
         }
 
-    
         // Clear error message if validation passes
         setError('');
 
@@ -29,6 +29,26 @@ const UMLDiagram = () => {
 
         // Render the Mermaid diagram
         mermaid.init(undefined, diagramElement);
+
+        // Set diagramGenerated to true after rendering
+        setDiagramGenerated(true);
+    };
+
+    const downloadDiagram = () => {
+        const diagramContainer = document.getElementById('diagramContainer');
+        if (diagramContainer) {
+            // Convert SVG to Blob
+            const svgElement = diagramContainer.querySelector('svg');
+            if (svgElement) {
+                const svgBlob = new Blob([svgElement.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'uml-diagram.svg';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
     };
 
     return (
@@ -56,8 +76,9 @@ const UMLDiagram = () => {
                                 placeholder="Enter your UML code here"
                             />
                              {error && <p className="UML-error-message">{error}</p>}
-                             <br></br>
+                             <br />
                             <button onClick={generateDiagram}>Generate Diagram</button>
+                            {diagramGenerated && <button onClick={downloadDiagram}>Download Diagram</button>}
                             <div id="diagramContainer"></div>
                         </div>
                     </div>
