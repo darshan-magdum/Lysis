@@ -6,6 +6,7 @@ import ViewDocumentation from "./ViewDocumentation";
 import CustomPrompt from "./CustomPrompt";
 import { useLocation } from 'react-router-dom';
 import axios from "axios"
+import UMLDiagram from "./UMLDiagram";
 
 
 const ManagerDashboard = () => {
@@ -68,6 +69,9 @@ const ManagerDashboard = () => {
         return <ViewDocumentation />;
       case "customPrompt":
         return <CustomPrompt />;
+        case "UMLDiagram":
+          return <UMLDiagram />;
+        
       default:
         return ""; // Default content if no page matches
     }
