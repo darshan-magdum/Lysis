@@ -68,6 +68,28 @@ const ManagerSider = ({ handleNavigation }) => {
             </div>
           </a>
         </li>
+
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default anchor behavior
+              handleNavigation("UMLDiagram"); // Navigate to Custom Prompt
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+            <span class="material-symbols-outlined">
+family_history
+</span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#table"></use>
+              </svg>
+              <span>UML Diagram</span>
+            </div>
+          </a>
+        </li>
       </ul>
       <hr className="text-light" />
     </div>
