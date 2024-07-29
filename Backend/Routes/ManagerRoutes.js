@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Route: GET /managers
-router.get('/managers', async (req, res) => {
+router.get('/Getallmanagers', async (req, res) => {
   try {
     const managers = await ManagerAccount.find().select('-password');
 
