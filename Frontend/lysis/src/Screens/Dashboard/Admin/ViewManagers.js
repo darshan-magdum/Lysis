@@ -401,7 +401,9 @@ const ViewManagers = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="projectDropdown" className="form-label">Select Project</label>
+                <label htmlFor="projectDropdown" className="form-label">Select Project</label>
+                <div className="input-group">
+                 
                   <select
                     className="form-select"
                     id="projectDropdown"
@@ -424,6 +426,7 @@ const ViewManagers = () => {
                       Add Project
                     </button>
                   )}
+                  </div>
                 </div>
                 {validationErrors.projects && (
                   <div style={{ color: 'red', marginTop: '5px' }}>
