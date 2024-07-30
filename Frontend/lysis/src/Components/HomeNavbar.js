@@ -26,7 +26,7 @@ const HomeNavbar = () => {
             </ScrollLink>
           </li>
           <li>
-            <Link to="/Signup">Get Started</Link>
+            <Link to="/Login">Get Started</Link>
           </li>
         </ul>
       </div>

@@ -59,9 +59,9 @@ const ManagerHome = () => {
             Home
           </h5>
         </div>
-        <div>
+        {/* <div>
           <button className="btn btn-primary" >Start to Analyze</button>
-        </div>
+        </div> */}
       </div>
       <div className="row" style={{marginLeft:'90px'}}>
         {/* Total Projects Card */}

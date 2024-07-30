@@ -1,39 +1,44 @@
 import React, { useState } from "react";
 import mermaid from 'mermaid';
 import "../../../Styles/UploadDocument.css";
-
+ 
 const UMLDiagram = () => {
     const [umlCode, setUmlCode] = useState('');
     const [error, setError] = useState('');
     const [diagramGenerated, setDiagramGenerated] = useState(false);
-
+ 
     const generateDiagram = () => {
         // Validate UML code
         if (!umlCode.trim()) {
             setError('UML code cannot be empty.');
             return;
         }
-
+ 
         // Clear error message if validation passes
         setError('');
-
+ 
         // Clear previous diagram
         const diagramContainer = document.getElementById('diagramContainer');
         diagramContainer.innerHTML = '';
-
+ 
         // Create a new Mermaid diagram element
         const diagramElement = document.createElement('div');
         diagramElement.className = 'mermaid';
         diagramElement.textContent = umlCode;
         diagramContainer.appendChild(diagramElement);
-
-        // Render the Mermaid diagram
-        mermaid.init(undefined, diagramElement);
-
+ 
+        // Initialize Mermaid and render the diagram
+        try {
+            mermaid.initialize({ startOnLoad: true });
+            mermaid.contentLoaded();
+        } catch (e) {
+            setError('Error rendering diagram: ' + e.message);
+        }
+ 
         // Set diagramGenerated to true after rendering
         setDiagramGenerated(true);
     };
-
+ 
     const downloadDiagram = () => {
         const diagramContainer = document.getElementById('diagramContainer');
         if (diagramContainer) {
@@ -47,10 +52,12 @@ const UMLDiagram = () => {
                 a.download = 'uml-diagram.svg';
                 a.click();
                 URL.revokeObjectURL(url);
+            } else {
+                setError('No SVG found to download.');
             }
         }
     };
-
+ 
     return (
         <div>
             <div className="container py-3">
@@ -78,27 +85,21 @@ const UMLDiagram = () => {
                              <br />
                             <button onClick={generateDiagram}>Generate Diagram</button>
                    
-                           <br></br>
-                      
+                           <br />
+                     
                             {diagramGenerated && (
-                                
                                 <>
-                                         <hr></hr>
-                               
-  <button 
-    className="btn btn-primary" 
-    onClick={downloadDiagram}
-    style={{marginTop:"0px",float:"right"}}
-  >
-    Download Diagram
-  </button>
-  </>
-)}
-                            <div id="diagramContainer">
-                           
-
-
-                            </div>
+                                    <hr />
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={downloadDiagram}
+                                        style={{marginTop: "0px", float: "right"}}
+                                    >
+                                        Download Diagram
+                                    </button>
+                                </>
+                            )}
+                            <div id="diagramContainer" style={{width: '100%'}}></div>
                         </div>
                     </div>
                 </div>
@@ -106,5 +107,7 @@ const UMLDiagram = () => {
         </div>
     );
 };
-
+ 
 export default UMLDiagram;
+ 
+ 
