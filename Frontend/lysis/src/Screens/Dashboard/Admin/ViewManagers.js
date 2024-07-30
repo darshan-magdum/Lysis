@@ -241,6 +241,12 @@ const ViewManagers = () => {
     );
   }
 
+  // Map project IDs to names for the table
+  const projectMap = allProjects.reduce((acc, project) => {
+    acc[project._id] = project.projectName;
+    return acc;
+  }, {});
+
   // Total pages
   const totalPages = Math.ceil(filteredManagers.length / itemsPerPage);
 
@@ -294,8 +300,8 @@ const ViewManagers = () => {
                   <th style={cellStyle}>SR.NO</th>
                   <th style={cellStyle}>Name</th>
                   <th style={cellStyle}>Email</th>
-                  <th style={cellStyle}>Projects</th> {/* New column for projects */}
-                  <th style={cellStyle}>Actions</th> {/* New column for actions */}
+                  <th style={cellStyle}>Projects</th>
+                  <th style={cellStyle}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -311,7 +317,9 @@ const ViewManagers = () => {
                       <td style={cellStyle}>{indexOfFirstManager + index + 1}</td>
                       <td style={cellStyle}>{manager.name}</td>
                       <td style={cellStyle}>{manager.email}</td>
-                      <td style={cellStyle}>{manager.AssignedProjects.join(', ')}</td> {/* Display projects */}
+                      <td style={cellStyle}>
+                        {manager.AssignedProjects.map(projectId => projectMap[projectId] || 'Unknown Project').join(', ')}
+                      </td>
                       <td style={cellStyle}>
                         <button
                           onClick={() => handleEditClick(manager)}
@@ -440,19 +448,19 @@ const ViewManagers = () => {
                   })}
                 </ul>
                 <div style={buttonContainerStyle}>
-  <button
-    onClick={handleEditSubmit}
-    className="btn btn-primary"
-  >
-    Save Changes
-  </button>
-  <button
-    onClick={() => setIsEditing(false)}
-    className="btn btn-secondary"
-  >
-    Cancel
-  </button>
-</div>
+                  <button
+                    onClick={handleEditSubmit}
+                    className="btn btn-primary"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
