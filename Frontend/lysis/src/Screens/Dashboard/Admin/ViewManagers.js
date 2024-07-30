@@ -219,8 +219,10 @@ const ViewManagers = () => {
     maxWidth: '600px'
   };
 
-  const buttonStyle = {
-    marginRight: '10px'
+  const buttonContainerStyle = {
+    display: 'flex',
+    gap: '10px',
+    marginTop: '10px',
   };
 
   if (loading) {
@@ -437,21 +439,20 @@ const ViewManagers = () => {
                     );
                   })}
                 </ul>
-                <div>
-                  <button
-                    onClick={handleEditSubmit}
-                    className="btn btn-primary"
-                    style={buttonStyle}
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="btn btn-secondary"
-                  >
-                    Cancel
-                  </button>
-                </div>
+                <div style={buttonContainerStyle}>
+  <button
+    onClick={handleEditSubmit}
+    className="btn btn-primary"
+  >
+    Save Changes
+  </button>
+  <button
+    onClick={() => setIsEditing(false)}
+    className="btn btn-secondary"
+  >
+    Cancel
+  </button>
+</div>
               </div>
             </div>
           )}
