@@ -10,6 +10,9 @@ const ViewManagers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [allProjects, setAllProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [assignedProjects, setAssignedProjects] = useState([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,8 +21,8 @@ const ViewManagers = () => {
   // Editing state
   const [editManager, setEditManager] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', email: '' });
-  const [validationErrors, setValidationErrors] = useState({ name: '', email: '' });
+  const [editData, setEditData] = useState({ name: '', email: '', AssignedProjects: [] });
+  const [validationErrors, setValidationErrors] = useState({ name: '', email: '', projects: '' });
 
   useEffect(() => {
     axios.get("http://localhost:8080/Manager/Getallmanagers")
@@ -60,9 +63,10 @@ const ViewManagers = () => {
     setEditManager(manager);
     setEditData({
       name: manager.name,
-      email: manager.email
+      email: manager.email,
+      AssignedProjects: manager.AssignedProjects
     });
-    setValidationErrors({ name: '', email: '' });
+    setValidationErrors({ name: '', email: '', projects: '' });
     setIsEditing(true);
   };
 
@@ -71,10 +75,21 @@ const ViewManagers = () => {
     setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleProjectChange = (e) => {
+    const { value } = e.target;
+    if (!editData.AssignedProjects.includes(value) && value !== "") {
+      setEditData(prev => ({
+        ...prev,
+        AssignedProjects: [...prev.AssignedProjects, value]
+      }));
+    }
+  };
+
   const handleEditSubmit = () => {
     const errors = {
       name: '',
-      email: ''
+      email: '',
+      projects: ''
     };
     let hasErrors = false;
 
@@ -84,6 +99,10 @@ const ViewManagers = () => {
     }
     if (!editData.email) {
       errors.email = 'Email is required.';
+      hasErrors = true;
+    }
+    if (editData.AssignedProjects.length === 0) {
+      errors.projects = 'At least one project must be assigned.';
       hasErrors = true;
     }
 
@@ -108,6 +127,45 @@ const ViewManagers = () => {
         setError(err.response.message);
         toast.error('Error updating manager!');
       });
+  };
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        if (response.data.message === "Projects retrieved successfully") {
+          setAllProjects(response.data.projects);
+        } else {
+          toast.error('Failed to load projects.');
+        }
+      } catch (error) {
+        toast.error('An error occurred while fetching projects.');
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Handle adding selected project 
+  const handleAddProject = () => {
+    const project = allProjects.find(p => p._id === selectedProject);
+    if (project && !assignedProjects.includes(project._id)) {
+      setAssignedProjects([...assignedProjects, project._id]);
+      setEditData(prev => ({
+        ...prev,
+        AssignedProjects: [...prev.AssignedProjects, project._id]
+      }));
+    }
+    setSelectedProject("");
+  };
+
+  // Handle removing a project
+  const handleRemoveProject = (projectId) => {
+    setAssignedProjects(assignedProjects.filter(p => p !== projectId));
+    setEditData(prev => ({
+      ...prev,
+      AssignedProjects: prev.AssignedProjects.filter(p => p !== projectId)
+    }));
   };
 
   const lightGray = "#d3d3d3";
@@ -174,7 +232,6 @@ const ViewManagers = () => {
   }
 
   if (error) {
-    
     return (
       <div style={centeredStyle}>
         <p style={messageStyle}>Error fetching data: {error.message}</p>
@@ -332,6 +389,54 @@ const ViewManagers = () => {
                     </div>
                   )}
                 </div>
+
+                <div className="mb-3">
+                  <label htmlFor="projectDropdown" className="form-label">Select Project</label>
+                  <select
+                    className="form-select"
+                    id="projectDropdown"
+                    value={selectedProject}
+                    onChange={(e) => setSelectedProject(e.target.value)}
+                  >
+                    <option value="">Select a project</option>
+                    {allProjects.map(project => (
+                      <option key={project._id} value={project._id}>
+                        {project.projectName}
+                      </option>
+                    ))}
+                  </select>
+                  {selectedProject && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary ms-2"
+                      onClick={handleAddProject}
+                    >
+                      Add Project
+                    </button>
+                  )}
+                </div>
+                {validationErrors.projects && (
+                  <div style={{ color: 'red', marginTop: '5px' }}>
+                    {validationErrors.projects}
+                  </div>
+                )}
+                <ul className="list-group mt-3">
+                  {editData.AssignedProjects.map((projectId, index) => {
+                    const project = allProjects.find(p => p._id === projectId);
+                    return (
+                      <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                        {project ? project.projectName : 'Unknown Project'}
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleRemoveProject(projectId)}
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
                 <div>
                   <button
                     onClick={handleEditSubmit}

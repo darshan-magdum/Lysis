@@ -98,7 +98,7 @@ const AddManagers = () => {
     }
   };
 
-  // Handle adding selected project s
+  // Handle adding selected project 
   const handleAddProject = () => {
     const project = allProjects.find(p => p._id === selectedProject);
     if (project && !assignedProjects.includes(project._id)) {
