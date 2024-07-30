@@ -30,7 +30,7 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchManagerCount = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/Manager/managers");
+        const response = await axios.get("http://localhost:8080/Manager/Getallmanagers");
         setManagerCount(response.data.length);
         setLoading(false);
       } catch (error) {
