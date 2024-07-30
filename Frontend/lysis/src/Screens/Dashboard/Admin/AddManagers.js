@@ -18,7 +18,6 @@ const AddManagers = () => {
   const [passwordError, setPasswordError] = useState("");
   const [assignedProjectsError, setAssignedProjectsError] = useState("");
 
-  
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -73,12 +72,18 @@ const AddManagers = () => {
 
     if (hasErrors) return;
 
+    // Map project IDs to names
+    const assignedProjectNames = assignedProjects.map(projectId => {
+      const project = allProjects.find(p => p._id === projectId);
+      return project ? project.projectName : 'Unknown Project';
+    });
+
     try {
       const response = await axios.post('http://localhost:8080/Manager/signup', {
         name,
         email,
         password,
-        AssignedProjects: assignedProjects
+        AssignedProjects: assignedProjectNames
       });
 
       if (response.status === 201) {
