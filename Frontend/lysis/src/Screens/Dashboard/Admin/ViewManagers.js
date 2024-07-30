@@ -66,6 +66,7 @@ const ViewManagers = () => {
       email: manager.email,
       AssignedProjects: manager.AssignedProjects
     });
+    setAssignedProjects(manager.AssignedProjects);
     setValidationErrors({ name: '', email: '', projects: '' });
     setIsEditing(true);
   };
@@ -155,8 +156,8 @@ const ViewManagers = () => {
         ...prev,
         AssignedProjects: [...prev.AssignedProjects, project._id]
       }));
+      setSelectedProject(""); // Clear the selected project after adding
     }
-    setSelectedProject("");
   };
 
   // Handle removing a project
@@ -241,6 +242,12 @@ const ViewManagers = () => {
     );
   }
 
+  // Map project IDs to names for the table
+  const projectMap = allProjects.reduce((acc, project) => {
+    acc[project._id] = project.projectName;
+    return acc;
+  }, {});
+
   // Total pages
   const totalPages = Math.ceil(filteredManagers.length / itemsPerPage);
 
@@ -294,8 +301,8 @@ const ViewManagers = () => {
                   <th style={cellStyle}>SR.NO</th>
                   <th style={cellStyle}>Name</th>
                   <th style={cellStyle}>Email</th>
-                  <th style={cellStyle}>Projects</th> {/* New column for projects */}
-                  <th style={cellStyle}>Actions</th> {/* New column for actions */}
+                  <th style={cellStyle}>Projects</th>
+                  <th style={cellStyle}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -311,7 +318,9 @@ const ViewManagers = () => {
                       <td style={cellStyle}>{indexOfFirstManager + index + 1}</td>
                       <td style={cellStyle}>{manager.name}</td>
                       <td style={cellStyle}>{manager.email}</td>
-                      <td style={cellStyle}>{manager.AssignedProjects.join(', ')}</td> {/* Display projects */}
+                      <td style={cellStyle}>
+                        {manager.AssignedProjects.map(projectId => projectMap[projectId] || 'Unknown Project').join(', ')}
+                      </td>
                       <td style={cellStyle}>
                         <button
                           onClick={() => handleEditClick(manager)}
@@ -394,28 +403,30 @@ const ViewManagers = () => {
 
                 <div className="mb-3">
                   <label htmlFor="projectDropdown" className="form-label">Select Project</label>
-                  <select
-                    className="form-select"
-                    id="projectDropdown"
-                    value={selectedProject}
-                    onChange={(e) => setSelectedProject(e.target.value)}
-                  >
-                    <option value="">Select a project</option>
-                    {allProjects.map(project => (
-                      <option key={project._id} value={project._id}>
-                        {project.projectName}
-                      </option>
-                    ))}
-                  </select>
-                  {selectedProject && (
-                    <button
-                      type="button"
-                      className="btn btn-secondary ms-2"
-                      onClick={handleAddProject}
+                  <div className="input-group">
+                    <select
+                      className="form-select"
+                      id="projectDropdown"
+                      value={selectedProject}
+                      onChange={(e) => setSelectedProject(e.target.value)}
                     >
-                      Add Project
-                    </button>
-                  )}
+                      <option value="">Select a project</option>
+                      {allProjects.filter(project => !assignedProjects.includes(project._id)).map(project => (
+                        <option key={project._id} value={project._id}>
+                          {project.projectName}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedProject && (
+                      <button
+                        type="button"
+                        className="btn btn-secondary ms-2"
+                        onClick={handleAddProject}
+                      >
+                        Add Project
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {validationErrors.projects && (
                   <div style={{ color: 'red', marginTop: '5px' }}>
@@ -440,19 +451,19 @@ const ViewManagers = () => {
                   })}
                 </ul>
                 <div style={buttonContainerStyle}>
-  <button
-    onClick={handleEditSubmit}
-    className="btn btn-primary"
-  >
-    Save Changes
-  </button>
-  <button
-    onClick={() => setIsEditing(false)}
-    className="btn btn-secondary"
-  >
-    Cancel
-  </button>
-</div>
+                  <button
+                    onClick={handleEditSubmit}
+                    className="btn btn-primary"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
