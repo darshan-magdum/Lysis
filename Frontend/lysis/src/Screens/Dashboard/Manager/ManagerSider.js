@@ -34,6 +34,27 @@ const ManagerSider = ({ handleNavigation }) => {
             className="nav-link text-light"
             onClick={(e) => {
               e.preventDefault(); // Prevent default anchor behavior
+              handleNavigation("analyze"); // Navigate to Home
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              search
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#Analyze"></use>
+              </svg>
+              <span>Analyze</span>
+            </div>
+          </a>
+        </li>
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default anchor behavior
               handleNavigation("documentation"); // Navigate to View Documentation
             }}
           >

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ManagerSider from "./ManagerSider";
 import ProfileAvatar from "../../../Images/avatar profile.jpg";
 import ManagerHome from "./ManagerHome"; // Import new components
+import Analyze from "./Analyze"; // Import new components
 import ViewDocumentation from "./ViewDocumentation";
 import CustomPrompt from "./CustomPrompt";
 import { useLocation } from 'react-router-dom';
@@ -65,6 +66,8 @@ const ManagerDashboard = () => {
     switch (currentPage) {
       case "home":
         return <ManagerHome />;
+      case "analyze":
+        return <Analyze />;
       case "documentation":
         return <ViewDocumentation />;
       case "customPrompt":
