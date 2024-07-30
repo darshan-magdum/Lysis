@@ -72,18 +72,12 @@ const AddManagers = () => {
 
     if (hasErrors) return;
 
-    // Map project IDs to names
-    const assignedProjectNames = assignedProjects.map(projectId => {
-      const project = allProjects.find(p => p._id === projectId);
-      return project ? project.projectName : 'Unknown Project';
-    });
-
     try {
       const response = await axios.post('http://localhost:8080/Manager/signup', {
         name,
         email,
         password,
-        AssignedProjects: assignedProjectNames
+        AssignedProjects: assignedProjects
       });
 
       if (response.status === 201) {
@@ -108,8 +102,8 @@ const AddManagers = () => {
     const project = allProjects.find(p => p._id === selectedProject);
     if (project && !assignedProjects.includes(project._id)) {
       setAssignedProjects([...assignedProjects, project._id]);
+      setSelectedProject(""); // Clear the selected project after adding
     }
-    setSelectedProject(""); 
   };
 
   // Handle removing a project
@@ -186,7 +180,7 @@ const AddManagers = () => {
                       onChange={(e) => setSelectedProject(e.target.value)}
                     >
                       <option value="">Select a project</option>
-                      {allProjects.map(project => (
+                      {allProjects.filter(project => !assignedProjects.includes(project._id)).map(project => (
                         <option key={project._id} value={project._id}>
                           {project.projectName}
                         </option>
@@ -227,8 +221,6 @@ const AddManagers = () => {
               </form>
             </div>
           </div>
-
-          
           <ToastContainer />
         </div>
       </div>
