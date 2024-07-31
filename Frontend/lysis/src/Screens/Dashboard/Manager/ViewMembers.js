@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../../../Styles/UploadDocument.css";
 
 const ViewMembers = () => {
-  const [managers, setManagers] = useState([]);
-  const [filteredManagers, setFilteredManagers] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,16 +19,16 @@ const ViewMembers = () => {
   const [itemsPerPage] = useState(3);
 
   // Editing state
-  const [editManager, setEditManager] = useState(null);
+  const [editMember, setEditMember] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', email: '', AssignedProjects: [] });
+  const [editData, setEditData] = useState({ name: '', email: '', assignedProjects: [] });
   const [validationErrors, setValidationErrors] = useState({ name: '', email: '', projects: '' });
 
   useEffect(() => {
-    axios.get("http://localhost:8080/Manager/Getallmanagers")
+    axios.get("http://localhost:8080/TeamMember/Getallteammembers")
       .then(response => {
-        setManagers(response.data);
-        setFilteredManagers(response.data);
+        setMembers(response.data);
+        setFilteredMembers(response.data);
         setLoading(false);
       })
       .catch(err => {
@@ -39,34 +39,34 @@ const ViewMembers = () => {
 
   useEffect(() => {
     if (searchQuery) {
-      setFilteredManagers(
-        managers.filter(manager =>
-          manager.name.toLowerCase().includes(searchQuery.toLowerCase())
+      setFilteredMembers(
+        members.filter(member =>
+          member.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     } else {
-      setFilteredManagers(managers);
+      setFilteredMembers(members);
     }
     setCurrentPage(1); // Reset to the first page when search query changes
-  }, [searchQuery, managers]);
+  }, [searchQuery, members]);
 
   // Calculate paginated data
-  const indexOfLastManager = currentPage * itemsPerPage;
-  const indexOfFirstManager = indexOfLastManager - itemsPerPage;
-  const currentManagers = filteredManagers.slice(indexOfFirstManager, indexOfLastManager);
+  const indexOfLastMember = currentPage * itemsPerPage;
+  const indexOfFirstMember = indexOfLastMember - itemsPerPage;
+  const currentMembers = filteredMembers.slice(indexOfFirstMember, indexOfLastMember);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleEditClick = (manager) => {
-    setEditManager(manager);
+  const handleEditClick = (member) => {
+    setEditMember(member);
     setEditData({
-      name: manager.name,
-      email: manager.email,
-      AssignedProjects: manager.AssignedProjects
+      name: member.name,
+      email: member.email,
+      assignedProjects: member.assignedProjects
     });
-    setAssignedProjects(manager.AssignedProjects);
+    setAssignedProjects(member.assignedProjects);
     setValidationErrors({ name: '', email: '', projects: '' });
     setIsEditing(true);
   };
@@ -78,10 +78,10 @@ const ViewMembers = () => {
 
   const handleProjectChange = (e) => {
     const { value } = e.target;
-    if (!editData.AssignedProjects.includes(value) && value !== "") {
+    if (!editData.assignedProjects.includes(value) && value !== "") {
       setEditData(prev => ({
         ...prev,
-        AssignedProjects: [...prev.AssignedProjects, value]
+        assignedProjects: [...prev.assignedProjects, value]
       }));
     }
   };
@@ -102,7 +102,7 @@ const ViewMembers = () => {
       errors.email = 'Email is required.';
       hasErrors = true;
     }
-    if (editData.AssignedProjects.length === 0) {
+    if (editData.assignedProjects.length === 0) {
       errors.projects = 'At least one project must be assigned.';
       hasErrors = true;
     }
@@ -112,21 +112,21 @@ const ViewMembers = () => {
       return;
     }
 
-    axios.put(`http://localhost:8080/Manager/editmanager/${editManager._id}`, editData)
+    axios.put(`http://localhost:8080/TeamMember/editteammember/${editMember._id}`, editData)
       .then(response => {
-        const updatedManager = response.data;
-        setManagers((prev) =>
-          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
+        const updatedMember = response.data;
+        setMembers((prev) =>
+          prev.map((mem) => (mem._id === updatedMember._id ? updatedMember : mem))
         );
-        setFilteredManagers((prev) =>
-          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
+        setFilteredMembers((prev) =>
+          prev.map((mem) => (mem._id === updatedMember._id ? updatedMember : mem))
         );
         setIsEditing(false);
-        toast.success('Manager updated successfully!');
+        toast.success('Member updated successfully!');
       })
       .catch(err => {
         setError(err.response.message);
-        toast.error('Error updating manager!');
+        toast.error('Error updating member!');
       });
   };
 
@@ -154,7 +154,7 @@ const ViewMembers = () => {
       setAssignedProjects([...assignedProjects, project._id]);
       setEditData(prev => ({
         ...prev,
-        AssignedProjects: [...prev.AssignedProjects, project._id]
+        assignedProjects: [...prev.assignedProjects, project._id]
       }));
       setSelectedProject(""); // Clear the selected project after adding
     }
@@ -165,7 +165,7 @@ const ViewMembers = () => {
     setAssignedProjects(assignedProjects.filter(p => p !== projectId));
     setEditData(prev => ({
       ...prev,
-      AssignedProjects: prev.AssignedProjects.filter(p => p !== projectId)
+      assignedProjects: prev.assignedProjects.filter(p => p !== projectId)
     }));
   };
 
@@ -249,7 +249,7 @@ const ViewMembers = () => {
   }, {});
 
   // Total pages
-  const totalPages = Math.ceil(filteredManagers.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
 
   return (
     <div className="container py-3">
@@ -263,7 +263,7 @@ const ViewMembers = () => {
               color: "#20609c",
             }}
           >
-            View Manager Details
+            View Team Members
           </h5>
           <div className="mb-3">
             <div className="input-group" style={{ maxWidth: '500px' }}>
@@ -306,24 +306,24 @@ const ViewMembers = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentManagers.length === 0 ? (
+                {currentMembers.length === 0 ? (
                   <tr>
                     <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                       <p style={messageStyle}>No records found</p>
                     </td>
                   </tr>
                 ) : (
-                  currentManagers.map((manager, index) => (
-                    <tr key={manager._id}>
-                      <td style={cellStyle}>{indexOfFirstManager + index + 1}</td>
-                      <td style={cellStyle}>{manager.name}</td>
-                      <td style={cellStyle}>{manager.email}</td>
+                  currentMembers.map((member, index) => (
+                    <tr key={member._id}>
+                      <td style={cellStyle}>{indexOfFirstMember + index + 1}</td>
+                      <td style={cellStyle}>{member.name}</td>
+                      <td style={cellStyle}>{member.email}</td>
                       <td style={cellStyle}>
-                        {manager.AssignedProjects.map(projectId => projectMap[projectId] || 'Unknown Project').join(', ')}
+                        {member.assignedProjects.map(projectId => projectMap[projectId] || 'Unknown Project').join(', ')}
                       </td>
                       <td style={cellStyle}>
                         <button
-                          onClick={() => handleEditClick(manager)}
+                          onClick={() => handleEditClick(member)}
                           style={{
                             backgroundColor: '#20609c',
                             color: '#fff',
@@ -342,7 +342,7 @@ const ViewMembers = () => {
               </tbody>
             </table>
           </div>
-          {filteredManagers.length > 0 && (
+          {filteredMembers.length > 0 && (
             <div className="pagination" style={{ marginTop: "20px", display: 'flex', justifyContent: 'flex-end' }}>
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
@@ -367,7 +367,7 @@ const ViewMembers = () => {
           {isEditing && (
             <div style={modalBackdropStyle}>
               <div style={modalStyle}>
-                <h5>Edit Manager</h5>
+                <h5>Edit Team Member</h5>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">Name</label>
                   <input
@@ -434,7 +434,7 @@ const ViewMembers = () => {
                   </div>
                 )}
                 <ul className="list-group mt-3">
-                  {editData.AssignedProjects.map((projectId, index) => {
+                  {editData.assignedProjects.map((projectId, index) => {
                     const project = allProjects.find(p => p._id === projectId);
                     return (
                       <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
