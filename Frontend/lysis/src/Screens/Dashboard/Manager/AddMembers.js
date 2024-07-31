@@ -48,7 +48,7 @@ const AddMembers = () => {
     // Validate inputs
     let hasErrors = false;
     if (!name) {
-      setNameError('Manager name is required.');
+      setNameError('Team member name is required.');
       hasErrors = true;
     }
     if (!email) {
@@ -77,11 +77,11 @@ const AddMembers = () => {
         name,
         email,
         password,
-        AssignedProjects: assignedProjects
+        assignedProjects
       });
 
       if (response.status === 201) {
-        toast.success('Manager account created successfully');
+        toast.success('Team member account created successfully');
         setName("");
         setEmail("");
         setPassword("");
@@ -123,18 +123,18 @@ const AddMembers = () => {
               color: "#20609c",
             }}
           >
-            Add Manager
+            Add Team Member
           </h5>
           <div className="card shadow-sm">
             <div className="card-body">
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Manager Name</label>
+                  <label htmlFor="name" className="form-label">Team Member Name</label>
                   <input
                     type="text"
                     id="name"
                     className={`form-control ${nameError ? 'is-invalid' : ''}`}
-                    placeholder="Enter manager name"
+                    placeholder="Enter team member name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -217,7 +217,7 @@ const AddMembers = () => {
                     <div className="invalid-feedback d-block">{assignedProjectsError}</div>
                   )}
                 </div>
-                <button type="submit" className="btn btn-primary">Add Manager</button>
+                <button type="submit" className="btn btn-primary">Add Team Member</button>
               </form>
             </div>
           </div>
