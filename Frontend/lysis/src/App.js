@@ -8,6 +8,7 @@ import ResetPassword from "./Screens/Accounts/ResetPassword";
 import ManagerDashboard from "./Screens/Dashboard/Manager/ManagerDashboard";
 import AdminDashboard from "./Screens/Dashboard/Admin/AdminDashboard";
 import SplashScreen from "./Components/SplashScreen";
+import TeamMemberDashboard from "./Screens/Dashboard/TeamMember/TeamMemberDashboard";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           
           <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
+          <Route path="/TeamMemberDashboard" element={<TeamMemberDashboard />} />
 
         </Routes>
       </div>
