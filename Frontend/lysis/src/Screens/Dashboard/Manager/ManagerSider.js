@@ -111,6 +111,49 @@ family_history
             </div>
           </a>
         </li>
+        
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); 
+              handleNavigation("AddMembers"); // Navigate to Add Members
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              group_add
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#home"></use>
+              </svg>
+              <span>Add Members</span>
+            </div>
+          </a>
+        </li>
+
+
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); 
+              handleNavigation("ViewMembers"); // Navigate to View Members
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+              person_4
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#table"></use>
+              </svg>
+              <span>View Members</span>
+            </div>
+          </a>
+        </li>
       </ul>
       <hr className="text-light" />
     </div>

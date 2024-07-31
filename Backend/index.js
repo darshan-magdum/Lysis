@@ -15,13 +15,16 @@ app.use(cors());
 // Routes
 const AdminAuth = require('./Routes/AdminRoutes');
 const ManagerAuth = require('./Routes/ManagerRoutes');
+const TeamMemberAuth = require('./Routes/TeamMemberRoutes');
 const ContactRoutes = require('./Routes/ContactRoutes');
 const AddNewProjectsRoutes = require('./Routes/NewProjectsRoutes');
+
 
 app.use('/Manager', ManagerAuth);
 app.use('/Admin', AdminAuth);
 app.use('/Contact', ContactRoutes);
 app.use('/NewProjects', AddNewProjectsRoutes);
+app.use('/TeamMember', TeamMemberAuth);
 
 // Start server
 const port = process.env.PORT || 8080;
