@@ -23,6 +23,7 @@ const ViewManagers = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ name: '', email: '', AssignedProjects: [] });
   const [validationErrors, setValidationErrors] = useState({ name: '', email: '', projects: '' });
+  console.log("validationErrors",validationErrors)
 
   useEffect(() => {
     axios.get("http://localhost:8080/Manager/Getallmanagers")
