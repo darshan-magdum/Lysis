@@ -125,6 +125,7 @@ const ViewMembers = () => {
         toast.success('Member updated successfully!');
       })
       .catch(err => {
+    
         setError(err.response.message);
         toast.error('Error updating member!');
       });

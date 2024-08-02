@@ -113,21 +113,24 @@ const ViewManagers = () => {
     }
 
     axios.put(`http://localhost:8080/Manager/editmanager/${editManager._id}`, editData)
-      .then(response => {
-        const updatedManager = response.data;
-        setManagers((prev) =>
-          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
-        );
-        setFilteredManagers((prev) =>
-          prev.map((mgr) => (mgr._id === updatedManager._id ? updatedManager : mgr))
-        );
-        setIsEditing(false);
-        toast.success('Manager updated successfully!');
-      })
-      .catch(err => {
-        setError(err.response.message);
-        toast.error('Error updating manager!');
-      });
+  .then(response => {
+    const updatedManager = response.data.manager;
+    setManagers(prev => prev.map(m => m._id === updatedManager._id ? updatedManager : m));
+    setFilteredManagers(prev => prev.map(m => m._id === updatedManager._id ? updatedManager : m));
+    setIsEditing(false);
+    toast.success('Manager updated successfully!');
+  })
+  .catch(err => {
+    console.log("err",err)
+    if (err.response && err.response.data.message) {
+      setValidationErrors(err.response.data.message);
+      toast.error(err.response.data.message);
+    } else {
+      setError(err);
+      toast.error('Error updating manager!');
+    }
+  });
+
   };
 
   useEffect(() => {
