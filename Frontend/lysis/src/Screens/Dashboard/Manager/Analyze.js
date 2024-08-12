@@ -147,12 +147,23 @@ const Analyze = () => {
   };
 
 
-  const getFileEntries = (files) => {
-    return files.map(file => {
-      const path = file.webkitRelativePath || file.name;
-      return { file, path };
-    });
-  };
+  const codeExtensions = [
+    'js', 'jsx', 'ts', 'tsx', 'html', 'css', 'py', 'java', 'cpp', 'c', 'cs',
+    'rb', 'php', 'go', 'rs', 'swift', 'kt', 'm', 'sh', 'sql', 'json', 'xml',
+    'yml', 'yaml', 'cshtml', 'asm', 's', 'bash', 'zsh', 'clj', 'dart', 'ex',
+    'exs', 'fs', 'fsx', 'hs', 'lisp', 'cl', 'kts', 'pl', 'pm', 'r', 'scala',
+    'scm', 'sls', 'st', 'tcl', 'vhdl', 'vhd', 'sv', 'xsl', 'xslt'
+];
+
+const getFileEntries = (files) => {
+    return files
+        .filter(file => codeExtensions.includes(file.name.split('.').pop()))
+        .map(file => {
+            const path = file.webkitRelativePath || file.name;
+            return { file, path };
+        });
+};
+
 
   async function analyzeCodeWithAzureAI(codeText) {
     const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
