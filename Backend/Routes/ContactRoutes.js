@@ -15,7 +15,6 @@ const contactSchema = Joi.object({
 
 // POST route to add a new contact
 router.post('/AddContact', async (req, res) => {
-  // Validate request body
   const { error } = contactSchema.validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
