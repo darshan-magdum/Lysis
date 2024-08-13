@@ -34,7 +34,7 @@ router.get('/ProjectsDetails/:managerId', async (req, res) => {
   const { managerId } = req.params;
 
   try {
-    const project = await Project.findOne({  managerId });
+    const project = await Project.find({  managerId });
 
     if (!project) {
       return res.status(404).send({ message: 'Project not found' });

@@ -3,16 +3,15 @@ import React, { useEffect, useState } from "react";
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from "axios";
- 
+
 const ViewDocumentation = () => {
   const [analysisResults, setAnalysisResults] = useState([]);
+  console.log("analyzed data:", analysisResults)
   const [projectSummary, setProjectSummary] = useState(null);
   const [output, setOutput] = useState(false);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("");
   const [managerId, setManagerId] = useState(null);
-console.log('managerId',managerId)
-
   useEffect(() => {
     // Retrieve managerId from localStorage when component mounts
     const id = localStorage.getItem("userId");
@@ -30,7 +29,7 @@ console.log('managerId',managerId)
 
     fetchProjects();
   }, []);
-  
+
   // useEffect(async () => {
   //   try {
   //     const response = await axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}/${selectedProject}`);
@@ -39,7 +38,7 @@ console.log('managerId',managerId)
   //     console.error("Error fetching Project data:", error);
   //   }
   // }, [selectedProject]);
- 
+
   useEffect(() => {
     if (managerId) {
       axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}`)
@@ -54,21 +53,21 @@ console.log('managerId',managerId)
         });
     }
   }, [managerId]);
-  
-  
-  useEffect(() => {
-    const data = localStorage.getItem("analyses");
-    const summary = localStorage.getItem("projectSummary");
-    if (data) {
-      setAnalysisResults(JSON.parse(data));
-      setOutput(true);
-    }
-    if (summary) {
-      setProjectSummary(summary);
-      setOutput(true);
-    }
-  }, []);
- 
+
+
+  // useEffect(() => {
+  //   const data = localStorage.getItem("analyses");
+  //   const summary = localStorage.getItem("projectSummary");
+  //   if (data) {
+  //     setAnalysisResults(JSON.parse(data));
+  //     setOutput(true);
+  //   }
+  //   if (summary) {
+  //     setProjectSummary(summary);
+  //     setOutput(true);
+  //   }
+  // }, []);
+
   const handleDownloadAllPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(12);
@@ -76,11 +75,11 @@ console.log('managerId',managerId)
     const margin = 10;
     const textWidth = pageWidth - 2 * margin;
     let yOffset = margin; // Starting vertical position
- 
+
     const addTextToPage = (text, startYOffset) => {
       let splitText = doc.splitTextToSize(text, textWidth);
       let currentYOffset = startYOffset;
- 
+
       splitText.forEach((line, index) => {
         if (currentYOffset + 10 > doc.internal.pageSize.getHeight() - margin) {
           doc.addPage();
@@ -89,10 +88,10 @@ console.log('managerId',managerId)
         doc.text(line, margin, currentYOffset);
         currentYOffset += 10; // Line height
       });
- 
+
       return currentYOffset; // Return the new Y offset
     };
- 
+
     // Add the project summary
     if (projectSummary) {
       doc.setFontSize(14);
@@ -103,11 +102,11 @@ console.log('managerId',managerId)
       yOffset = addTextToPage(projectSummary, yOffset);
       doc.addPage(); // Add a new page for the analysis results
     }
- 
+
     // Add each analysis result
     analysisResults.forEach((result, index) => {
       if (index !== 0) doc.addPage(); // Add a new page for each result
-     
+
       doc.setFontSize(16);
       doc.setFont('Helvetica', 'bold');
       yOffset = margin; // Reset Y offset for new page
@@ -116,10 +115,10 @@ console.log('managerId',managerId)
       yOffset += 10; // Space after file name
       yOffset = addTextToPage(result.analysis, yOffset);
     });
- 
+
     doc.save('analysis_results.pdf');
   };
- 
+
   return (
     <div>
       <div className="container py-3">
@@ -136,26 +135,26 @@ console.log('managerId',managerId)
               >
                 View Documentation
               </h5>
-            
+
             </div>
             <div className="form-group">
-    <div className="col-lg-4">
-      <label htmlFor="projectDropdown">Select Project:</label>
-      <select
-        id="projectDropdown"
-        value={selectedProject}
-        onChange={(e) => setSelectedProject(e.target.value)}
-        className="form-control"
-      >
-        <option value="">Select a project</option>
-        {projects.map((project) => (
-          <option key={project._id} value={project.projectName}>
-            {project.projectName}
-          </option>
-        ))}
-      </select>
-    </div>
-  </div>
+              <div className="col-lg-4">
+                <label htmlFor="projectDropdown">Select Project:</label>
+                <select
+                  id="projectDropdown"
+                  value={selectedProject}
+                  onChange={(e) => setSelectedProject(e.target.value)}
+                  className="form-control"
+                >
+                  <option value="">Select a project</option>
+                  {projects.map((project) => (
+                    <option key={project._id} value={project.projectName}>
+                      {project.projectName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             {output && (
               <div className="col-4 ">
                 <button
@@ -168,8 +167,8 @@ console.log('managerId',managerId)
             )}
           </div>
         </div>
- 
-        {!projectSummary && analysisResults.length === 0 && (
+
+        {analysisResults.length === 0 && (
           <div className="row d-flex" style={{ width: "1000px" }}>
             <div className="col-lg-10">
               <div className="card">
@@ -180,39 +179,52 @@ console.log('managerId',managerId)
             </div>
           </div>
         )}
- 
-        {projectSummary && (
-          <div className="row d-flex" style={{ width: "1000px" }}>
-            <div className="col-lg-10">
-              <div className="card">
-                <div className="card-header">Project Summary</div>
-                <div className="card-body">
-                  <pre>{projectSummary}</pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
- 
+
         {analysisResults.length > 0 && (
           <div className="row d-flex" id="result" style={{ width: "1000px" }}>
-            {analysisResults.map((result, index) => (
-              <div key={index} className="col-lg-10">
+            {analysisResults.map((result, resultIndex) => (
+              <div key={resultIndex} className="col-lg-12 mb-4">
                 <div className="card">
-                  <div className="card-header">{result.fileName}</div>
+                  <div className="card-header">
+                    <h5>{result.projectName}</h5>
+                  </div>
                   <div className="card-body">
-                    <pre>{result.analysis}</pre>
+                    {result.projectSummary && (
+                      <div className="mt-3">
+                        <div className="card">
+                          <div className="card-header">Project Summary</div>
+                          <div className="card-body">
+                            <pre>{result.projectSummary}</pre>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {result.files.length > 0 && (
+                      <div>
+                        {result.files.map((file, fileIndex) => (
+                          <div key={fileIndex} className="mb-3">
+                            <div className="card">
+                              <div className="card-header">{file.FileName}</div>
+                              <div className="card-body">
+                                <pre>{file.Analysis}</pre>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
                 </div>
               </div>
             ))}
           </div>
         )}
+
       </div>
     </div>
   );
 };
- 
+
 export default ViewDocumentation;
- 
- 
+
