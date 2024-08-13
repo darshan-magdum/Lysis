@@ -64,7 +64,14 @@ const Analyze = () => {
     const totalFiles = fileEntries.length;
     const analyses = [];
     let summary = "";
+    const fileData = [];
 
+    for (let i = 0; i < totalFiles; i++) {
+      const fileEntry = fileEntries[i];
+      const text = await fileEntry.file.text();
+      fileData.push({ fileName: fileEntry.path, text });
+    }
+    localStorage.setItem('fileData', JSON.stringify(fileData));
     for (let i = 0; i < totalFiles; i++) {
       const fileEntry = fileEntries[i];
       const text = await fileEntry.file.text();
