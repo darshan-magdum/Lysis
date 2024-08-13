@@ -104,7 +104,7 @@ useEffect(() => {
     }
 
     localStorage.setItem('analyses', JSON.stringify(analyses));
-    localStorage.setItem('projectSummary', summary);
+
 
     const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
 
