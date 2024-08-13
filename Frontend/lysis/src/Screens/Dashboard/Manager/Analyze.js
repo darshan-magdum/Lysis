@@ -14,10 +14,24 @@ const Analyze = () => {
   const [userQueryData, setUserQueryData] = useState([]);
   const [loaderStatus, setLoaderStatus] = useState("");
   const [userQuery, setUserQuery] = useState("");
-
-
   const [managerData, setManagerData] = useState(null);
   const [managerId, setManagerId] = useState(null);
+  const [projects, setProjects] = useState([]);
+const [selectedProject, setSelectedProject] = useState("");
+
+useEffect(() => {
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+      setProjects(response.data.projects);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  fetchProjects();
+}, []);
+
 
   useEffect(() => {
     // Retrieve managerId from localStorage when component mounts
@@ -451,13 +465,34 @@ Analyzed code (Part {partNumber}):\n\n`;
                   >
                     Upload Folder
                   </h5>
+                  
+
                 </div>
               </div>
             </div>
 
+          
             <div className='uploadContainer'>
 
               <div className="card">
+              <div className="form-group">
+            <div className="col-lg-4">
+  <label htmlFor="projectDropdown">Select Project:</label>
+  <select
+    id="projectDropdown"
+    value={selectedProject}
+    onChange={(e) => setSelectedProject(e.target.value)}
+    className="form-control"
+  >
+    <option value="">Select a project</option>
+    {projects.map((project) => (
+      <option key={project._id} value={project._id}>
+        {project.projectName}
+      </option>
+    ))}
+  </select>
+  </div>
+</div>
                 <input
                   id="folderInput"
                   type="file"
