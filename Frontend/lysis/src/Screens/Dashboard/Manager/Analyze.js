@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Analyze = () => {
@@ -17,25 +19,25 @@ const Analyze = () => {
   const [managerData, setManagerData] = useState(null);
   const [managerId, setManagerId] = useState(null);
   const [projects, setProjects] = useState([]);
-const [selectedProject, setSelectedProject] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
 
-useEffect(() => {
-  const fetchProjects = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
-      setProjects(response.data.projects);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        setProjects(response.data.projects);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
 
-  fetchProjects();
-}, []);
+    fetchProjects();
+  }, []);
 
 
   useEffect(() => {
     // Retrieve managerId from localStorage when component mounts
-    const id = localStorage.getItem("managerId");
+    const id = localStorage.getItem("userId");
     setManagerId(id);
   }, []);
 
@@ -44,13 +46,13 @@ useEffect(() => {
       const fetchManagerData = async () => {
         try {
           const response = await axios.get(`http://localhost:8080/Manager/manager/${managerId}`);
-          setManagerData(response.data); 
+          setManagerData(response.data);
         } catch (error) {
           console.error("Error fetching manager data:", error);
         }
       };
 
-      fetchManagerData(); 
+      fetchManagerData();
     }
   }, [managerId]);
 
@@ -91,7 +93,7 @@ useEffect(() => {
       const text = await fileEntry.file.text();
       try {
         const { analysis, summary: fileSummary } = await analyzeCodeWithAzureAI(text);
-        analyses.push({ fileName: fileEntry.path, analysis });
+        analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis});
         if (i === 0) {
           summary = fileSummary; // Store the project summary from the first file
         }
@@ -102,15 +104,35 @@ useEffect(() => {
         setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
       }
     }
-
+    
     localStorage.setItem('analyses', JSON.stringify(analyses));
-
 
     const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
 
     const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
     const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
     localStorage.setItem('projectSummary', queryResult);
+    try {
+      const projectName = selectedProject;
+      const files = analyses;
+      const projectSummary = queryResult;
+      const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
+        projectName,
+        files,
+        projectSummary,
+        managerId
+      });
+
+      if (response.status === 201) {
+        toast.success('Project Uploaded Successfully');
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
+    }
     displayResults(analyses, queryResult, summary);
 
     setIsLoading(false);
@@ -447,8 +469,9 @@ Analyzed code (Part {partNumber}):\n\n`;
     setProjectSummary(summary);
   };
   return (
-    <div
-    >
+
+    <div>
+          <ToastContainer />
       <div className="container py-3">
         <div className="row">
           <div className="col-lg-9">
@@ -465,34 +488,34 @@ Analyzed code (Part {partNumber}):\n\n`;
                   >
                     Upload Folder
                   </h5>
-                  
+
 
                 </div>
               </div>
             </div>
 
-          
+
             <div className='uploadContainer'>
 
               <div className="card">
               <div className="form-group">
-            <div className="col-lg-4">
-  <label htmlFor="projectDropdown">Select Project:</label>
-  <select
-    id="projectDropdown"
-    value={selectedProject}
-    onChange={(e) => setSelectedProject(e.target.value)}
-    className="form-control"
-  >
-    <option value="">Select a project</option>
-    {projects.map((project) => (
-      <option key={project._id} value={project._id}>
-        {project.projectName}
-      </option>
-    ))}
-  </select>
+    <div className="col-lg-4">
+      <label htmlFor="projectDropdown">Select Project:</label>
+      <select
+        id="projectDropdown"
+        value={selectedProject}
+        onChange={(e) => setSelectedProject(e.target.value)}
+        className="form-control"
+      >
+        <option value="">Select a project</option>
+        {projects.map((project) => (
+          <option key={project._id} value={project.projectName}>
+            {project.projectName}
+          </option>
+        ))}
+      </select>
+    </div>
   </div>
-</div>
                 <input
                   id="folderInput"
                   type="file"
