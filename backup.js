@@ -12,24 +12,6 @@ const CustomPrompt = () => {
   const [isUserQuery, setIsUserQuery] = useState(false);
   const textareaRef = useRef(null);
   // Calculate the height of 5 lines
-  function getLocalStorageSizeInMB() {
-    let totalSize = 0;
-
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = localStorage.getItem(key);
-
-        // Calculate the size of the key and value
-        totalSize += key.length + value.length;
-    }
-
-    // Convert bytes to megabytes (MB)
-    const sizeInMB = (totalSize / 1024) / 1024;
-
-    return sizeInMB.toFixed(2); // Returns size in MB with 2 decimal places
-}
-
-console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
   const getLineHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -59,18 +41,20 @@ console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
       alert('Please enter a query.');
       return;
     }
+
     const analyses = JSON.parse(localStorage.getItem('analyses')) || [];
-   
     if (analyses.length === 0) {
       alert('Please analyze the file to answer your query.');
       return;
     }
+
+    const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
     setIsUserQuery(true);
     setIsLoading(true);
     setLoaderStatus('Processing user query...');
 
     try {
-      const queryResult = await analyzeUserQueryWithAzureAI(userQuery);
+      const queryResult = await analyzeUserQueryWithAzureAI(userQuery, combinedAnalysis);
       // Prepend new query result to the top
       const updatedResults = [{ title: `Query Result: ${userQuery}`, content: queryResult }, ...userQueryData];
       setUserQueryData(updatedResults);
@@ -97,17 +81,16 @@ console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
   };
 
   async function analyzeUserQueryWithAzureAI(query, combinedAnalysis) {
-    const analyses = JSON.parse(localStorage.getItem('analyses')) || [];
     const fileDetail = JSON.parse(localStorage.getItem('fileData')) || [];
     let conversationHistory = '';
     setOutput(prevOutput => [{ question: query, answer: null }, ...prevOutput]);
     for (let i = 0; i < fileDetail.length; i++) {
       const fileEntry = fileDetail[i];
-      const text = fileEntry.text;
-      const fileName = fileEntry.fileName;
+      const text = await fileEntry.file.text();
+      const fileName = await fileEntry.file.name;
       conversationHistory = conversationHistory + `\nFileName: ${fileName} \nCode: ${text}`
     }
-    conversationHistory = conversationHistory + analyses
+    conversationHistory = conversationHistory + combinedAnalysis
       .map(data => `Code File: ${data.fileName}\nAssistant: ${data.analysis || ''}`)
       .reverse()
       .join('\n')
@@ -147,6 +130,7 @@ console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let jsonString = '';
+        let fullMessage = '';
 
         while (true) {
           const { done, value } = await reader.read();
@@ -161,7 +145,7 @@ console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
                 const data = JSON.parse(part);
                 console.log('Parsed data:', data);
                 if (data.message && data.message.content) {
-                  fullResponse += data.message.content;
+                  fullMessage += data.message.content;
                 }
               } catch (jsonError) {
                 console.error('JSON Parsing Error:', jsonError);
@@ -174,7 +158,7 @@ console.log(`LocalStorage size: ${getLocalStorageSizeInMB()} MB`);
 
         setOutput(prevOutput => {
           const updatedOutput = [...prevOutput];
-          updatedOutput[0].answer = fullResponse || 'No response from the model.';
+          updatedOutput[0].answer = fullMessage || 'No response from the model.';
           return updatedOutput;
         });
       } catch (error) {
