@@ -2,12 +2,60 @@
 import React, { useEffect, useState } from "react";
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
+import axios from "axios";
  
 const ViewDocumentation = () => {
   const [analysisResults, setAnalysisResults] = useState([]);
   const [projectSummary, setProjectSummary] = useState(null);
   const [output, setOutput] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [managerId, setManagerId] = useState(null);
+console.log('managerId',managerId)
+
+  useEffect(() => {
+    // Retrieve managerId from localStorage when component mounts
+    const id = localStorage.getItem("userId");
+    setManagerId(id);
+  }, []);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        setProjects(response.data.projects);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+  
+  // useEffect(async () => {
+  //   try {
+  //     const response = await axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}/${selectedProject}`);
+  //     setAnalysisResults(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching Project data:", error);
+  //   }
+  // }, [selectedProject]);
  
+  useEffect(() => {
+    if (managerId) {
+      axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}`)
+        .then(response => {
+          setAnalysisResults(response.data);
+          setOutput(true);
+        })
+        .catch(err => {
+          console.error("Error fetching Project data:", err);
+          setAnalysisResults([]);
+          setOutput(false);
+        });
+    }
+  }, [managerId]);
+  
+  
   useEffect(() => {
     const data = localStorage.getItem("analyses");
     const summary = localStorage.getItem("projectSummary");
@@ -77,7 +125,7 @@ const ViewDocumentation = () => {
       <div className="container py-3">
         <div className='DownloadAll'>
           <div className="row align-items-center">
-            <div className="col-6">
+            <div className="col-4">
               <h5
                 style={{
                   fontWeight: "bold",
@@ -88,9 +136,28 @@ const ViewDocumentation = () => {
               >
                 View Documentation
               </h5>
+            
             </div>
+            <div className="form-group">
+    <div className="col-lg-4">
+      <label htmlFor="projectDropdown">Select Project:</label>
+      <select
+        id="projectDropdown"
+        value={selectedProject}
+        onChange={(e) => setSelectedProject(e.target.value)}
+        className="form-control"
+      >
+        <option value="">Select a project</option>
+        {projects.map((project) => (
+          <option key={project._id} value={project.projectName}>
+            {project.projectName}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
             {output && (
-              <div className="col-6">
+              <div className="col-4 ">
                 <button
                   className="btn btn-primary"
                   onClick={handleDownloadAllPDF}

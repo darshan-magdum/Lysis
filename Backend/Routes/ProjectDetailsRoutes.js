@@ -29,6 +29,24 @@ router.post('/AddNewProjectsDetails', async (req, res) => {
       res.status(500).json({ error: error.message });
   }
 });
+//Route for Perticular project Details
+router.get('/ProjectsDetails/:managerId', async (req, res) => {
+  const { managerId } = req.params;
+
+  try {
+    const project = await Project.findOne({  managerId });
+
+    if (!project) {
+      return res.status(404).send({ message: 'Project not found' });
+    }
+
+    // Return project details including assigned manager
+    res.status(200).send(project);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
 
 
   module.exports = router;
