@@ -124,7 +124,7 @@ const ViewDocumentation = () => {
       <div className="container py-3">
         <div className='DownloadAll'>
           <div className="row align-items-center">
-            <div className="col-4">
+            <div className="col-6">
               <h5
                 style={{
                   fontWeight: "bold",
@@ -137,8 +137,8 @@ const ViewDocumentation = () => {
               </h5>
 
             </div>
-            <div className="form-group">
-              <div className="col-lg-4">
+          
+            <div className="col-lg-3">
                 <label htmlFor="projectDropdown">Select Project:</label>
                 <select
                   id="projectDropdown"
@@ -154,9 +154,14 @@ const ViewDocumentation = () => {
                   ))}
                 </select>
               </div>
-            </div>
-            {output && (
-              <div className="col-4 ">
+
+
+           
+          </div>
+
+          <div className="form-group">
+          {output && (
+              <div className="col-4">
                 <button
                   className="btn btn-primary"
                   onClick={handleDownloadAllPDF}
@@ -164,9 +169,15 @@ const ViewDocumentation = () => {
                   Download All as PDF
                 </button>
               </div>
+
+
+
             )}
-          </div>
+            </div>
+          
         </div>
+
+
 
         {analysisResults.length === 0 && (
           <div className="row d-flex" style={{ width: "1000px" }}>
