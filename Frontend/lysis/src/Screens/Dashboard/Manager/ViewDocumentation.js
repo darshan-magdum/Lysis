@@ -183,7 +183,7 @@ const ViewDocumentation = () => {
         {analysisResults.length > 0 && (
           <div className="row d-flex" id="result" style={{ width: "1000px" }}>
             {analysisResults.map((result, resultIndex) => (
-              <div key={resultIndex} className="col-lg-12 mb-4">
+              <div key={resultIndex} className="col-lg-10 mb-4">
                 <div className="card">
                   <div className="card-header">
                     <h5>{result.projectName}</h5>
