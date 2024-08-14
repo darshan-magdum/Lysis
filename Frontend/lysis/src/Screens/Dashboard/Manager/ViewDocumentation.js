@@ -9,6 +9,7 @@ const ViewDocumentation = () => {
   console.log("analyzed data:", analysisResults)
   const [projectSummary, setProjectSummary] = useState(null);
   const [output, setOutput] = useState(false);
+  console.log("output",output)
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("");
   const [managerId, setManagerId] = useState(null);
@@ -160,7 +161,7 @@ const ViewDocumentation = () => {
           </div>
 
           <div className="form-group">
-          {output && (
+          {analysisResults.length > 0 && (
               <div className="col-4">
                 <button
                   className="btn btn-primary"
