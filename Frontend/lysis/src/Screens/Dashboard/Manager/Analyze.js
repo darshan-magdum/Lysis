@@ -2,19 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const Analyze = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loaderStatus, setLoaderStatus] = useState("");
-
   const [managerData, setManagerData] = useState(null);
   const [managerId, setManagerId] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        setProjects(response.data.projects);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
 
   useEffect(() => {
     // Retrieve managerId from localStorage when component mounts
-    const id = localStorage.getItem("managerId");
+    const id = localStorage.getItem("userId");
     setManagerId(id);
   }, []);
 
@@ -37,12 +55,54 @@ const Analyze = () => {
     setSelectedFiles(Array.from(event.target.files));
   };
 
+  // const handleAnalyze = async () => {
+  //   if (selectedFiles.length === 0) {
+  //     alert('Please select a folder.');
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+  //   setLoaderStatus("Starting Analysis...");
+
+  //   const fileEntries = getFileEntries(selectedFiles);
+  //   const totalFiles = fileEntries.length;
+  //   const analyses = [];
+  //   let summary = "";
+  //   const fileData = [];
+
+  //   for (let i = 0; i < totalFiles; i++) {
+  //     const fileEntry = fileEntries[i];
+  //     const text = await fileEntry.file.text();
+  //     fileData.push({ fileName: fileEntry.path, text });
+  //   }
+  //   // localStorage.setItem('fileData', JSON.stringify(fileData));
+
+  //   for (let i = 0; i < totalFiles; i++) {
+  //     const fileEntry = fileEntries[i];
+  //     const text = await fileEntry.file.text();
+  //     try {
+  //       const analysis = await analyzeCodeWithAzureAI(text);
+  //       analyses.push({ fileName: fileEntry.path, analysis });
+  //       setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
+  //     } catch (error) {
+  //       console.error('Error analyzing file:', error);
+  //       analyses.push({ fileName: fileEntry.path, analysis: 'Analysis failed' });
+  //       setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
+  //     }
+  //   }
+
+  //   // localStorage.setItem('analyses', JSON.stringify(analyses));
+  //   const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
+
+  //   const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
+  //   // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
+  //   localStorage.setItem('projectSummary', queryResult1);
+  // };
   const handleAnalyze = async () => {
     if (selectedFiles.length === 0) {
       alert('Please select a folder.');
       return;
     }
-
     setIsLoading(true);
     setLoaderStatus("Starting Analysis...");
 
@@ -57,14 +117,13 @@ const Analyze = () => {
       const text = await fileEntry.file.text();
       fileData.push({ fileName: fileEntry.path, text });
     }
-    // localStorage.setItem('fileData', JSON.stringify(fileData));
-
+    localStorage.setItem('fileData', JSON.stringify(fileData));
     for (let i = 0; i < totalFiles; i++) {
       const fileEntry = fileEntries[i];
       const text = await fileEntry.file.text();
       try {
         const analysis = await analyzeCodeWithAzureAI(text);
-        analyses.push({ fileName: fileEntry.path, analysis });
+        analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis});
         setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
       } catch (error) {
         console.error('Error analyzing file:', error);
@@ -72,15 +131,39 @@ const Analyze = () => {
         setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
       }
     }
-
+    
     // localStorage.setItem('analyses', JSON.stringify(analyses));
-    const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
+
+    const combinedAnalysis = analyses
+  .map(a => `FileName: ${a.FileName}\nAnalysis: ${a.Analysis}`)
+  .join('\n\n');
+
 
     const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
-    // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
-    localStorage.setItem('projectSummary', queryResult1);
-  };
+    // localStorage.setItem('projectSummary', queryResult1);
+    try {
+      const projectName = selectedProject;
+      const files = analyses;
+      const projectSummary = queryResult1;
+      const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
+        projectName,
+        files,
+        projectSummary,
+        managerId
+      });
 
+      if (response.status === 201) {
+        toast.success('Project Uploaded Successfully');
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
+    }
+    setIsLoading(false);
+  };
 
   const codeExtensions = [
     'js','asp','vbp', 'jsx', 'ts', 'tsx', 'html', 'css', 'py', 'java', 'cpp', 'c', 'cs',
@@ -317,8 +400,9 @@ const Analyze = () => {
     return chunks;
   };
   return (
-    <div
-    >
+
+    <div>
+          <ToastContainer />
       <div className="container py-3">
         <div className="row">
           <div className="col-lg-9">
@@ -335,13 +419,34 @@ const Analyze = () => {
                   >
                     Upload Folder
                   </h5>
+
+
                 </div>
               </div>
             </div>
 
+
             <div className='uploadContainer'>
 
               <div className="card">
+              <div className="form-group">
+    <div className="col-lg-4">
+      <label htmlFor="projectDropdown">Select Project:</label>
+      <select
+        id="projectDropdown"
+        value={selectedProject}
+        onChange={(e) => setSelectedProject(e.target.value)}
+        className="form-control"
+      >
+        <option value="">Select a project</option>
+        {projects.map((project) => (
+          <option key={project._id} value={project.projectName}>
+            {project.projectName}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
                 <input
                   id="folderInput"
                   type="file"
