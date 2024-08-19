@@ -193,7 +193,6 @@ const Analyze = () => {
     - API details including keys and endpoints.
     - Significant aspects. 
     - Another file depedencies in this file.
-    - Line by line code explination.
       Code to analyze:\n\n`;
     let fullAnalysis = '';
     prompt = prompt + codeText;
@@ -263,14 +262,15 @@ const Analyze = () => {
   }
 
   async function AzureAIAPIForTitleQuery(combinedAnalysis) {
-    let prompt = `Provide the following information for the analyzed code of a single project:
-                             - Project Name  (Give apprope)
-                           - Project Use Case  (Combine all use cases as provided you in project information and give me two to three line use case description for all)
-                           - Technology Used   (Don't Give same technology again give duplicate once)
-                           - Total Number of Functions (Calculate the total number of Funtions and give me only count means give me only number. Do not list function names, only provide the count(Remember: Don't give the discription of what types of function are just give me only Number. Don't give anything other than number))
-                           - Total Number of Classes (Calculate the total number of Classes and give me only count means give me only number. Do not list class names, only provide the count(Remember: Don't give the discription of what types of classes are just give me only Number.Don't give anything other than number))
-                           Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
-                             Analyzed code:\n\n`;
+    const prompt = `Combine all project information which is inside the Project Information as this information is of a single project:
+                            - Project Name  (Give apprope)
+                            - Project Use Case  (Combine all use cases as provided you in project information and give me two to three line use case description for all)
+                            - Technology Used   (Don't Give same technology again give duplicate once)
+                            - Total Number of Functions (Calculate the total number of Funtions and give me only count means give me only number. Do not list function names, only provide the count(Remember: Don't give the discription of what types of function are just give me only Number. Don't give anything other than number))
+                            - Total Number of Classes (Calculate the total number of Classes and give me only count means give me only number. Do not list class names, only provide the count(Remember: Don't give the discription of what types of classes are just give me only Number.Don't give anything other than number))
+                            Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
+                            Project Information:\n\n`;
+
     let fullResponse = '';
     prompt = prompt + combinedAnalysis;
     let attempt = 0;
