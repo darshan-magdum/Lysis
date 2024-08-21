@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
@@ -8,14 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Analyze = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [analysisResults, setAnalysisResults] = useState([]);
-  const [output, setoutput] = useState(false);
-  const [projectSummary, setProjectSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isUserQuery, setIsUserQuery] = useState(false);
-  const [userQueryData, setUserQueryData] = useState([]);
   const [loaderStatus, setLoaderStatus] = useState("");
-  const [userQuery, setUserQuery] = useState("");
   const [managerData, setManagerData] = useState(null);
   const [managerId, setManagerId] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -70,9 +63,6 @@ const Analyze = () => {
       alert('Please select a folder.');
       return;
     }
-
-    setAnalysisResults([]);
-    setProjectSummary("");
     setIsLoading(true);
     setLoaderStatus("Starting Analysis...");
 
@@ -87,7 +77,6 @@ const Analyze = () => {
       const text = await fileEntry.file.text();
       fileData.push({ fileName: fileEntry.path, text });
     }
-    localStorage.setItem('fileData', JSON.stringify(fileData));
     for (let i = 0; i < totalFiles; i++) {
       const fileEntry = fileEntries[i];
       const text = await fileEntry.file.text();
@@ -105,17 +94,16 @@ const Analyze = () => {
       }
     }
     
-    localStorage.setItem('analyses', JSON.stringify(analyses));
 
-    const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
+    const combinedAnalysis = analyses.map(a => `FileName: ${a.FileName}\n\nAnalysis:\n${a.Analysis}`).join('\n\n');
+
 
     const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
-    const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
-    localStorage.setItem('projectSummary', queryResult);
+    // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
     try {
       const projectName = selectedProject;
       const files = analyses;
-      const projectSummary = queryResult;
+      const projectSummary = queryResult1;
       const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
         projectName,
         files,
@@ -133,62 +121,8 @@ const Analyze = () => {
         toast.error('An unexpected error occurred.');
       }
     }
-    displayResults(analyses, queryResult, summary);
-
     setIsLoading(false);
-    setoutput(true);
   };
-
-  const handleUserQuery = async () => {
-    if (!userQuery.trim()) {
-      alert('Please enter a query.');
-      return;
-    }
-
-    const analyses = JSON.parse(localStorage.getItem('analyses')) || [];
-    const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
-    setIsUserQuery(true);
-    setIsLoading(true);
-    setLoaderStatus('Processing user query...');
-
-    try {
-      const queryResult = await analyzeUserQueryWithAzureAI(userQuery, combinedAnalysis);
-      const updatedResults = [analysisResults, { title: `Query Result: ${userQuery}`, content: queryResult }];
-      setUserQueryData(updatedResults);
-    } catch (error) {
-      console.error('Error handling user query:', error);
-      alert('Error handling user query. Please try again.');
-    }
-
-    setIsLoading(false);
-    setUserQuery("");
-  };
-
-  const handleDownloadAllPDF = () => {
-    const doc = new jsPDF();
-
-    doc.setFontSize(12);
-
-    analysisResults.forEach((result, index) => {
-      if (index === 0) {
-        // Add the project summary
-        doc.text(result.title, 10, 10);
-        const lines = doc.splitTextToSize(result.content, 180);
-        doc.text(lines, 10, 20);
-      } else {
-        // Add a new page for each file analysis
-        result.forEach((file, fileIndex) => {
-          doc.addPage();
-          doc.text(file.fileName, 10, 10);
-          const lines = doc.splitTextToSize(file.analysis, 180);
-          doc.text(lines, 10, 20);
-        });
-      }
-    });
-
-    doc.save('analysis_results.pdf');
-  };
-
 
   const getFileEntries = (files) => {
     return files.map(file => {
@@ -235,7 +169,7 @@ const Analyze = () => {
 
       while (attempt < 3 && !success) { // Retry up to 3 times
         try {
-          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/code-reverse-engineering-deployment/chat/completions?api-version=2023-03-15-preview', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -274,71 +208,6 @@ const Analyze = () => {
     return { analysis: fullAnalysis, summary: projectSummary };
   }
 
-  async function analyzeUserQueryWithAzureAI(query, combinedAnalysis) {
-    const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
-    const initialPrompt = `Please provide detailed information about the following query based on the analyzed code. Start by addressing the query directly and then go into detailed explanations, avoiding repetition and introductory statements:
- 
-Query: ${query}
-Don't give me Query in response again.
-Analyzed code (Part 1):\n\n`;
-
-    const followUpPrompt = `Continuing from the previous part, provide detailed information about the query based on the analyzed code, focusing on new information and avoiding repetition and introductory statements:
- 
-Query: ${query}
-Don't give me Query in response again.
-Analyzed code (Part {partNumber}):\n\n`;
-
-    const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - initialPrompt.length);
-    let fullResponse = '';
-    let prompt;
-
-    for (let i = 0; i < analysisChunks.length; i++) {
-      if (i === 0) {
-        prompt = initialPrompt + analysisChunks[i];
-      } else {
-        prompt = followUpPrompt.replace('{partNumber}', i + 1) + analysisChunks[i];
-      }
-
-      let attempt = 0;
-      let success = false;
-
-      while (attempt < 3 && !success) { // Retry up to 3 times
-        try {
-          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'api-key': `${azureApiKey}`
-            },
-            body: JSON.stringify({
-              messages: [
-                { role: 'system', content: 'You are a helpful assistant.' },
-                { role: 'user', content: prompt }
-              ]
-            })
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch from Azure AI API');
-          }
-
-          const data = await response.json();
-          fullResponse += data.choices[0].message.content + '\n\n';
-          success = true; // Mark as success on valid response
-        } catch (error) {
-          console.error('Error during API request:', error);
-          attempt++; // Retry on error
-        }
-      }
-
-      if (!success) {
-        throw new Error('Max retries exceeded'); // Handle max retries exceeded
-      }
-    }
-
-    return fullResponse;
-  }
-
   async function AzureAIAPIForTitleQuery(combinedAnalysis) {
     const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
     const promptTemplate = `Provide the following information for the analyzed code of a single project:
@@ -360,7 +229,7 @@ Analyzed code (Part {partNumber}):\n\n`;
 
       while (attempt < 3 && !success) { // Retry up to 3 times
         try {
-          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/code-reverse-engineering-deployment/chat/completions?api-version=2023-03-15-preview', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -415,7 +284,7 @@ Analyzed code (Part {partNumber}):\n\n`;
 
       while (attempt < 3 && !success) { // Retry up to 3 times
         try {
-          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/code-reverse-engineering-deployment/chat/completions?api-version=2023-03-15-preview', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -462,11 +331,6 @@ Analyzed code (Part {partNumber}):\n\n`;
       chunks.push(text.slice(i, i + chunkSize));
     }
     return chunks;
-  };
-
-  const displayResults = (analyses, queryResult, summary) => {
-    setAnalysisResults([{ title: 'Project Summary', content: queryResult }, analyses]);
-    setProjectSummary(summary);
   };
   return (
 

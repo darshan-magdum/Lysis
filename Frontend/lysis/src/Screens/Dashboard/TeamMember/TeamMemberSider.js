@@ -82,7 +82,7 @@ const TeamMemberSider = ({ handleNavigation }) => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-            <span class="material-symbols-outlined">
+            <span className="material-symbols-outlined">
 family_history
 </span>
               <svg className="bi me-2 text-light" width="16" height="16">
