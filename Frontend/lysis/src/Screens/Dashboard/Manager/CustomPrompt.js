@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import "../../../Styles/UploadDocument.css";
-
+import { encode } from 'gpt-tokenizer';
+import axios from 'axios';
 const CustomPrompt = () => {
   const [prompt, setPrompt] = useState('');
   const [responses, setResponses] = useState([]);
@@ -9,10 +10,51 @@ const CustomPrompt = () => {
   const [userQuery, setUserQuery] = useState('');
   const [userQueryData, setUserQueryData] = useState([]);
   const [isUserQuery, setIsUserQuery] = useState(false);
+  const [managerId, setManagerId] = useState(null);
+  const [allResults, setAllResults] = useState([]);
+  const [selectedProjectData, setSelectedProjectData] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
   const textareaRef = useRef(null);
 
   const azureApiKey = 'daf99a54e98144328812c4e1a1a4fea6';
+  useEffect(() => {
+    // Retrieve managerId from localStorage when component mounts
+    const id = localStorage.getItem("userId");
+    setManagerId(id);
+  }, []);
+  useEffect(() => {
+    if (selectedProject) {
+      const projectData = allResults.find(
+        (project) => project.projectName === selectedProject
+      );
+      setSelectedProjectData(projectData || []);
+    }
+  }, [selectedProject, allResults]);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/NewProjects/GetAllprojects');
+        setProjects(response.data.projects);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
 
+    fetchProjects();
+  }, []);
+  useEffect(() => {
+    if (managerId) {
+      axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}`)
+        .then(response => {
+          setAllResults(response.data);  // Set all results
+        })
+        .catch(err => {
+          console.error("Error fetching Project data:", err);
+          setAllResults([]);
+        });
+    }
+  }, [managerId]);
   // Calculate the height of 5 lines
   const getLineHeight = () => {
     const textarea = textareaRef.current;
@@ -39,18 +81,22 @@ const CustomPrompt = () => {
   }, [prompt]);
 
   const handleUserQuery = async () => {
+    if (!selectedProject) {
+      alert("Please select a project first before submitting your query.");
+    }else{
     if (!userQuery.trim()) {
       alert('Please enter a query.');
       return;
     }
 
-    const analyses = JSON.parse(localStorage.getItem('analyses')) || [];
+    const analyses = selectedProjectData;
     if (analyses.length === 0) {
       alert('Please analyze the file to answer your query.');
       return;
     }
 
-    const combinedAnalysis = analyses.map(a => a.analysis).join('\n\n');
+
+    const combinedAnalysis = analyses.files.map(({ FileName, Analysis }) => `${FileName}\n${Analysis}`).join('\n\n');
     setIsUserQuery(true);
     setIsLoading(true);
     setLoaderStatus('Processing user query...');
@@ -67,6 +113,7 @@ const CustomPrompt = () => {
 
     setIsLoading(false);
     setUserQuery("");
+  }
   };
 
 
@@ -81,21 +128,49 @@ const CustomPrompt = () => {
       console.log('Submitted prompt:', prompt);
     }
   };
-  const splitIntoChunks = (text, chunkSize) => {
+  const estimateAverageTokenSize = (text) => {
+    const sample = text.slice(0, Math.min(text.length, 100000));
+    const tokens = encode(sample);
+    return sample.length / tokens.length;
+  };
+  
+  // Function to split text into chunks using estimated token size
+  const splitIntoChunks = (text, maxTokenCount) => {
     const chunks = [];
-    for (let i = 0; i < text.length; i += chunkSize) {
-      chunks.push(text.slice(i, i + chunkSize));
+    const averageTokenSize = estimateAverageTokenSize(text);
+  
+    let start = 0;
+    let end = 0;
+    let estimatedTokenCount = 0;
+  
+    while (end < text.length) {
+      estimatedTokenCount = Math.ceil((end - start) / averageTokenSize);
+  
+      if (estimatedTokenCount >= maxTokenCount) {
+        chunks.push(text.slice(start, end));
+        start = end;
+        estimatedTokenCount = 0;
+      }
+  
+      end++;
     }
+  
+    if (start < end) {
+      chunks.push(text.slice(start, end));
+    }
+  
     return chunks;
   };
 
   async function analyzeUserQueryWithAzureAI(query, combinedAnalysis) {
-    const maxTokens = 15000; // Safe limit to avoid exceeding the token limit
-    const initialPrompt = `Please provide detailed information about the following query based on the analyzed code. Start by addressing the query directly and then go into detailed explanations, avoiding repetition and introductory statements:
+    const maxTokens = 128000; // Safe limit to avoid exceeding the token limit
+    const initialPrompt = `${query}
+    Analyzed code (Part 1):\n\n`;
+//     const initialPrompt = `Please provide detailed information about the following query based on the analyzed code. Start by addressing the query directly and then go into detailed explanations, avoiding repetition and introductory statements:
  
-Query: ${query}
-Don't give me Query in response again.
-Analyzed code (Part 1):\n\n`;
+// Query: ${query}
+// Don't give me Query in response again.
+// Analyzed code (Part 1):\n\n`;
 
     const followUpPrompt = `Continuing from the previous part, provide detailed information about the query based on the analyzed code, focusing on new information and avoiding repetition and introductory statements:
  
@@ -103,15 +178,19 @@ Query: ${query}
 Don't give me Query in response again.
 Analyzed code (Part {partNumber}):\n\n`;
 
-    const analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - initialPrompt.length);
-    let fullResponse = '';
+    const initialPromptTokenCount = encode(initialPrompt).length;
+    const codeTextToken = encode(combinedAnalysis).length;
+    let analysisChunks = [combinedAnalysis];;
+    if (initialPromptTokenCount + codeTextToken > maxTokens) {
+      analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - initialPromptTokenCount);
+    } let fullResponse = '';
     let prompt;
 
     for (let i = 0; i < analysisChunks.length; i++) {
       if (i === 0) {
-        prompt = initialPrompt + analysisChunks[i];
+        prompt =  analysisChunks[i] + initialPrompt;
       } else {
-        prompt = followUpPrompt.replace('{partNumber}', i + 1) + analysisChunks[i];
+        prompt = analysisChunks[i] + followUpPrompt.replace('{partNumber}', i + 1);
       }
 
       let attempt = 0;
@@ -119,7 +198,7 @@ Analyzed code (Part {partNumber}):\n\n`;
 
       while (attempt < 3 && !success) { // Retry up to 3 times
         try {
-          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/TesaDeployment/chat/completions?api-version=2023-03-15-preview', {
+          const response = await fetch('https://tesaooenai-service.openai.azure.com/openai/deployments/code-reverse-engineering-deployment/chat/completions?api-version=2023-03-15-preview', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -173,6 +252,22 @@ Analyzed code (Part {partNumber}):\n\n`;
                     Custom Prompt
                   </h5>
                 </div>
+                <div className="col-lg-3">
+              <label htmlFor="projectDropdown">Select Project:</label>
+              <select
+                id="projectDropdown"
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+                className="form-control"
+              >
+                <option value="">Select a project</option>
+                {projects.map((project) => (
+                  <option key={project._id} value={project.projectName}>
+                    {project.projectName}
+                  </option>
+                ))}
+              </select>
+            </div>
               </div>
             </div>
             <div className='uploadContainer'>

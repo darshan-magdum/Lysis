@@ -8,6 +8,7 @@ import CustomPrompt from "./CustomPrompt";
 import { useLocation } from 'react-router-dom';
 import axios from "axios"
 import UMLDiagram from "./UMLDiagram";
+import SequenceDiagram from "./SequenceDiagram";
 import AddMembers from "./AddMembers";
 import ViewMembers from "./ViewMembers";
 
@@ -26,13 +27,13 @@ const ManagerDashboard = () => {
     const fetchManagerData = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/Manager/manager/${managerId}`);
-        setManagerData(response.data); 
+        setManagerData(response.data);
       } catch (error) {
         console.error("Error fetching manager data:", error);
       }
     };
 
-    fetchManagerData(); 
+    fetchManagerData();
   }, [managerId]);
 
 
@@ -74,12 +75,14 @@ const ManagerDashboard = () => {
         return <ViewDocumentation />;
       case "customPrompt":
         return <CustomPrompt />;
-        case "UMLDiagram":
-          return <UMLDiagram />;
-          case "AddMembers":
-            return <AddMembers />;
-            case "ViewMembers":
-              return <ViewMembers />;        
+      case "UMLDiagram":
+        return <UMLDiagram />;
+      case "SequenceDiagram":
+        return <SequenceDiagram />;
+      case "AddMembers":
+        return <AddMembers />;
+      case "ViewMembers":
+        return <ViewMembers />;
       default:
         return ""; // Default content if no page matches
     }
@@ -152,11 +155,11 @@ const ManagerDashboard = () => {
               }}
             />
             <h6 className="my-3" style={{ marginTop: "15px" }}>
-            {managerData ? managerData.name : ""}
+              {managerData ? managerData.name : ""}
             </h6>
             <p
               className="text-muted mb-1"
-              style={{ color: "#6c757d", marginBottom: "0" ,fontSize:"15px"}}
+              style={{ color: "#6c757d", marginBottom: "0", fontSize: "15px" }}
             >
               {managerData ? managerData.email : ""}
             </p>
@@ -201,7 +204,7 @@ const ManagerDashboard = () => {
             overflowY: "auto",
             height: "100vh",
             padding: "20px",
-            fontSize:"Large",
+            fontSize: "Large",
           }}
         >
           <ManagerSider handleNavigation={handleNavigation} />
@@ -215,7 +218,7 @@ const ManagerDashboard = () => {
             overflowX: "hidden",
           }}
         >
-          {renderContent()} 
+          {renderContent()}
         </div>
       </div>
     </div>

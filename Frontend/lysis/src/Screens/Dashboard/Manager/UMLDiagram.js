@@ -6,7 +6,6 @@ const UMLDiagram = () => {
     const [umlCode, setUmlCode] = useState('');
     const [error, setError] = useState('');
     const [diagramGenerated, setDiagramGenerated] = useState(false);
- 
     const generateDiagram = () => {
         // Validate UML code
         if (!umlCode.trim()) {
