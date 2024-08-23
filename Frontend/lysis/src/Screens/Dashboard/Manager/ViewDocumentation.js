@@ -156,7 +156,7 @@ const ViewDocumentation = () => {
           </div>
 
           <div className="form-group">
-            {analysisResults.length > 0 && (
+            {analysisResults.length > 0 && selectedProject && (
               <div className="col-4">
                 <button
                   className="btn btn-primary"
@@ -169,19 +169,31 @@ const ViewDocumentation = () => {
           </div>
         </div>
 
-        {analysisResults.length === 0 && (
+        {analysisResults.length === 0 && selectedProject &&(
           <div className="row d-flex" style={{ width: "1000px" }}>
             <div className="col-lg-10">
               <div className="card">
                 <div className="card-body text-center">
-                  <p style={{ color: "black" }}>No Documents</p>
+                  <p style={{ color: "black" }}>{`${selectedProject} project is not analyzed yet!!!`}</p>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {analysisResults.length > 0 && (
+        {!selectedProject &&(
+          <div className="row d-flex" style={{ width: "1000px" }}>
+            <div className="col-lg-10">
+              <div className="card">
+                <div className="card-body text-center">
+                  <p style={{ color: "black" }}>Please select the Project</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {analysisResults.length > 0 && selectedProject && (
           <div className="row d-flex" id="result" style={{ width: "1000px" }}>
             {analysisResults.map((result, resultIndex) => (
               <div key={resultIndex} className="col-lg-10 mb-4">

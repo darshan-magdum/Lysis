@@ -73,28 +73,23 @@ const Analyze = () => {
     const totalFiles = fileEntries.length;
     const analyses = [];
     let summary = "";
-    const fileData = [];
-
     for (let i = 0; i < totalFiles; i++) {
       const fileEntry = fileEntries[i];
       const text = await fileEntry.file.text();
-      fileData.push({ fileName: fileEntry.path, text });
-    }
-    for (let i = 0; i < totalFiles; i++) {
-      const fileEntry = fileEntries[i];
-      const text = await fileEntry.file.text();
-      try {
-        const { analysis, summary: fileSummary } = await analyzeCodeWithAzureAI(text);
-        analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis });
-        if (i === 0) {
-          summary = fileSummary; // Store the project summary from the first file
+      if(text){
+        try {
+          const { analysis, summary: fileSummary } = await analyzeCodeWithAzureAI(text);
+          analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis });
+          if (i === 0) {
+            summary = fileSummary; // Store the project summary from the first file
+          }
+          setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
+        } catch (error) {
+          console.error('Error analyzing file:', error);
+          analyses.push({ fileName: fileEntry.path, analysis: 'Analysis failed' });
+          setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
         }
-        setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
-      } catch (error) {
-        console.error('Error analyzing file:', error);
-        analyses.push({ fileName: fileEntry.path, analysis: 'Analysis failed' });
-        setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
-      }
+      }      
     }
 
 

@@ -43,7 +43,7 @@ const SequenceDiagram = () => {
       useEffect(() => {
         if (selectedProject) {
           const UMLProjectData = allUMLData.find(
-            (UML) => UML.projectName === selectedProject
+            (UML) => UML.projectName === selectedProject && UML.managerId === managerId
           );
           if(UMLProjectData){
             setUmlCode(UMLProjectData.UMLData || []);
