@@ -61,102 +61,102 @@ const Analyze = () => {
   const handleAnalyze = async () => {
     if (!selectedProject) {
       alert("Please select a project first before starting analyzing.");
-    }else{
-    if (selectedFiles.length === 0) {
-      alert('Please select a folder.');
-      return;
-    }
-    setIsLoading(true);
-    setLoaderStatus("Starting Analysis...");
+    } else {
+      if (selectedFiles.length === 0) {
+        alert('Please select a folder.');
+        return;
+      }
+      setIsLoading(true);
+      setLoaderStatus("Starting Analysis...");
 
-    const fileEntries = getFileEntries(selectedFiles);
-    const totalFiles = fileEntries.length;
-    const analyses = [];
-    let summary = "";
-    for (let i = 0; i < totalFiles; i++) {
-      const fileEntry = fileEntries[i];
-      const text = await fileEntry.file.text();
-      if(text){
-        try {
-          const { analysis, summary: fileSummary } = await analyzeCodeWithAzureAI(text);
-          analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis });
-          if (i === 0) {
-            summary = fileSummary; // Store the project summary from the first file
+      const fileEntries = getFileEntries(selectedFiles);
+      const totalFiles = fileEntries.length;
+      const analyses = [];
+      let summary = "";
+      for (let i = 0; i < totalFiles; i++) {
+        const fileEntry = fileEntries[i];
+        const text = await fileEntry.file.text();
+        if (text) {
+          try {
+            const { analysis, summary: fileSummary } = await analyzeCodeWithAzureAI(text);
+            analyses.push({ FileName: fileEntry.path, Code: text, Analysis: analysis });
+            if (i === 0) {
+              summary = fileSummary; // Store the project summary from the first file
+            }
+            setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
+          } catch (error) {
+            console.error('Error analyzing file:', error);
+            analyses.push({ fileName: fileEntry.path, analysis: 'Analysis failed' });
+            setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
           }
-          setLoaderStatus(`Analyzed ${i + 1} of ${totalFiles} files`);
-        } catch (error) {
-          console.error('Error analyzing file:', error);
-          analyses.push({ fileName: fileEntry.path, analysis: 'Analysis failed' });
-          setLoaderStatus(`Error analyzing file ${i + 1} of ${totalFiles}`);
         }
-      }      
+      }
+
+
+      const combinedAnalysis = analyses.map(a => `FileName: ${a.FileName}\n\nAnalysis:\n${a.Analysis}`).join('\n\n');
+
+
+      const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
+      // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
+      try {
+        const projectName = selectedProject;
+        const files = analyses;
+        const projectSummary = queryResult1;
+        const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
+          projectName,
+          files,
+          projectSummary,
+          managerId
+        });
+
+        if (response.status === 201) {
+          toast.success('Project Uploaded Successfully');
+        }
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error('An unexpected error occurred.');
+        }
+      }
+      //UML Data Store API
+      try {
+        const ProjectData = analyses.map(a => `${a.FileName}\n\n${a.Analysis}`).join('\n\n');
+        const projectName = selectedProject;
+        const data = await UMLDataWithAzureAI(ProjectData)
+        const dataStartIndex = data.indexOf('sequenceDiagram');
+        let UMLData = data.substring(dataStartIndex);
+
+        // Remove all instances of `Analyzed code (Part X):`
+        UMLData = UMLData.replace(/Analyzed code \(Part \d+\):/g, '');
+
+        // Remove all instances of `\`\`\``
+        UMLData = UMLData.replace(/```/g, '');
+
+        // Remove any repeated 'sequenceDiagram' by keeping only the first occurrence
+        const firstSequenceDiagram = 'sequenceDiagram';
+        UMLData = firstSequenceDiagram + UMLData.split(firstSequenceDiagram).slice(1).join('');
+
+        // Trim any extra spaces or newlines from the result
+        UMLData = UMLData.trim();
+        const response = await axios.post('http://localhost:8080/NewUMLData/UMLData', {
+          UMLData,
+          projectName,
+          managerId
+        });
+
+        if (response.status === 201) {
+          toast.success('UML Data Stored Successfully');
+        }
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error('An unexpected error occurred.');
+        }
+      }
+      setIsLoading(false);
     }
-
-
-    const combinedAnalysis = analyses.map(a => `FileName: ${a.FileName}\n\nAnalysis:\n${a.Analysis}`).join('\n\n');
-
-
-    const queryResult1 = await AzureAIAPIForTitleQuery(combinedAnalysis);
-    // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
-    try {
-      const projectName = selectedProject;
-      const files = analyses;
-      const projectSummary = queryResult1;
-      const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
-        projectName,
-        files,
-        projectSummary,
-        managerId
-      });
-
-      if (response.status === 201) {
-        toast.success('Project Uploaded Successfully');
-      }
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('An unexpected error occurred.');
-      }
-    }
-    //UML Data Store API
-    try {
-      const ProjectData = analyses.map(a => `${a.FileName}\n\n${a.Analysis}`).join('\n\n');
-      const projectName = selectedProject;
-      const data = await UMLDataWithAzureAI(ProjectData)
-      const dataStartIndex = data.indexOf('sequenceDiagram');
-let UMLData = data.substring(dataStartIndex);
-
-// Remove all instances of `Analyzed code (Part X):`
-UMLData = UMLData.replace(/Analyzed code \(Part \d+\):/g, '');
-
-// Remove all instances of `\`\`\``
-UMLData = UMLData.replace(/```/g, '');
-
-// Remove any repeated 'sequenceDiagram' by keeping only the first occurrence
-const firstSequenceDiagram = 'sequenceDiagram';
-UMLData = firstSequenceDiagram + UMLData.split(firstSequenceDiagram).slice(1).join('');
-
-// Trim any extra spaces or newlines from the result
-UMLData = UMLData.trim();
-      const response = await axios.post('http://localhost:8080/NewUMLData/UMLData', {
-        UMLData,
-        projectName,
-        managerId
-      });
-
-      if (response.status === 201) {
-        toast.success('UML Data Stored Successfully');
-      }
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('An unexpected error occurred.');
-      }
-    }
-    setIsLoading(false);
-  }
   };
 
   const getFileEntries = (files) => {
@@ -273,7 +273,7 @@ UMLData = UMLData.trim();
     let analysisChunks = [combinedAnalysis];
     if (initialPromptTokenCount + codeTextToken > maxTokens) {
       analysisChunks = splitIntoChunks(combinedAnalysis, maxTokens - initialPromptTokenCount);
-    } 
+    }
     let fullResponse = '';
 
     for (let i = 0; i < analysisChunks.length; i++) {
@@ -339,7 +339,7 @@ Analyzed code (Part {partNumber}):\n\n`;
 
     for (let i = 0; i < analysisChunks.length; i++) {
       if (i === 0) {
-        prompt =  analysisChunks[i] + initialPrompt;
+        prompt = analysisChunks[i] + initialPrompt;
       } else {
         prompt = analysisChunks[i] + followUpPrompt.replace('{partNumber}', i + 1);
       }
@@ -497,71 +497,45 @@ Analyzed code (Part {partNumber}):\n\n`;
 
   //   return fullResponse;
   // }
-
-
   const extractProjectSummary = (analysis) => {
     const summaryLines = analysis.split('\n').slice(0, 5); // Extract first 5 lines as summary
     return summaryLines.join('\n');
   };
-
-  // const splitIntoChunks = (text, maxTokenCount) => {
-  //   const chunks = [];
-  //   let start = 0;
-  //   let end = 0;
-
-  //   while (end < text.length) {
-  //     let tokenCount = 0;
-  //     let currentChunk = '';
-
-  //     while (end < text.length && tokenCount < maxTokenCount) {
-  //       currentChunk += text[end];
-  //       tokenCount = encode(currentChunk).length; // Count tokens in the chunk
-  //       end++;
-  //     }
-
-  //     // Adjust end position for accurate chunk size
-  //     end = Math.max(start + 1, end - 1);
-  //     chunks.push(text.slice(start, end));
-  //     start = end;
-  //   }
-
-  //   return chunks;
-  // };
   const estimateAverageTokenSize = (text) => {
     const sample = text.slice(0, Math.min(text.length, 100000));
     const tokens = encode(sample);
     return sample.length / tokens.length;
   };
-  
+
   // Function to split text into chunks using estimated token size
   const splitIntoChunks = (text, maxTokenCount) => {
     const chunks = [];
     const averageTokenSize = estimateAverageTokenSize(text);
-  
+
     let start = 0;
     let end = 0;
     let estimatedTokenCount = 0;
-  
+
     while (end < text.length) {
       estimatedTokenCount = Math.ceil((end - start) / averageTokenSize);
-  
+
       if (estimatedTokenCount >= maxTokenCount) {
         chunks.push(text.slice(start, end));
         start = end;
         estimatedTokenCount = 0;
       }
-  
+
       end++;
     }
-  
+
     if (start < end) {
       chunks.push(text.slice(start, end));
     }
-  
+
     return chunks;
   };
-  
-  
+
+
   return (
 
     <div>
