@@ -20,6 +20,7 @@ const ContactRoutes = require('./Routes/ContactRoutes');
 const AddNewProjectsRoutes = require('./Routes/NewProjectsRoutes');
 const AddNewProjectDetailsRoutes = require('./Routes/ProjectDetailsRoutes');
 const AddNewUMLData = require('./Routes/UMLRoutes');
+const AddNewDatabaseDetailsRoutes = require('./Routes/DatabaseDetailsRoutes');
 
 
 app.use('/Manager', ManagerAuth);
@@ -29,6 +30,7 @@ app.use('/NewProjects', AddNewProjectsRoutes);
 app.use('/TeamMember', TeamMemberAuth);
 app.use('/NewProjectDetails', AddNewProjectDetailsRoutes);
 app.use('/NewUMLData', AddNewUMLData);
+app.use('/NewDatabaseDetails', AddNewDatabaseDetailsRoutes);
 
 // Start server
 const port = process.env.PORT || 8080;

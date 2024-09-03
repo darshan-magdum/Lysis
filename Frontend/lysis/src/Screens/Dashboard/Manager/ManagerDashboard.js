@@ -11,6 +11,8 @@ import UMLDiagram from "./UMLDiagram";
 import SequenceDiagram from "./SequenceDiagram";
 import AddMembers from "./AddMembers";
 import ViewMembers from "./ViewMembers";
+import AnalyzeDatabase from "./AnalyzeDatabase";
+import ViewDatabaseDoc from "./ViewDatabaseDoc";
 
 
 const ManagerDashboard = () => {
@@ -71,8 +73,12 @@ const ManagerDashboard = () => {
         return <ManagerHome />;
       case "analyze":
         return <Analyze />;
+      case "analyzeDatabase":
+        return <AnalyzeDatabase />;
       case "documentation":
         return <ViewDocumentation />;
+      case "viewDatabaseDoc":
+        return <ViewDatabaseDoc />;
       case "customPrompt":
         return <CustomPrompt />;
       case "UMLDiagram":

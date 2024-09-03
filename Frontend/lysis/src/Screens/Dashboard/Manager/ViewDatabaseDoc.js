@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from "axios";
 
-const ViewDocumentation = () => {
+const ViewDatabaseDoc = () => {
   const [allResults, setAllResults] = useState([]);  // New state for all results
   const [analysisResults, setAnalysisResults] = useState([]);
   const [projectSummary, setProjectSummary] = useState(null);
@@ -32,7 +32,7 @@ const ViewDocumentation = () => {
 
   useEffect(() => {
     if (managerId) {
-      axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}`)
+      axios.get(`http://localhost:8080/NewDatabaseDetails/DatabaseDetails/${managerId}`)
         .then(response => {
           setAllResults(response.data);  // Set all results
           setAnalysisResults(response.data);
@@ -82,16 +82,6 @@ const ViewDocumentation = () => {
       return currentYOffset;
     };
 
-    if (projectSummary) {
-      doc.setFontSize(14);
-      doc.setFont('Helvetica', 'bold');
-      doc.text("Project Summary", margin, yOffset);
-      doc.setFont('Helvetica', 'normal');
-      yOffset += 10;
-      yOffset = addTextToPage(projectSummary, yOffset);
-      doc.addPage();
-    }
-
     analysisResults.forEach((result, index) => {
       if (index !== 0) doc.addPage();
 
@@ -101,7 +91,6 @@ const ViewDocumentation = () => {
       doc.text(result.projectName, margin, yOffset);
       doc.setFont('Helvetica', 'normal');
       yOffset += 10;
-      yOffset = addTextToPage(result.projectSummary, yOffset);
 
       result.files.forEach(file => {
         if (yOffset + 10 > doc.internal.pageSize.getHeight() - margin) {
@@ -133,7 +122,7 @@ const ViewDocumentation = () => {
                   color: "#20609c",
                 }}
               >
-                View Code Documentation
+                View Database Documentation
               </h5>
             </div>
 
@@ -202,16 +191,6 @@ const ViewDocumentation = () => {
                     <h5>{result.projectName}</h5>
                   </div>
                   <div className="card-body">
-                    {result.projectSummary && (
-                      <div className="mt-3">
-                        <div className="card">
-                          <div className="card-header">Project Summary</div>
-                          <div className="card-body">
-                            <pre>{result.projectSummary}</pre>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                     {result.files.length > 0 && (
                       <div>
                         {result.files.map((file, fileIndex) => (
@@ -237,4 +216,4 @@ const ViewDocumentation = () => {
   );
 };
 
-export default ViewDocumentation;
+export default ViewDatabaseDoc;

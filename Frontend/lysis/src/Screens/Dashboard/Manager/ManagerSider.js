@@ -44,7 +44,28 @@ const ManagerSider = ({ handleNavigation }) => {
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#Analyze"></use>
               </svg>
-              <span>Analyze</span>
+              <span>Code Analyze</span>
+            </div>
+          </a>
+        </li>
+        {/* Database Analyzer */}
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default anchor behavior
+              handleNavigation("analyzeDatabase"); // Navigate to Home
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+                search
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#AnalyzeDatabase"></use>
+              </svg>
+              <span>DB Analyze</span>
             </div>
           </a>
         </li>
@@ -65,7 +86,7 @@ const ManagerSider = ({ handleNavigation }) => {
               <svg className="bi me-2 text-light" width="16" height="16">
                 <use xlinkHref="#table"></use>
               </svg>
-              <span>Documentation</span>
+              <span>Project Docs</span>
             </div>
           </a>
         </li>
@@ -86,6 +107,27 @@ const ManagerSider = ({ handleNavigation }) => {
                 <use xlinkHref="#table"></use>
               </svg>
               <span>Custom Prompt</span>
+            </div>
+          </a>
+        </li>
+        {/* Database View */}
+        <li className="nav-item">
+          <a
+            href="#"
+            className="nav-link text-light"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default anchor behavior
+              handleNavigation("viewDatabaseDoc"); // Navigate to Custom Prompt
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="material-symbols-outlined text-light">
+                keyboard
+              </span>
+              <svg className="bi me-2 text-light" width="16" height="16">
+                <use xlinkHref="#table"></use>
+              </svg>
+              <span>DB Docs</span>
             </div>
           </a>
         </li>
@@ -130,8 +172,8 @@ const ManagerSider = ({ handleNavigation }) => {
             </div>
           </a>
         </li>
-
-        <li className="nav-item">
+          {/* Add members */}
+        {/* <li className="nav-item">
           <a
             href="#"
             className="nav-link text-light"
@@ -150,10 +192,10 @@ const ManagerSider = ({ handleNavigation }) => {
               <span>Add Members</span>
             </div>
           </a>
-        </li>
+        </li> */}
 
-
-        <li className="nav-item">
+        {/* View Members */}
+        {/* <li className="nav-item">
           <a
             href="#"
             className="nav-link text-light"
@@ -172,7 +214,7 @@ const ManagerSider = ({ handleNavigation }) => {
               <span>View Members</span>
             </div>
           </a>
-        </li>
+        </li> */}
       </ul>
       <hr className="text-light" />
     </div>
