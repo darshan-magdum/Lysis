@@ -262,7 +262,7 @@ const Analyze = () => {
   }
 
   async function AzureAIAPIForTitleQuery(combinedAnalysis) {
-    const prompt = `Combine all project information which is inside the Project Information as this information is of a single project:
+    let prompt = `Combine all project information which is inside the Project Information as this information is of a single project:
                             - Project Name  (Give apprope)
                             - Project Use Case  (Combine all use cases as provided you in project information and give me two to three line use case description for all)
                             - Technology Used   (Don't Give same technology again give duplicate once)
