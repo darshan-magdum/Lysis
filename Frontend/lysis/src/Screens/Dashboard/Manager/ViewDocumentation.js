@@ -116,7 +116,9 @@ const ViewDocumentation = () => {
         yOffset = addTextToPage(file.Analysis, yOffset);
       });
     });
-    doc.save(`${selectedProject?`${selectedProject}_Analysis.pdf`:`AllProject_Analysis.pdf`}`);
+    const now = new Date();
+const date = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    doc.save(`${selectedProject?`${selectedProject}_Analysis_${date}.pdf`:`AllProject_Analysis_${date}.pdf`}`);
   };
 
   return (

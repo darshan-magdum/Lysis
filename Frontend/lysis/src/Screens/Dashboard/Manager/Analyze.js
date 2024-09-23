@@ -167,7 +167,7 @@ const Analyze = () => {
   };
 
   async function analyzeCodeWithAzureAI(codeText) {
-    const maxTokens = 128000; // Safe limit to avoid exceeding the token limit
+    const maxTokens = 118000; // Safe limit to avoid exceeding the token limit
     const initialPrompt = `You are analyzing a large codebase in parts. Start by providing a high-level overview and then go into detailed explanations for the following aspects and avoiding repetition, don't give overall summary or any description or context at last or first:
   - Overall structure of the code.
   - Class names, objects, and their interactions.
