@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { jsPDF } from 'jspdf';
 import "../../../Styles/UploadDocument.css";
 import axios from "axios";
-
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import { saveAs } from "file-saver";
 const ViewDocumentation = () => {
   const [allResults, setAllResults] = useState([]);  // New state for all results
   const [analysisResults, setAnalysisResults] = useState([]);
@@ -32,7 +33,7 @@ const ViewDocumentation = () => {
 
   useEffect(() => {
     if (managerId) {
-      axios.get(`http://localhost:8080/NewProjectDetails/ProjectsDetails/${managerId}`)
+      axios.get(`http://localhost:8080/NewProjectSummary/ProjectsSummary/${managerId}`)
         .then(response => {
           setAllResults(response.data);  // Set all results
           setAnalysisResults(response.data);
@@ -58,68 +59,97 @@ const ViewDocumentation = () => {
     }
   }, [selectedProject, allResults]);
 
-  const handleDownloadAllPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(12);
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 10;
-    const textWidth = pageWidth - 2 * margin;
-    let yOffset = margin;
+//   const handleDownloadAllPDF = () => {
+//     const doc = new jsPDF();
+//     doc.setFontSize(12);
+//     const pageWidth = doc.internal.pageSize.getWidth();
+//     const margin = 10;
+//     const textWidth = pageWidth - 2 * margin;
+//     let yOffset = margin;
 
-    const addTextToPage = (text, startYOffset) => {
-      let splitText = doc.splitTextToSize(text, textWidth);
-      let currentYOffset = startYOffset;
+//     const addTextToPage = (text, startYOffset) => {
+//       let splitText = doc.splitTextToSize(text, textWidth);
+//       let currentYOffset = startYOffset;
 
-      splitText.forEach((line, index) => {
-        if (currentYOffset + 10 > doc.internal.pageSize.getHeight() - margin) {
-          doc.addPage();
-          currentYOffset = margin;
-        }
-        doc.text(line, margin, currentYOffset);
-        currentYOffset += 10;
-      });
+//       splitText.forEach((line, index) => {
+//         if (currentYOffset + 10 > doc.internal.pageSize.getHeight() - margin) {
+//           doc.addPage();
+//           currentYOffset = margin;
+//         }
+//         doc.text(line, margin, currentYOffset);
+//         currentYOffset += 10;
+//       });
 
-      return currentYOffset;
-    };
+//       return currentYOffset;
+//     };
 
-    if (projectSummary) {
-      doc.setFontSize(14);
-      doc.setFont('Helvetica', 'bold');
-      doc.text("Project Summary", margin, yOffset);
-      doc.setFont('Helvetica', 'normal');
-      yOffset += 10;
-      yOffset = addTextToPage(projectSummary, yOffset);
-      doc.addPage();
-    }
+//     if (projectSummary) {
+//       doc.setFontSize(14);
+//       doc.setFont('Helvetica', 'bold');
+//       doc.text("Project Summary", margin, yOffset);
+//       doc.setFont('Helvetica', 'normal');
+//       yOffset += 10;
+//       yOffset = addTextToPage(projectSummary, yOffset);
+//       doc.addPage();
+//     }
 
-    analysisResults.forEach((result, index) => {
-      if (index !== 0) doc.addPage();
+//     analysisResults.forEach((result, index) => {
+//       if (index !== 0) doc.addPage();
 
-      doc.setFontSize(16);
-      doc.setFont('Helvetica', 'bold');
-      yOffset = margin;
-      doc.text(result.projectName, margin, yOffset);
-      doc.setFont('Helvetica', 'normal');
-      yOffset += 10;
-      yOffset = addTextToPage(result.projectSummary, yOffset);
+//       doc.setFontSize(16);
+//       doc.setFont('Helvetica', 'bold');
+//       yOffset = margin;
+//       doc.text(result.projectName, margin, yOffset);
+//       doc.setFont('Helvetica', 'normal');
+//       yOffset += 10;
+//       yOffset = addTextToPage(result.projectSummary, yOffset);
+//     });
+//     const now = new Date();
+// const date = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+//     doc.save(`${selectedProject?`${selectedProject}_Analysis_${date}.pdf`:`AllProject_Analysis_${date}.pdf`}`);
+//   };
+const handleDownloadAllPDF = async () => {
+  // Create a new Document
+  const sections = analysisResults.map((result) => ({
+    properties: {},
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: result.projectName,
+            bold: true,
+            size: 45, // size in half-points
+          }),
+        ],
+        alignment: "center",
+      }),
+      ...result.projectSummary.split("\n").map(line => new Paragraph({
+        children: [
+          new TextRun({
+            text: line,
+            size: 24,
+          }),
+        ],
+      })),
+    ],
+  }));
 
-      result.files.forEach(file => {
-        if (yOffset + 10 > doc.internal.pageSize.getHeight() - margin) {
-          doc.addPage();
-          yOffset = margin;
-        }
-        doc.setFontSize(12);
-        doc.setFont('Helvetica', 'bold');
-        doc.text(file.FileName, margin, yOffset);
-        doc.setFont('Helvetica', 'normal');
-        yOffset += 10;
-        yOffset = addTextToPage(file.Analysis, yOffset);
-      });
-    });
-    const now = new Date();
-const date = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
-    doc.save(`${selectedProject?`${selectedProject}_Analysis_${date}.pdf`:`AllProject_Analysis_${date}.pdf`}`);
-  };
+  const doc = new Document({
+    sections: sections,
+  });
+
+  // Generate the filename and trigger download
+  const now = new Date();
+  const date = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+  const fileName = `${selectedProject ? selectedProject : "AllProjects"}_Analysis_${date}.docx`;
+
+  const buffer = await Packer.toBlob(doc);
+  saveAs(buffer, fileName);
+};
+
+
+
+
 
   return (
     <div>
@@ -212,20 +242,6 @@ const date = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1)
                             <pre>{result.projectSummary}</pre>
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {result.files.length > 0 && (
-                      <div>
-                        {result.files.map((file, fileIndex) => (
-                          <div key={fileIndex} className="mb-3">
-                            <div className="card">
-                              <div className="card-header">{file.FileName}</div>
-                              <div className="card-body">
-                                <pre>{file.Analysis}</pre>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
                       </div>
                     )}
                   </div>

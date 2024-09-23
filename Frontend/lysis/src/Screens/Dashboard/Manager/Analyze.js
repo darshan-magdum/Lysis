@@ -100,17 +100,15 @@ const Analyze = () => {
       // const queryResult = await FinalAzureAIAPIForTitleQuery(queryResult1);
       try {
         const projectName = selectedProject;
-        const files = analyses;
         const projectSummary = queryResult1;
-        const response = await axios.post('http://localhost:8080/NewProjectDetails/AddNewProjectsDetails', {
+        const response = await axios.post('http://localhost:8080/NewProjectSummary/AddProjectsSummary', {
           projectName,
-          files,
           projectSummary,
           managerId
         });
 
         if (response.status === 201) {
-          toast.success('Project Uploaded Successfully');
+          toast.success('Project Summary Uploaded Successfully');
         }
       } catch (error) {
         if (error.response && error.response.data.message) {
@@ -159,12 +157,22 @@ const Analyze = () => {
     }
   };
 
-  const getFileEntries = (files) => {
-    return files.map(file => {
+  // const getFileEntries = (files) => {
+  //   return files.map(file => {
+  //     const path = file.webkitRelativePath || file.name;
+  //     return { file, path };
+  //   });
+  // };
+  const codeExtensions = ['.cls', '.bas'];
+
+const getFileEntries = (files) => {
+  return files
+    .filter(file => codeExtensions.includes('.' + file.name.split('.').pop().toLowerCase()))
+    .map(file => {
       const path = file.webkitRelativePath || file.name;
       return { file, path };
     });
-  };
+};
 
   async function analyzeCodeWithAzureAI(codeText) {
     const maxTokens = 118000; // Safe limit to avoid exceeding the token limit
@@ -249,24 +257,12 @@ const Analyze = () => {
   }
 
   async function AzureAIAPIForTitleQuery(combinedAnalysis) {
-    const maxTokens = 128000; // Safe limit to avoid exceeding the token limit
-    const initialPrompt = `Provide the following information for the analyzed code of a single project:
-                         - Project Name
-                         - Project Use Case
-                         - Technology Used
-                         - Total Number of Functions (If I provide you multiple analyzed code then also that all code is for single project but also give names of functions in bracket. Remember I want only count Custom Functions count not anything)
-                         - Total Number of Classes (If I provide you multiple analyzed code then also that all code is for single project but also give names of classes in bracket. Remember I want only classes count not anything)
-                         Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
-                         Analyzed code:\n\n`;
+    const maxTokens = 118000; // Safe limit to avoid exceeding the token limit
+    const initialPrompt = `Generate a detailed summary for the entire project based on the analysis of its code files. Avoid providing file-wise details. Instead, describe the overall structure, major components, and how the different parts work together to achieve the project’s objectives. Focus on the project's architecture, core functionality, key design patterns, and overall code quality. Highlight important features, functionality, and any dependencies between components. 
+                         Analysis Result:\n\n`;
 
-    const followUpPrompt = `Combine all project information which is inside the Project Information as this information is of a single project:
-                         - Project Name  (Give appropriate)
-                         - Project Use Case  (Combine all use cases as provided you in project information and give me two to three line use case description for all)
-                         - Technology Used   (Don't Give same technology again give duplicate once)
-                         - Total Number of Functions (Calculate the total number of Functions and give me only count means give me only number. Do not list function names, only provide the count(Remember: Don't give the description of what types of functions are just give me only Number. Don't give anything other than number))
-                         - Total Number of Classes (Calculate the total number of Classes and give me only count means give me only number. Do not list class names, only provide the count(Remember: Don't give the description of what types of classes are just give me only Number. Don't give anything other than number))
-                         Just provide only above points and their respective information, don't give any context. Remember that the analyzed code is for only one project, so give me this for the whole project, not for separate files. Give me only once.
-                         Project Information:\n\n`;
+    const followUpPrompt = `Generate a detailed summary for the entire project based on the analysis of its code files. Avoid providing file-wise details. Instead, describe the overall structure, major components, and how the different parts work together to achieve the project’s objectives. Focus on the project's architecture, core functionality, key design patterns, and overall code quality. Highlight important features, functionality, and any dependencies between components. 
+                         Analysis Result:\n\n`;
 
     const initialPromptTokenCount = encode(initialPrompt).length;
     const codeTextToken = encode(combinedAnalysis).length;
@@ -323,7 +319,7 @@ const Analyze = () => {
     return fullResponse;
   }
   async function UMLDataWithAzureAI(combinedAnalysis) {
-    const maxTokens = 128000; // Safe limit to avoid exceeding the token limit
+    const maxTokens = 118000; // Safe limit to avoid exceeding the token limit
     const initialPrompt = `Please generate only one sequence diagram for this project for all the functions called in this all the analyzed code combinely and their inter dependencies. Give me in mermaid format. Give me only Mermaid sequence diagram format from sequenceDiagram don't give me any comment or description. Just give me text between \`\`\` and \`\`\` and don't give \`\`\` also.
     Analyzed code (Part 1):\n\n`;
     const followUpPrompt = `From the previous result Give me only one sequence diagram for this project, including all the functions called in all the analyzed code and their interdependencies. Provide the output in Mermaid format. Only include the Mermaid sequence diagram format starting from 'sequenceDiagram' without any comments or descriptions. Do not include the backticks (\`\`\`).
