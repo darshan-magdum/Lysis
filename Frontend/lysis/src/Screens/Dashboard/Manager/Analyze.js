@@ -163,7 +163,7 @@ const Analyze = () => {
   //     return { file, path };
   //   });
   // };
-  const codeExtensions = ['.cls', '.bas'];
+  const codeExtensions = ['.cls', '.bas','.docx','.txt'];
 
 const getFileEntries = (files) => {
   return files
@@ -176,24 +176,23 @@ const getFileEntries = (files) => {
 
   async function analyzeCodeWithAzureAI(codeText) {
     const maxTokens = 118000; // Safe limit to avoid exceeding the token limit
-    const initialPrompt = `You are analyzing a large codebase in parts. Start by providing a high-level overview and then go into detailed explanations for the following aspects and avoiding repetition, don't give overall summary or any description or context at last or first:
-  - Overall structure of the code.
-  - Class names, objects, and their interactions.
-  - Function names and explanations.
-  - Database connections.
-  - API details including keys and endpoints.
-  - Significant aspects.
- 
-  Code to analyze (Part 1):\n\n`;
+    const initialPrompt = `You are an expert in system analysis and modernization. Given the following transcript from a meeting, identify:
 
-    const followUpPrompt = `Continuing from the previous part, provide detailed explanations for the following aspects, focusing on new information and avoiding repetition, don't give overall summary or any description or context at last or first:
-  - Class names, objects, and their interactions.
-  - Function names and explanations.
-  - Database connections.
-  - API details including keys and endpoints.
-  - Significant aspects.
-  Do not repeat any previous introductory statements or overviews.
-  Code to analyze (Part {partNumber}):\n\n`;
+All the questions that were raised during the meeting.
+The solutions or suggestions that were discussed in response to those questions.
+Analyze and highlight the main challenges, problems, or gaps that were identified in the discussion.
+Provide specific examples of these challenges from the transcript.
+Recommend if modernization of the current system is needed, and suggest the possible areas where improvements or upgrades could be made to enhance the efficiency, reliability, or user experience of the system.
+Here is the transcript (Part 1):\n\n`;
+
+    const followUpPrompt = `Continuing from the previous part, you are an expert in system analysis and modernization. Given the following transcript from a meeting, identify:
+
+All the questions that were raised during the meeting.
+The solutions or suggestions that were discussed in response to those questions.
+Analyze and highlight the main challenges, problems, or gaps that were identified in the discussion.
+Provide specific examples of these challenges from the transcript.
+Recommend if modernization of the current system is needed, and suggest the possible areas where improvements or upgrades could be made to enhance the efficiency, reliability, or user experience of the system.
+Here is the transcript (Part {partNumber}):\n\n`;
 
     const initialPromptTokenCount = encode(initialPrompt).length;
     const codeTextToken = encode(codeText).length;
